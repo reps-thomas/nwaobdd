@@ -14,11 +14,12 @@ NWAOBDDInterface::NWAOBDDInterface(VocabularyOrdering * vOrdering, NWAOBDD n, bo
 }
 
 /* Performs a tensor operation on the NWAOBDD and NI's NWAOBDD */
-NWAOBDDInterface * NWAOBDDInterface::Tensor(NWAOBDDInterface NI)
+NWAOBDDInterface * NWAOBDDInterface::Tensor(NWAOBDDInterface * NI)
 {
+	// It seems that this function is never called. -- Xusheng Zhi, Jan 30, 2024
 	NWAOBDD g;
-	NWAOBDDInterface * NI = MoveBaseToTensor(); //ETTODO - make sure this works
-	g = MkAnd(this->n,NI.n);
+	/* NWAOBDDInterface * */ NI = MoveBaseToTensor(); //ETTODO - make sure this works
+	g = MkAnd(this->n,NI->n);
 	this->n = g;
 	this->isTensored = true;
 	return this;

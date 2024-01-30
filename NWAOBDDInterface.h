@@ -18,7 +18,7 @@ class NWAOBDDInterface: public RelationInterface
 		//ETTODO - create a copy constructor
 		NWAOBDDInterface(VocabularyOrdering * vOrdering, NWAOBDD n, bool isTensored);
 		NWAOBDDInterface* Transpose();
-		NWAOBDDInterface* Tensor(NWAOBDDInterface NI);
+		NWAOBDDInterface* Tensor(NWAOBDDInterface* NI);
 		NWAOBDDInterface* Detensor();
 		NWAOBDDInterface* DetensorTranspose();
 		NWAOBDDInterface* MoveBaseToTensor();

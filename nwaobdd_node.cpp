@@ -523,7 +523,7 @@ NWAOBDDNodeHandle MkIdRelationInterleaved(unsigned int level, IDTYPE idtype)
           n->BConnection[0][0] = Connection(temp,m01);
           n->BConnection[1][0] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m22);
           n->BConnection[0][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m22);
-          n->BConnection[1][1] = Connection(MkIdRelationInterleaved(level-1, idtype), m01);
+          n->BConnection[1][1] = Connection(temp, m01);
           n->BConnection[0][2] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m22);
           n->BConnection[1][2] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m22);
           n->numExits = 3;
@@ -1592,6 +1592,11 @@ Connection::Connection()
 
 // Constructor
 Connection::Connection(NWAOBDDNodeHandle &entryPointHandle, ReturnMapHandle<intpair> (&returnMapHandle))
+  : entryPointHandle(entryPointHandle), returnMapHandle(returnMapHandle){
+}
+
+// Constructor, rvalue-ref version to pass compiling
+Connection::Connection(NWAOBDDNodeHandle &&entryPointHandle, ReturnMapHandle<intpair> (&returnMapHandle))
   : entryPointHandle(entryPointHandle), returnMapHandle(returnMapHandle){
 }
 

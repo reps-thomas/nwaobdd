@@ -56,6 +56,7 @@ class NWAOBDD {
   ~NWAOBDD();                                   // Destructor
   static unsigned int const maxLevel;
   bool Evaluate(SH_OBDD::Assignment &assignment);        // Evaluate a Boolean function
+  bool Evaluate(SH_OBDD::Assignment &&assignment);        // rvalue-ref version to pass comiling
   void PrintYield(std::ostream * out);               // print the yield of the "tree"
   void PrintYieldSemantic(std::ostream & out);       // print the yield of the "tree"
 #ifdef PATH_COUNTING_ENABLED

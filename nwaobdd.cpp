@@ -73,6 +73,12 @@ bool NWAOBDD::Evaluate(SH_OBDD::Assignment &assignment)
   return root->Evaluate(assignment);
 }
 
+
+bool NWAOBDD::Evaluate(SH_OBDD::Assignment &&assignment)
+{ // rvalue-ref version, to pass compiling
+  return root->Evaluate(assignment);
+}
+
 // PrintYieldSemantic
 //
 // print the yield of the NWAOBDD (i.e., the leaves of 0's and 1's

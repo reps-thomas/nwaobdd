@@ -155,6 +155,7 @@ class Connection {
   Connection();                                  // Default constructor
   Connection(NWAOBDDNode *entryPoint, ReturnMapHandle<intpair> (&returnMapHandle));
   Connection(NWAOBDDNodeHandle &entryPointHandle, ReturnMapHandle<intpair> (&returnMapHandle));
+  Connection(NWAOBDDNodeHandle &&entryPointHandle, ReturnMapHandle<intpair> (&returnMapHandle));
   ~Connection();                                 // Destructor
   unsigned int Hash(unsigned int modsize);
   Connection& operator= (const Connection &C);   // Overloaded =
