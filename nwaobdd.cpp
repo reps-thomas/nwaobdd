@@ -503,6 +503,9 @@ NWAOBDD MkMultiplicationInterleavedBruteForce() {
 	return ans;
 }
 
+
+
+namespace NWA_OBDD {
 //
 // HighOrderBitPosition
 //
@@ -627,6 +630,10 @@ bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &
 	NWAOBDD YOne = MkY(1);
 	return (g1 != XOne && g2 != YOne);  // Return true if neither factor is 1
 }
+
+
+}
+
 
 namespace NWA_OBDD {
 

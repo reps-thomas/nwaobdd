@@ -779,7 +779,7 @@ void NWATests::testAllAssignments(){
   }
 }
 
-#include "Traces/c6288-10_nwa.cpp"
+#include "c6288-10_nwa.cpp"
 void NWATests::testIscas85()
 {
 //    c17();
@@ -1014,7 +1014,7 @@ void NWATests::testStepFunction()
 //ETTODO Arbitrary Step Functions
 
 //ETTODO Pulse Functions
-bool NWATests::runTests(char * argv[], int * start = NULL, int size = 0){
+bool NWATests::runTests(const char * argv, int start, int size){
     NWAOBDDNodeHandle::InitNoDistinctionTable();
      NWAOBDDNodeHandle::InitReduceCache();
      InitPairProductCache();

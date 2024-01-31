@@ -1,5 +1,4 @@
 #include "assignment.h"
-#include "cross_product.h" 
 #include "nwaobdd.h"
 
 namespace NWA_OBDD {
@@ -36,6 +35,6 @@ class NWATests
 		static void testWeights();
 		static void testSchema();
 		static void testAddition();
-		static bool runTests(char * argv[], int * start, int size);
+		static bool runTests(const char * argv, int start = 0, int size = 0);
 };
 }
