@@ -27,8 +27,8 @@
 //    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include "intpair.h"
-#include "inttriple.h"
+#include "infrastructure/intpair.h"
+#include "infrastructure/inttriple.h"
 
 // ********************************************************************
 // 2-Way Cross Product

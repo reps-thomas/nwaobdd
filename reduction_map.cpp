@@ -29,12 +29,11 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "return_map_T.h"
 #include "reduction_map.h"
-#include "list_T.h"
-#include "list_TPtr.h"
-#include "intpair.h"
-#include "hashset.h"
+#include "infrastructure/list_T.h"
+#include "infrastructure/list_TPtr.h"
+#include "infrastructure/intpair.h"
+#include "infrastructure/hashset.h"
 
 //***************************************************************
 // ReductionMapBodyIterator
@@ -227,6 +226,11 @@ void ReductionMapHandle::AddToEnd(int y)
 {
   assert(mapContents->refCount <= 1);
   mapContents->AddToEnd(y);
+}
+
+int& ReductionMapHandle::operator[](unsigned int i)
+{
+	return mapContents->operator[](i);
 }
 
 /*

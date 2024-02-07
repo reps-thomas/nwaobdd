@@ -30,11 +30,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "list_T.h"
-#include "list_TPtr.h"
-#include "hashset.h"
+#include "infrastructure/list_T.h"
+#include "infrastructure/list_TPtr.h"
+#include "infrastructure/hashset.h"
 #include "reduction_map.h"
-#include "intpair.h"
+#include "infrastructure/intpair.h"
 #include <complex>
 //#include <boost/multiprecision/cpp_int.hpp>
 //#include "hash_functions.h"

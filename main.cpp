@@ -28,7 +28,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "tests_nwa.h"
+#include "testing/tests_nwa.h"
 #include <iomanip>
 // #include "memory_check.h"
 #define _CRTDBG_MAP_ALLOC

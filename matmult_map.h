@@ -33,7 +33,7 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include <map>
 
-#include "hashset.h"
+#include "infrastructure/hashset.h"
 
 class MatMultMapHandle;
 class MatMultMapBody;

@@ -31,7 +31,7 @@
 #include <fstream>
 #include <vector>
 #include <boost/multiprecision/cpp_int.hpp>
-#include "hashset.h"
+#include "infrastructure/hashset.h"
 
 class LinearMapHandle;
 class LinearMapBody;

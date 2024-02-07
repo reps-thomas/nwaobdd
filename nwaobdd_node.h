@@ -44,18 +44,18 @@ class NWAOBDDNodeHandle;
 
 #include <iostream>
 #include <fstream>
-#include "list_T.h"
-#include "list_TPtr.h"
-#include "intpair.h"
-#include "conscell.h"
+#include "infrastructure/list_T.h"
+#include "infrastructure/list_TPtr.h"
+#include "infrastructure/intpair.h"
+#include "infrastructure/conscell.h"
 #include "assignment.h"
 #include "bool_op.h"
 #include "return_map_T.h"
 #include "reduction_map.h"
 #include "traverse_state_nwa.h"
-#include "hash.h"
-#include "hashset.h"
-#include "ref_ptr.h"
+#include "infrastructure/hash.h"
+#include "infrastructure/hashset.h"
+#include "infrastructure/ref_ptr.h"
 
 namespace NWA_OBDD {
 typedef ref_ptr<NWAOBDDTopNode> NWAOBDDTopNodeRefPtr;

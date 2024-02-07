@@ -30,7 +30,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "hashset.h"
+#include "infrastructure/hashset.h"
 
 class GeneralMapHandle;
 class GeneralMapBody;
