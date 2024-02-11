@@ -31,10 +31,9 @@
 #include "return_map_T.h"
 #include "infrastructure/intpair.h"
 #include "nwaobdd_node.h"
-#include "linear_map.h"
-#include "general_map.h"
-#include "matmult_map.h"
-#include "fourier_semiring.h"
+// #include "linear_map.h"
+// #include "matmult_map.h"
+// #include "fourier_semiring.h"
 
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_complex.hpp>
@@ -46,60 +45,60 @@ typedef mp::cpp_complex_double BIG_COMPLEX_FLOAT;
 
 // Instantiation and specialization of class ReturnMapHandle<LinearMapHandle> ----------
 
-template<>
-unsigned int ReturnMapBody<LinearMapHandle>::Hash(unsigned int modsize)
-{
-	unsigned int hvalue = 0;
+// template<>
+// unsigned int ReturnMapBody<LinearMapHandle>::Hash(unsigned int modsize)
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (997 * hvalue + mapArray[i].Hash(modsize)) % modsize;
-	}
-	return hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (997 * hvalue + mapArray[i].Hash(modsize)) % modsize;
+// 	}
+// 	return hvalue;
+// }
 
-template<>
-void ReturnMapBody<MatMultMapHandle>::setHashCheck()
-{
-	unsigned int hvalue = 0;
+// template<>
+// void ReturnMapBody<MatMultMapHandle>::setHashCheck()
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		if (mapArray[i].mapContents->hashCheck == NULL) {
-			mapArray[i].mapContents->setHashCheck();
-		}
-		hvalue = (117 * (hvalue + 1) + mapArray[i].mapContents->hashCheck);
-	}
-	hashCheck = hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		if (mapArray[i].mapContents->hashCheck == NULL) {
+// 			mapArray[i].mapContents->setHashCheck();
+// 		}
+// 		hvalue = (117 * (hvalue + 1) + mapArray[i].mapContents->hashCheck);
+// 	}
+// 	hashCheck = hvalue;
+// }
 
-template<>
-unsigned int ReturnMapBody<MatMultMapHandle>::Hash(unsigned int modsize)
-{
-	unsigned int hvalue = 0;
+// template<>
+// unsigned int ReturnMapBody<MatMultMapHandle>::Hash(unsigned int modsize)
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (997 * hvalue + mapArray[i].Hash(modsize)) % modsize;
-	}
-	return hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (997 * hvalue + mapArray[i].Hash(modsize)) % modsize;
+// 	}
+// 	return hvalue;
+// }
 
 
-template<>
-void ReturnMapBody<LinearMapHandle>::setHashCheck()
-{
-	unsigned int hvalue = 0;
+// template<>
+// void ReturnMapBody<LinearMapHandle>::setHashCheck()
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		if (mapArray[i].mapContents->hashCheck == NULL) {
-			mapArray[i].mapContents->setHashCheck();
-		}
-		hvalue = (117 * (hvalue + 1) + mapArray[i].mapContents->hashCheck);
-	}
-	hashCheck = hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		if (mapArray[i].mapContents->hashCheck == NULL) {
+// 			mapArray[i].mapContents->setHashCheck();
+// 		}
+// 		hvalue = (117 * (hvalue + 1) + mapArray[i].mapContents->hashCheck);
+// 	}
+// 	hashCheck = hvalue;
+// }
 
 /*
 template <>
@@ -118,21 +117,21 @@ std::ostream& operator<< (std::ostream & out, const ReturnMapBody<LinearMapHandl
 */
 
 
-template<>
-ReturnMapHandle<LinearMapHandle> ReturnMapHandle<LinearMapHandle>::Complement()
-{
-	assert(false);
-	return *this;   // Should never be executed; included to supporess VS 2013 error report
-}
+// template<>
+// ReturnMapHandle<LinearMapHandle> ReturnMapHandle<LinearMapHandle>::Complement()
+// {
+// 	assert(false);
+// 	return *this;   // Should never be executed; included to supporess VS 2013 error report
+// }
 
-template <>
-ReturnMapHandle<LinearMapHandle> ReturnMapHandle<LinearMapHandle>::Compose(ReductionMapHandle redMapHandle)
-{
-	assert(false);
-	return *this;   // Should never be executed; included to suppress VS 2013 error report
-}
+// template <>
+// ReturnMapHandle<LinearMapHandle> ReturnMapHandle<LinearMapHandle>::Compose(ReductionMapHandle redMapHandle)
+// {
+// 	assert(false);
+// 	return *this;   // Should never be executed; included to suppress VS 2013 error report
+// }
 
-template class ReturnMapHandle<LinearMapHandle>;
+// template class ReturnMapHandle<LinearMapHandle>;
 
 // Instantiation and specialization of class ReturnMapHandle<int> ---------------------
 
@@ -306,40 +305,40 @@ ReturnMapHandle<BIG_COMPLEX_FLOAT> ReturnMapHandle<BIG_COMPLEX_FLOAT>::Complemen
 // Instantiation and specialization of class ReturnMapHandle<GeneralMapHandle> ---------------------
 // double_hash needs to be changed
 
-template<>
-unsigned int ReturnMapBody<GeneralMapHandle>::Hash(unsigned int modsize)
-{
-	unsigned int hvalue = 0;
-	std::hash<double> double_hash;
+// template<>
+// unsigned int ReturnMapBody<GeneralMapHandle>::Hash(unsigned int modsize)
+// {
+// 	unsigned int hvalue = 0;
+// 	std::hash<double> double_hash;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (997 * hvalue + 97*mapArray[i].Hash(modsize)) % modsize;
-	}
-	return hvalue;
-}
-
-
-template<>
-void ReturnMapBody<GeneralMapHandle>::setHashCheck()
-{
-	unsigned int hvalue = 0;
-	std::hash<double> double_hash;
-
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (117 * (hvalue + 1) + mapArray[i].Hash(997));
-	}
-	hashCheck = hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (997 * hvalue + 97*mapArray[i].Hash(modsize)) % modsize;
+// 	}
+// 	return hvalue;
+// }
 
 
-template<>
-ReturnMapHandle<GeneralMapHandle> ReturnMapHandle<GeneralMapHandle>::Complement()
-{
-	assert(false);
-	return *this;   // Should never be executed; included to supporess VS 2013 error report
-}
+// template<>
+// void ReturnMapBody<GeneralMapHandle>::setHashCheck()
+// {
+// 	unsigned int hvalue = 0;
+// 	std::hash<double> double_hash;
+
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (117 * (hvalue + 1) + mapArray[i].Hash(997));
+// 	}
+// 	hashCheck = hvalue;
+// }
+
+
+// template<>
+// ReturnMapHandle<GeneralMapHandle> ReturnMapHandle<GeneralMapHandle>::Complement()
+// {
+// 	assert(false);
+// 	return *this;   // Should never be executed; included to supporess VS 2013 error report
+// }
 
 // Instantiation and specialization of class ReturnMapHandle<intPair> ---------------------
 
@@ -350,7 +349,7 @@ unsigned int ReturnMapBody<intpair>::Hash(unsigned int modsize)
 
   for (unsigned i = 0; i < mapArray.size(); i++)
   {
-	  hvalue = (997 * hvalue + mapArray[i].First() + mapArray[i].Second()) % modsize;
+	  hvalue = (997 * hvalue + (mapArray[i].First() + 2) * 217 + (mapArray[i].Second() + 3)) % modsize;
   } 
   return hvalue;
 }
@@ -384,36 +383,36 @@ ReturnMapHandle<intpair> ReturnMapHandle<intpair>::Complement()
 
 // Instantiation and specialization of class ReturnMapHandle<fourierSemiring> ---------------------
 
-template<>
-unsigned int ReturnMapBody<fourierSemiring>::Hash(unsigned int modsize)
-{
-	unsigned int hvalue = 0;
+// template<>
+// unsigned int ReturnMapBody<fourierSemiring>::Hash(unsigned int modsize)
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (997 * hvalue + 117 * mapArray[i].GetVal() + mapArray[i].GetRingSize()) % modsize;
-	}
-	return hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (997 * hvalue + 117 * mapArray[i].GetVal() + mapArray[i].GetRingSize()) % modsize;
+// 	}
+// 	return hvalue;
+// }
 
-template<>
-void ReturnMapBody<fourierSemiring>::setHashCheck()
-{
-	unsigned int hvalue = 0;
+// template<>
+// void ReturnMapBody<fourierSemiring>::setHashCheck()
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (117 * (hvalue + 1) + 97 * mapArray[i].GetVal() + mapArray[i].GetRingSize());
-	}
-	hashCheck = hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (117 * (hvalue + 1) + 97 * mapArray[i].GetVal() + mapArray[i].GetRingSize());
+// 	}
+// 	hashCheck = hvalue;
+// }
 
-template<>
-ReturnMapHandle<fourierSemiring> ReturnMapHandle<fourierSemiring>::Complement()
-{
-	assert(false);
-	return *this;
-}
+// template<>
+// ReturnMapHandle<fourierSemiring> ReturnMapHandle<fourierSemiring>::Complement()
+// {
+// 	assert(false);
+// 	return *this;
+// }
 
 // Instantiation and specialization of class ReturnMapHandle<std::complex<double>> ---------------------
 

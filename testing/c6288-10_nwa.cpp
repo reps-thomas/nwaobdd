@@ -10,7 +10,7 @@
  *   available to any other person.  Title to MkMkAnd ownership of the
  *   software is retained by GrammaTech, Inc.
  */
-#include "nwaobdd.h"
+#include "../nwaobdd.h"
 
 using namespace NWA_OBDD;
 

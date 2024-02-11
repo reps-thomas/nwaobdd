@@ -1,4 +1,4 @@
-#include "nwaobdd.h"
+#include "../nwaobdd.h"
 #include <fstream>
 
 using namespace std;

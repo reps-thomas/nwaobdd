@@ -24,12 +24,6 @@
 //    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include <cassert>
-#include <cstdio>
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include "nwaobdd_node.h"
 #include "traverse_state_nwa.h"
 
 using namespace NWA_OBDD;

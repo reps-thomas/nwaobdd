@@ -30,9 +30,11 @@
 
 #include <iostream>
 #include <fstream>
-#include "nwaobdd_node.h"
 
 namespace NWA_OBDD {
+
+  class NWAOBDDNode;
+
 class TraverseState;
 
 enum VisitState { FirstVisit, SecondVisit, ThirdVisit, Restart, RestartFirst, RestartSecond, SecondVisitOne, RestartThird };

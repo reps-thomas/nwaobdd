@@ -1,5 +1,5 @@
-#include "assignment.h"
-#include "nwaobdd.h"
+#include "../assignment.h"
+#include "../nwaobdd.h"
 
 namespace NWA_OBDD {
 class NWATests

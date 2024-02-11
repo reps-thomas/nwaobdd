@@ -4,9 +4,9 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
-#include "nwaobdd_node.h"
-#include "nwaobdd.h"
-#include "assignment.h" 
+#include "../nwaobdd_node.h"
+#include "../nwaobdd.h"
+#include "../assignment.h" 
 #include "tests_nwa.h"
 
 using namespace NWA_OBDD;
