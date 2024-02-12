@@ -29,7 +29,7 @@
 #include <complex>
 #include <functional>
 #include "return_map_T.h"
-#include "infrastructure/intpair.h"
+#include "infra/intpair.h"
 #include "nwaobdd_node.h"
 // #include "linear_map.h"
 // #include "matmult_map.h"

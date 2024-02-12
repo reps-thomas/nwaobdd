@@ -30,10 +30,10 @@
 #include <fstream>
 #include <cstdlib>
 #include "reduction_map.h"
-#include "infrastructure/list_T.h"
-#include "infrastructure/list_TPtr.h"
-#include "infrastructure/intpair.h"
-#include "infrastructure/hashset.h"
+#include "infra/list_T.h"
+#include "infra/list_TPtr.h"
+#include "infra/intpair.h"
+#include "infra/hashset.h"
 
 //***************************************************************
 // ReductionMapBodyIterator

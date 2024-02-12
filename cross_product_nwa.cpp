@@ -30,10 +30,10 @@
 #include <fstream>
 #include <cstdlib>
 #include "nwaobdd_node.h"
-#include "infrastructure/list_T.h"
-#include "infrastructure/list_TPtr.h"
-#include "infrastructure/intpair.h"
-#include "infrastructure/inttriple.h"
+#include "infra/list_T.h"
+#include "infra/list_TPtr.h"
+#include "infra/intpair.h"
+#include "infra/inttriple.h"
 #include "cross_product_nwa.h"
 //#include "hash_functions.h"
 

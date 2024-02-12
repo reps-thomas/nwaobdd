@@ -31,10 +31,10 @@
 #include <fstream>
 #include <unordered_set>
 #include <vector>
-#include "infrastructure/list_T.h"
-#include "infrastructure/list_TPtr.h"
-#include "infrastructure/hashset.h"
-#include "infrastructure/intpair.h"
+#include "infra/list_T.h"
+#include "infra/list_TPtr.h"
+#include "infra/hashset.h"
+#include "infra/intpair.h"
 
 class ReductionMapHandle;
 class ReductionMapBody;

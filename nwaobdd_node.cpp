@@ -31,18 +31,18 @@
 #include <cstdlib>
 #include <cstdarg>
 #include "nwaobdd_node.h"
-#include "infrastructure/list_T.h"
-#include "infrastructure/list_TPtr.h"
-#include "infrastructure/intpair.h"
-#include "infrastructure/conscell.h"
+#include "infra/list_T.h"
+#include "infra/list_TPtr.h"
+#include "infra/intpair.h"
+#include "infra/conscell.h"
 #include "assignment.h"
 #include "bool_op.h"
 #include "return_map_T.h"
 #include "reduction_map.h"
 #include "cross_product_nwa.h"
 #include "traverse_state_nwa.h"
-#include "infrastructure/hash.h"
-#include "infrastructure/hashset.h"
+#include "infra/hash.h"
+#include "infra/hashset.h"
 
 using namespace NWA_OBDD;
 

@@ -1,9 +1,8 @@
-# Ignore Visual Studio Code settings directory
 .vscode/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
 
-# Ignore specific .sh scripts
-*.sh
-
-# Ignore the target executable
 *.out
-
+*.a
