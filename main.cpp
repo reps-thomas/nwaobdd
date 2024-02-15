@@ -87,6 +87,8 @@ public:
 	B* b;
 };
 
+extern unsigned long long checker;
+
 int main(int argc, char * argv[])
 {
     // printf("Program Starts\n");
@@ -123,6 +125,7 @@ int main(int argc, char * argv[])
 			NWA_OBDD::NWATests::runTests(argv[1]);
 		}
 	}
+    printf("%llu\n", checker);
 	/*
 	char* a = new char[10];
 	char* b = (char *)malloc(20);

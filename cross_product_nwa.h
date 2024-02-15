@@ -29,6 +29,7 @@
 
 #include "infra/intpair.h"
 #include "infra/inttriple.h"
+#include "nwaobdd_node.h"
 
 // ********************************************************************
 // 2-Way Cross Product

@@ -669,7 +669,7 @@ namespace NWA_OBDD {
 
 	void InitPairProductCache()
 	{
-		std::cout << "Initializin Cache";
+		std::cout << "Initializing Cache\n";
 		pairProductCache = new Hashtable<PairProductKey, PairProductMemo>(40000);
 	}
 

@@ -342,6 +342,8 @@ ReturnMapHandle<BIG_COMPLEX_FLOAT> ReturnMapHandle<BIG_COMPLEX_FLOAT>::Complemen
 
 // Instantiation and specialization of class ReturnMapHandle<intPair> ---------------------
 
+unsigned long long checker = 1234;
+
 template<>
 unsigned int ReturnMapBody<intpair>::Hash(unsigned int modsize)
 {
@@ -351,6 +353,7 @@ unsigned int ReturnMapBody<intpair>::Hash(unsigned int modsize)
   {
 	  hvalue = (997 * hvalue + (mapArray[i].First() + 2) * 217 + (mapArray[i].Second() + 3)) % modsize;
   } 
+  checker += hvalue;
   return hvalue;
 }
 
