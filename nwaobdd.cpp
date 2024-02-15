@@ -30,6 +30,7 @@
 #include <cstdarg>
 #include "nwaobdd.h"
 #include "nwaobdd_node.h"
+#include "nwaobdd_top_node.h"
 #include "assignment.h"
 #include "bool_op.h"
 

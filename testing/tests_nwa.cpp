@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include "../nwaobdd_top_node.h"
 #include "../nwaobdd_node.h"
 #include "../nwaobdd.h"
 #include "../assignment.h" 
