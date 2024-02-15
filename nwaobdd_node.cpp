@@ -77,8 +77,8 @@ void NWAOBDDNodeHandle::InitNoDistinctionTable()
       ReturnMapHandle<intpair> m1;
 
       n = new NWAOBDDInternalNode(i);
-      n->AConnection[0].entryPointHandle = NoDistinctionNode[i-1];
-      n->AConnection[1].entryPointHandle = NoDistinctionNode[i-1];
+      n->AConnection[0].entryPointHandle = &(NoDistinctionNode[i-1]);
+      n->AConnection[1].entryPointHandle = &(NoDistinctionNode[i-1]);
       m1.AddToEnd(intpair(0,0));
       m1.Canonicalize();
       n->AConnection[0].returnMapHandle = m1;
@@ -87,8 +87,8 @@ void NWAOBDDNodeHandle::InitNoDistinctionTable()
       n->numBConnections = 1;
 	  n->BConnection[0] = new Connection[n->numBConnections];
 	  n->BConnection[1] = new Connection[n->numBConnections];
-      n->BConnection[0][0].entryPointHandle = NoDistinctionNode[i-1];
-      n->BConnection[1][0].entryPointHandle = NoDistinctionNode[i-1];
+      n->BConnection[0][0].entryPointHandle = &(NoDistinctionNode[i-1]);
+      n->BConnection[1][0].entryPointHandle = &(NoDistinctionNode[i-1]);
       n->BConnection[0][0].returnMapHandle = m1;
       n->BConnection[1][0].returnMapHandle = m1;
       n->numExits = 1;
@@ -915,6 +915,10 @@ NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::SchemaAdjust(NWAOBDDNodeHandle n, int ex
 		return answer;
 	}
 }
+NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::SchemaAdjust(NWAOBDDNodeHandle *n, int exit, int s[4], int offset)
+{
+	return SchemaAdjust(*n, exit, s, offset);
+}
 
 NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::PathSummary(NWAOBDDNodeHandle n, int exit, int offset)
 {
@@ -928,6 +932,10 @@ NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::PathSummary(NWAOBDDNodeHandle n, int exi
 		pathSummaryCache->Insert(PathSummaryKey(n, exit, offset), answer);
 		return answer;
 	}
+}
+NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::PathSummary(NWAOBDDNodeHandle *n, int exit, int offset)
+{
+	return PathSummary(*n, exit, offset);
 }
 
 void InitPathSummaryCache()
@@ -1691,20 +1699,20 @@ std::ostream& NWAOBDDInternalNode::print(std::ostream & out) const
 void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_OBDD::Assignment &assignment, unsigned int &index)
 {
   //For each exit of the 0 A-connection
-  for (unsigned int i = 0; i < AConnection[0].entryPointHandle.handleContents->numExits; i++) {
+  for (unsigned int i = 0; i < AConnection[0].entryPointHandle->handleContents->numExits; i++) {
 	  int ival = AConnection[0].returnMapHandle.Lookup(i).First(); //for each 0 return from that exit
     //For each exit of the 0 B-Connection from that current point
-    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle->handleContents->numExits; j++) {
 		unsigned int k = BConnection[0][ival].returnMapHandle.Lookup(j).First(); //Get the 0 return from that exit
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[0][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 0;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
@@ -1713,29 +1721,29 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[0][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 0;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
       }
     }
 	//Look at the 1-BConnection from our midpoint
-    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle->handleContents->numExits; j++) {
 		unsigned int k = BConnection[1][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[1][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 0;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
@@ -1744,29 +1752,29 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[1][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 0;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
       }
     }
 	ival = AConnection[0].returnMapHandle.Lookup(i).Second();
-    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle->handleContents->numExits; j++) {
       unsigned int k = BConnection[0][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[0][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 1;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
@@ -1775,28 +1783,28 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[0][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 1;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
       }
     }
-    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle->handleContents->numExits; j++) {
       unsigned int k = BConnection[1][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[1][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 1;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
@@ -1805,32 +1813,32 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[1][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 1;
-        AConnection[0].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 0;
         return;
       }
     }
   }
-  for (unsigned int i = 0; i < AConnection[1].entryPointHandle.handleContents->numExits; i++) {
+  for (unsigned int i = 0; i < AConnection[1].entryPointHandle->handleContents->numExits; i++) {
 	  int ival = AConnection[1].returnMapHandle.Lookup(i).First(); //for each 0 return
     //For each 0 BConnection coming from a 0 a connection
-    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle->handleContents->numExits; j++) {
 		unsigned int k = BConnection[0][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[0][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 0;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
@@ -1839,28 +1847,28 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[0][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 0;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
       }
     }
-    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle->handleContents->numExits; j++) {
       unsigned int k = BConnection[1][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[1][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 0;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
@@ -1869,12 +1877,12 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[1][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 0;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
@@ -1882,17 +1890,17 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
     }
 	ival = AConnection[1].returnMapHandle.Lookup(i).Second(); //for each 1 return
     //For each 0 BConnection coming from a 1 a connection
-    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle->handleContents->numExits; j++) {
 		unsigned int k = BConnection[0][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[0][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 1;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
@@ -1901,28 +1909,28 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[0][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[0][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 0;
 		index--;
 		assignment[index] = 1;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
       }
     }
-    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle.handleContents->numExits; j++) {
+    for (unsigned int j = 0; j < BConnection[1][ival].entryPointHandle->handleContents->numExits; j++) {
 		unsigned int k = BConnection[1][ival].returnMapHandle.Lookup(j).First();
       if (k == exitNumber) { // Found it
 		index--;
 		assignment[index] = 0;
-        BConnection[1][ival].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 1;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
@@ -1931,12 +1939,12 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
       if (k == exitNumber) { 
 		index--;
 		assignment[index] = 1;
-        BConnection[1][i].entryPointHandle.handleContents->FillSatisfyingAssignment(j, assignment, index);
+        BConnection[1][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
 		index--;
 		assignment[index] = 1;
 		index--;
 		assignment[index] = 1;
-        AConnection[1].entryPointHandle.handleContents->FillSatisfyingAssignment(i, assignment, index);
+        AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
         return;
@@ -1963,7 +1971,7 @@ int NWAOBDDInternalNode::Traverse(SH_OBDD::AssignmentIterator &ai)
 	bool val = ai.Current();
 	ai.Next();
     int i, j, k;
-    i = AConnection[val].entryPointHandle.handleContents->Traverse(ai);
+    i = AConnection[val].entryPointHandle->handleContents->Traverse(ai);
 	bool val1 = ai.Current();
 	ai.Next();
 	if(!val1)
@@ -1973,7 +1981,7 @@ int NWAOBDDInternalNode::Traverse(SH_OBDD::AssignmentIterator &ai)
 
 	bool val2 = ai.Current();
 	ai.Next();
-	k = BConnection[val2][j].entryPointHandle.handleContents->Traverse(ai);
+	k = BConnection[val2][j].entryPointHandle->handleContents->Traverse(ai);
 	
 	bool val3 = ai.Current();
 	ai.Next();
@@ -2001,8 +2009,8 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 		ReturnMapHandle<intpair> reducedReturnMap1 = BConnection[1][i].returnMapHandle.Compose(redMapHandle);
         reducedReturnMap0.InducedReductionAndReturnMap(inducedReductionMapHandle0, inducedReturnMap0);
 		reducedReturnMap1.InducedReductionAndReturnMap(inducedReductionMapHandle1, inducedReturnMap1);
-        NWAOBDDNodeHandle temp0 = BConnection[0][i].entryPointHandle.Reduce(inducedReductionMapHandle0, inducedReturnMap0.Size());
-		NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle.Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size());
+        NWAOBDDNodeHandle temp0 = BConnection[0][i].entryPointHandle->Reduce(inducedReductionMapHandle0, inducedReturnMap0.Size());
+		NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle->Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size());
         Connection c0(temp0, inducedReturnMap0);
 		Connection c1(temp1, inducedReturnMap1);
         unsigned int position = n->InsertBConnection(n->numBConnections, c0, c1);
@@ -2029,12 +2037,12 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 	 ReturnMapHandle<intpair> inducedA1ReturnMap;
      ReturnMapHandle<intpair> reducedAReturnMap = AConnection[0].returnMapHandle.Compose(AReductionMapHandle);
 	 reducedAReturnMap.InducedReductionAndReturnMap(inducedA0ReductionMapHandle, inducedA0ReturnMap);
-     NWAOBDDNodeHandle tempHandle = AConnection[0].entryPointHandle.Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
+     NWAOBDDNodeHandle tempHandle = AConnection[0].entryPointHandle->Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
      n->AConnection[0] = Connection(tempHandle, inducedA0ReturnMap);
 
 	 reducedAReturnMap = AConnection[1].returnMapHandle.Compose(AReductionMapHandle);
 	 reducedAReturnMap.InducedReductionAndReturnMap(inducedA1ReductionMapHandle, inducedA1ReturnMap);
-     NWAOBDDNodeHandle tempHandle1 = AConnection[1].entryPointHandle.Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
+     NWAOBDDNodeHandle tempHandle1 = AConnection[1].entryPointHandle->Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
      n->AConnection[1] = Connection(tempHandle1, inducedA1ReturnMap);
 
   // Other material that has to be filled in
@@ -2062,11 +2070,11 @@ void NWAOBDDInternalNode::DumpConnections(Hashset<NWAOBDDNode> *visited, std::os
   if (visited->Lookup(this) == NULL) {
     unsigned int i;
     visited->Insert(this);
-    AConnection[0].entryPointHandle.handleContents->DumpConnections(visited, out);
-    AConnection[1].entryPointHandle.handleContents->DumpConnections(visited, out);
+    AConnection[0].entryPointHandle->handleContents->DumpConnections(visited, out);
+    AConnection[1].entryPointHandle->handleContents->DumpConnections(visited, out);
     for (i = 0; i < numBConnections; i++) {
-      BConnection[0][i].entryPointHandle.handleContents->DumpConnections(visited, out);
-      BConnection[1][i].entryPointHandle.handleContents->DumpConnections(visited, out);
+      BConnection[0][i].entryPointHandle->handleContents->DumpConnections(visited, out);
+      BConnection[1][i].entryPointHandle->handleContents->DumpConnections(visited, out);
     }
     out << AConnection[0] << std::endl;
 	out << AConnection[1] << std::endl;
@@ -2088,18 +2096,18 @@ void NWAOBDDInternalNode::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes,
       visitedEdges->Insert(AConnection[0].returnMapHandle.mapContents);
       edgeCount += 2*AConnection[0].returnMapHandle.Size();
     }
-    AConnection[0].entryPointHandle.handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
+    AConnection[0].entryPointHandle->handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
 	if (visitedEdges->Lookup(AConnection[1].returnMapHandle.mapContents) == NULL) {
 	  visitedEdges->Insert(AConnection[1].returnMapHandle.mapContents);
 	  edgeCount += 2*AConnection[1].returnMapHandle.Size();
 	}
     for (unsigned int i = 0; i < numBConnections; i++) {
-      BConnection[0][i].entryPointHandle.handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
+      BConnection[0][i].entryPointHandle->handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
       if (visitedEdges->Lookup(BConnection[0][i].returnMapHandle.mapContents) == NULL) {
         visitedEdges->Insert(BConnection[0][i].returnMapHandle.mapContents);
         edgeCount += 2*BConnection[0][i].returnMapHandle.Size();
       }
-	  BConnection[1][i].entryPointHandle.handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
+	  BConnection[1][i].entryPointHandle->handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
 	  if (visitedEdges->Lookup(BConnection[1][i].returnMapHandle.mapContents) == NULL) {
 	    visitedEdges->Insert(BConnection[1][i].returnMapHandle.mapContents);
 		edgeCount += 2*BConnection[1][i].returnMapHandle.Size();
@@ -2184,10 +2192,10 @@ void NWAOBDDInternalNode::InstallPathCounts()
   //Create a 2D array with numpaths to exit from a midpoint to a specific exit
     //Calculate num paths to exit for the midpoints
 		//Calculate num paths from A to a midpoints
-  for (unsigned int i = 0; i < AConnection.entryPointHandle.handleContents->numExits; i++) {
-    for (unsigned int j = 0; j < BConnection[i].entryPointHandle.handleContents->numExits; j++) {
+  for (unsigned int i = 0; i < AConnection.entryPointHandle->handleContents->numExits; i++) {
+    for (unsigned int j = 0; j < BConnection[i].entryPointHandle->handleContents->numExits; j++) {
       unsigned int k = BConnection[i].returnMapHandle.Lookup(j);
-      numPathsToExit[k] += AConnection.entryPointHandle.handleContents->numPathsToExit[i] * BConnection[i].entryPointHandle.handleContents->numPathsToExit[j];
+      numPathsToExit[k] += AConnection.entryPointHandle->handleContents->numPathsToExit[i] * BConnection[i].entryPointHandle->handleContents->numPathsToExit[j];
     }
   }*/
 }
@@ -2325,7 +2333,7 @@ void NWAOBDDTopNode::DeallocateMemory()
 bool NWAOBDDTopNode::Evaluate(SH_OBDD::Assignment &assignment)
 {
   SH_OBDD::AssignmentIterator ai(assignment);
-  int i = rootConnection.entryPointHandle.handleContents->Traverse(ai);
+  int i = rootConnection.entryPointHandle->handleContents->Traverse(ai);
   bool ans = rootConnection.returnMapHandle.Lookup(i).First();
   return ans;
 }
@@ -2345,7 +2353,7 @@ bool NWAOBDDTopNode::EvaluateIteratively(SH_OBDD::Assignment &assignment)
   TraverseState ts;
   bool ans;
 
-  S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle.handleContents,FirstVisit), S);
+  S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle->handleContents,FirstVisit), S);
   while (S != NULL) {
     ts = S->Item();
     S = S->Next();
@@ -2363,12 +2371,12 @@ bool NWAOBDDTopNode::EvaluateIteratively(SH_OBDD::Assignment &assignment)
 
       if (ts.visitState == FirstVisit) {
         S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit), S);
-        S = new ConsCell<TraverseState>(TraverseState(n->AConnection.entryPointHandle.handleContents, FirstVisit), S);
+        S = new ConsCell<TraverseState>(TraverseState(n->AConnection.entryPointHandle->handleContents, FirstVisit), S);
       }
       else if (ts.visitState == SecondVisit) {
         int i = n->AConnection.returnMapHandle.Lookup(exitIndex);
         S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i), S);
-        S = new ConsCell<TraverseState>(TraverseState(n->BConnection[i].entryPointHandle.handleContents, FirstVisit), S);
+        S = new ConsCell<TraverseState>(TraverseState(n->BConnection[i].entryPointHandle->handleContents, FirstVisit), S);
       }
       else {  // if (ts.visitState == ThirdVisit)
         exitIndex = n->BConnection[ts.index].returnMapHandle.Lookup(exitIndex);
@@ -2401,24 +2409,24 @@ void NWAOBDDTopNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseSta
       if (ts.visitState == FirstVisit) {
 		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartFirst), S));
         S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit, 0, 0), S);
-        S = new ConsCell<TraverseState>(TraverseState(n->AConnection[0].entryPointHandle.handleContents, FirstVisit), S);
+        S = new ConsCell<TraverseState>(TraverseState(n->AConnection[0].entryPointHandle->handleContents, FirstVisit), S);
       } else if (ts.visitState == RestartFirst) {
         S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit, 0, 1), S);
-        S = new ConsCell<TraverseState>(TraverseState(n->AConnection[1].entryPointHandle.handleContents, FirstVisit), S);
+        S = new ConsCell<TraverseState>(TraverseState(n->AConnection[1].entryPointHandle->handleContents, FirstVisit), S);
 	  } else if (ts.visitState == SecondVisit) {
 		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,SecondVisitOne, 0, ts.val1, 0, exitIndex), S));
           int i = n->AConnection[ts.val1].returnMapHandle.Lookup(exitIndex).First();
 		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartSecond, i, ts.val1, 0), S));
         S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i, ts.val1, 0), S);
-        S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle.handleContents, FirstVisit), S);
+        S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle->handleContents, FirstVisit), S);
       } else if (ts.visitState == RestartSecond) {
 		  S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, ts.index, ts.val1, 1), S);
-        S = new ConsCell<TraverseState>(TraverseState(n->BConnection[1][ts.index].entryPointHandle.handleContents, FirstVisit), S);
+        S = new ConsCell<TraverseState>(TraverseState(n->BConnection[1][ts.index].entryPointHandle->handleContents, FirstVisit), S);
 	  } else if (ts.visitState == SecondVisitOne) {
 		  int i = n->AConnection[ts.val1].returnMapHandle.Lookup(ts.exitIndex).Second();
 		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartSecond, i, ts.val1, 0), S));
 		  S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i, ts.val1, 0), S);
-		  S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle.handleContents, FirstVisit), S);
+		  S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle->handleContents, FirstVisit), S);
 	  } else if (ts.visitState == ThirdVisit) {
 		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartThird, ts.index, 0, ts.val2, exitIndex), S));
 		  exitIndex = n->BConnection[ts.val2][ts.index].returnMapHandle.Lookup(exitIndex).First();
@@ -2442,7 +2450,7 @@ void NWAOBDDTopNode::PrintYield(std::ostream * out)
   ConsCell<TraverseState> *S = NULL;   // Traversal stack
   List<ConsCell<TraverseState> *> T;   // Snapshot stack
 
-  S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle.handleContents,FirstVisit), S);
+  S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle->handleContents,FirstVisit), S);
   PrintYieldAux(out, T, S);
   while (!T.IsEmpty()) {
     S = T.RemoveFirst();
@@ -2464,10 +2472,10 @@ unsigned int NWAOBDDTopNode::NumSatisfyingAssignments()
 {
   unsigned int ans = 0;
 
-  /*for (unsigned int i = 0; i < rootConnection.entryPointHandle.handleContents->numExits; i++) {
+  /*for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
     unsigned int k = rootConnection.returnMapHandle[0].Lookup(i);
     if (k == 1) {
-      ans += rootConnection.entryPointHandle.handleContents->numPathsToExit[i];
+      ans += rootConnection.entryPointHandle->handleContents->numPathsToExit[i];
     }
   }*/
   return ans;
@@ -2484,12 +2492,12 @@ unsigned int NWAOBDDTopNode::NumSatisfyingAssignments()
 //
 bool NWAOBDDTopNode::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
 {
-  for (unsigned int i = 0; i < rootConnection.entryPointHandle.handleContents->numExits; i++) {
+  for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
     unsigned int k = rootConnection.returnMapHandle.Lookup(i).First();
     if (k == 1) {  // A satisfying assignment must exist
       unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDTopNode::maxLevel + 2)) - (unsigned int)4));
       assignment = new SH_OBDD::Assignment(size);
-      rootConnection.entryPointHandle.handleContents->FillSatisfyingAssignment(i, *assignment, size);
+      rootConnection.entryPointHandle->handleContents->FillSatisfyingAssignment(i, *assignment, size);
       return true;
     }
   }
@@ -2498,14 +2506,14 @@ bool NWAOBDDTopNode::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignme
 
 void NWAOBDDTopNode::DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out /* = std::cout */)
 {
-  rootConnection.entryPointHandle.handleContents->DumpConnections(visited, out);
+  rootConnection.entryPointHandle->handleContents->DumpConnections(visited, out);
   out << rootConnection << std::endl;
 }
 
 //ETTODO CountNodesAndEdges
 void NWAOBDDTopNode::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount)
 {//ETTODO
-  rootConnection.entryPointHandle.handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
+  rootConnection.entryPointHandle->handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
   if (visitedEdges->Lookup(rootConnection.returnMapHandle.mapContents) == NULL) {
     visitedEdges->Insert(rootConnection.returnMapHandle.mapContents);
     edgeCount += rootConnection.returnMapHandle.Size();
@@ -2589,28 +2597,28 @@ void NWAOBDDBaseNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseSt
 			if (ts.visitState == FirstVisit) {
 				T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node, RestartFirst), S));
 				S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit, 0, 0), S);
-				S = new ConsCell<TraverseState>(TraverseState(n->AConnection[0].entryPointHandle.handleContents, FirstVisit), S);
+				S = new ConsCell<TraverseState>(TraverseState(n->AConnection[0].entryPointHandle->handleContents, FirstVisit), S);
 			}
 			else if (ts.visitState == RestartFirst) {
 				S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit, 0, 1), S);
-				S = new ConsCell<TraverseState>(TraverseState(n->AConnection[1].entryPointHandle.handleContents, FirstVisit), S);
+				S = new ConsCell<TraverseState>(TraverseState(n->AConnection[1].entryPointHandle->handleContents, FirstVisit), S);
 			}
 			else if (ts.visitState == SecondVisit) {
 				T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node, SecondVisitOne, 0, ts.val1, 0, exitIndex), S));
 				int i = n->AConnection[ts.val1].returnMapHandle.Lookup(exitIndex).First();
 				T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node, RestartSecond, i, ts.val1, 0), S));
 				S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i, ts.val1, 0), S);
-				S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle.handleContents, FirstVisit), S);
+				S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle->handleContents, FirstVisit), S);
 			}
 			else if (ts.visitState == RestartSecond) {
 				S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, ts.index, ts.val1, 1), S);
-				S = new ConsCell<TraverseState>(TraverseState(n->BConnection[1][ts.index].entryPointHandle.handleContents, FirstVisit), S);
+				S = new ConsCell<TraverseState>(TraverseState(n->BConnection[1][ts.index].entryPointHandle->handleContents, FirstVisit), S);
 			}
 			else if (ts.visitState == SecondVisitOne) {
 				int i = n->AConnection[ts.val1].returnMapHandle.Lookup(ts.exitIndex).Second();
 				T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node, RestartSecond, i, ts.val1, 0), S));
 				S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i, ts.val1, 0), S);
-				S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle.handleContents, FirstVisit), S);
+				S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle->handleContents, FirstVisit), S);
 			}
 			else if (ts.visitState == ThirdVisit) {
 				T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node, RestartThird, ts.index, 0, ts.val2, exitIndex), S));
@@ -2636,7 +2644,7 @@ void NWAOBDDBaseNode::PrintYield(std::ostream * out)
 	ConsCell<TraverseState> *S = NULL;   // Traversal stack
 	List<ConsCell<TraverseState> *> T;   // Snapshot stack
 
-	S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle.handleContents, FirstVisit), S);
+	S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle->handleContents, FirstVisit), S);
 	PrintYieldAux(out, T, S);
 	while (!T.IsEmpty()) {
 		S = T.RemoveFirst();
@@ -2931,7 +2939,7 @@ NWAOBDDTopNodeRefPtr MkNot(NWAOBDDTopNodeRefPtr f)
   NWAOBDDTopNodeRefPtr answer;
   ReturnMapHandle<intpair> m = f->rootConnection.returnMapHandle.Complement();
 
-  answer = new NWAOBDDTopNode(f->rootConnection.entryPointHandle, m);
+  answer = new NWAOBDDTopNode(*(f->rootConnection.entryPointHandle), m);
   return answer;
 }
 
@@ -3149,7 +3157,7 @@ NWAOBDDBaseNodeRefPtr MkNot(NWAOBDDBaseNodeRefPtr f)
 	NWAOBDDBaseNodeRefPtr answer;
 	ReturnMapHandle<intpair> m = f->rootConnection.returnMapHandle.Complement();
 
-	answer = new NWAOBDDBaseNode(f->rootConnection.entryPointHandle, m);
+	answer = new NWAOBDDBaseNode(*(f->rootConnection.entryPointHandle), m);
 	return answer;
 }
 
@@ -3394,8 +3402,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 	  for (unsigned sAI = 0; sAI < max; sAI++)
 	  {
 		  int midB = BList.Lookup(sAI);
-		  n->BConnection[0][sAI].entryPointHandle = NWAOBDDNodeHandle(g->BConnection[0][midB].entryPointHandle);
-		  n->BConnection[1][sAI].entryPointHandle = NWAOBDDNodeHandle(g->BConnection[1][midB].entryPointHandle);
+		  n->BConnection[0][sAI].entryPointHandle = g->BConnection[0][midB].entryPointHandle;
+		  n->BConnection[1][sAI].entryPointHandle = g->BConnection[1][midB].entryPointHandle;
 		  for (unsigned int l = 0; l < 2; l++)
 		  {
 			  ReturnMapHandle<intpair> BMap = g->BConnection[l][midB].returnMapHandle;
@@ -3507,8 +3515,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 	  for (unsigned sAI = 0; sAI < max; sAI++)
 	  {
 		  int midB = BList.Lookup(sAI);
-		  n->BConnection[0][sAI].entryPointHandle = NWAOBDDNodeHandle(g->BConnection[0][midB].entryPointHandle);
-		  n->BConnection[1][sAI].entryPointHandle = NWAOBDDNodeHandle(g->BConnection[1][midB].entryPointHandle);
+		  n->BConnection[0][sAI].entryPointHandle = g->BConnection[0][midB].entryPointHandle;
+		  n->BConnection[1][sAI].entryPointHandle = g->BConnection[1][midB].entryPointHandle;
 		  for (unsigned int l = 0; l < 2; l++)
 		  {
 			  ReturnMapHandle<intpair> BMap = g->BConnection[l][midB].returnMapHandle;
@@ -3559,7 +3567,7 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 
 	  for (unsigned int j = 0; j < g->numBConnections; j++)
 	  {
-		  NWAOBDDNodeHandle m = g->BConnection[val][j].entryPointHandle;
+		  NWAOBDDNodeHandle *m = g->BConnection[val][j].entryPointHandle;
 		  ReturnMapHandle<intpair> inducedReturnMapHandleB;
 		  ReturnMapHandle<intpair> BMap = g->BConnection[val][j].returnMapHandle;
 		  unsigned bMapSize = BMap.mapContents->mapArray.size();
@@ -3587,8 +3595,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 			  inducedReturnMapHandleB.AddToEnd(intpair(index0, index1));
 		  }
 		  inducedReturnMapHandleB.Canonicalize();
-		  Connection candidate0(m, inducedReturnMapHandleB);
-		  Connection candidate1(m, inducedReturnMapHandleB);
+		  Connection candidate0(*m, inducedReturnMapHandleB);
+		  Connection candidate1(*m, inducedReturnMapHandleB);
 		  unsigned int position = n->InsertBConnection(n->numBConnections, candidate0, candidate1);
 		  AReductionMapHandle.AddToEnd(position);
 	  }
@@ -3611,12 +3619,12 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 	  ReturnMapHandle<intpair> inducedA1ReturnMap;
 	  ReturnMapHandle<intpair> reducedAReturnMap = n->AConnection[0].returnMapHandle.Compose(AReductionMapHandle);
 	  reducedAReturnMap.InducedReductionAndReturnMap(inducedA0ReductionMapHandle, inducedA0ReturnMap);
-	  NWAOBDDNodeHandle tempHandle = n->AConnection[0].entryPointHandle.Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
+	  NWAOBDDNodeHandle tempHandle = n->AConnection[0].entryPointHandle->Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
 	  n->AConnection[0] = Connection(tempHandle, inducedA0ReturnMap);
 
 	  reducedAReturnMap = n->AConnection[1].returnMapHandle.Compose(AReductionMapHandle);
 	  reducedAReturnMap.InducedReductionAndReturnMap(inducedA1ReductionMapHandle, inducedA1ReturnMap);
-	  NWAOBDDNodeHandle tempHandle1 = n->AConnection[1].entryPointHandle.Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
+	  NWAOBDDNodeHandle tempHandle1 = n->AConnection[1].entryPointHandle->Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
 	  n->AConnection[1] = Connection(tempHandle1, inducedA1ReturnMap);
   } else if (i == size - 1) { //The B-Return is restricted to Val
 	  n->AConnection[0] = g->AConnection[0];
@@ -3631,8 +3639,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 
 	  for (unsigned int l = 0; l < g->numBConnections; l++)
 	  {
-			  NWAOBDDNodeHandle m0 = g->BConnection[0][l].entryPointHandle;
-			  NWAOBDDNodeHandle m1 = g->BConnection[1][l].entryPointHandle;
+			  NWAOBDDNodeHandle *m0 = g->BConnection[0][l].entryPointHandle;
+			  NWAOBDDNodeHandle *m1 = g->BConnection[1][l].entryPointHandle;
 			  ReturnMapHandle<intpair> BMap0 = g->BConnection[0][l].returnMapHandle;
 			  ReturnMapHandle<intpair> BMap1 = g->BConnection[1][l].returnMapHandle; 
 			  ReturnMapHandle<intpair> inducedReturnMapHandleB0, inducedReturnMapHandleB1;
@@ -3678,8 +3686,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 			  }
 			  inducedReturnMapHandleB0.Canonicalize();
 			  inducedReturnMapHandleB1.Canonicalize();
-			  Connection candidate0(m0, inducedReturnMapHandleB0);
-			  Connection candidate1(m1, inducedReturnMapHandleB1);
+			  Connection candidate0(*m0, inducedReturnMapHandleB0);
+			  Connection candidate1(*m1, inducedReturnMapHandleB1);
 			  unsigned int position = n->InsertBConnection(n->numBConnections, candidate0, candidate1);
 			  AReductionMapHandle.AddToEnd(position);
 	  }
@@ -3704,12 +3712,12 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 	  ReturnMapHandle<intpair> inducedA1ReturnMap;
 	  ReturnMapHandle<intpair> reducedAReturnMap = n->AConnection[0].returnMapHandle.Compose(AReductionMapHandle);
 	  reducedAReturnMap.InducedReductionAndReturnMap(inducedA0ReductionMapHandle, inducedA0ReturnMap);
-	  NWAOBDDNodeHandle tempHandle = n->AConnection[0].entryPointHandle.Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
+	  NWAOBDDNodeHandle tempHandle = n->AConnection[0].entryPointHandle->Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
 	  n->AConnection[0] = Connection(tempHandle, inducedA0ReturnMap);
 
 	  reducedAReturnMap = n->AConnection[1].returnMapHandle.Compose(AReductionMapHandle);
 	  reducedAReturnMap.InducedReductionAndReturnMap(inducedA1ReductionMapHandle, inducedA1ReturnMap);
-	  NWAOBDDNodeHandle tempHandle1 = n->AConnection[1].entryPointHandle.Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
+	  NWAOBDDNodeHandle tempHandle1 = n->AConnection[1].entryPointHandle->Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
 	  n->AConnection[1] = Connection(tempHandle1, inducedA1ReturnMap);
   } else if (i > (size/2)) { //The var is located in the B-Connection
 	  n->AConnection[0] = g->AConnection[0];
@@ -3723,8 +3731,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 		  ReturnMapHandle<int> BRedMap0;
 		  ReturnMapHandle<int> BRedMap1;
 		  ReturnMapHandle<intpair> InducedReturnMapB0, InducedReturnMapB1;
-		  NWAOBDDNodeHandle m0 = Restrict(g->BConnection[0][l].entryPointHandle, i - (size / 2) - 1, val, BRedMap0);
-		  NWAOBDDNodeHandle m1 = Restrict(g->BConnection[1][l].entryPointHandle, i - (size / 2) - 1, val, BRedMap1);
+		  NWAOBDDNodeHandle m0 = Restrict(*(g->BConnection[0][l].entryPointHandle), i - (size / 2) - 1, val, BRedMap0);
+		  NWAOBDDNodeHandle m1 = Restrict(*(g->BConnection[1][l].entryPointHandle), i - (size / 2) - 1, val, BRedMap1);
 		  for (unsigned int j = 0; j < BRedMap0.Size(); j++)
 		  {
 			  int retPoint = BRedMap0.Lookup(j);
@@ -3805,12 +3813,12 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 			  ReturnMapHandle<intpair> inducedA1ReturnMap;
 			  ReturnMapHandle<intpair> reducedAReturnMap = n->AConnection[0].returnMapHandle.Compose(AReductionMapHandle);
 			  reducedAReturnMap.InducedReductionAndReturnMap(inducedA0ReductionMapHandle, inducedA0ReturnMap);
-			  NWAOBDDNodeHandle tempHandle = n->AConnection[0].entryPointHandle.Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
+			  NWAOBDDNodeHandle tempHandle = n->AConnection[0].entryPointHandle->Reduce(inducedA0ReductionMapHandle, inducedA0ReturnMap.Size());
 			  n->AConnection[0] = Connection(tempHandle, inducedA0ReturnMap);
 
 			  reducedAReturnMap = n->AConnection[1].returnMapHandle.Compose(AReductionMapHandle);
 			  reducedAReturnMap.InducedReductionAndReturnMap(inducedA1ReductionMapHandle, inducedA1ReturnMap);
-			  NWAOBDDNodeHandle tempHandle1 = n->AConnection[1].entryPointHandle.Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
+			  NWAOBDDNodeHandle tempHandle1 = n->AConnection[1].entryPointHandle->Reduce(inducedA1ReductionMapHandle, inducedA1ReturnMap.Size());
 			  n->AConnection[1] = Connection(tempHandle1, inducedA1ReturnMap);  
   } else { //The var is located in the A-Connections
 
@@ -3818,7 +3826,9 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 	  int numB = 0;
 	  curExit = 0;
 	  ReturnMapHandle<int> AMap0,AMap1;
-		  n->AConnection[0].entryPointHandle = Restrict(g->AConnection[0].entryPointHandle, i - 1, val, AMap0);
+      NWAOBDDNodeHandle A0_entry = Restrict(*(g->AConnection[0].entryPointHandle), i - 1, val, AMap0);
+		  // n->AConnection[0].entryPointHandle = 
+      ReturnMapHandle<intpair>A0_ret;
 		  for (unsigned int j = 0; j < AMap0.Size(); j++)
 		  {
 			  int retPoint = AMap0.Lookup(j);
@@ -3841,11 +3851,13 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 				  BList.AddToEnd(b1);
 				  numB++;
 			  }
-			  n->AConnection[0].returnMapHandle.AddToEnd(intpair(index0, index1));
+			  A0_ret.AddToEnd(intpair(index0, index1));
 		  }
-
-		  n->AConnection[1].entryPointHandle = Restrict(g->AConnection[1].entryPointHandle, i - 1, val, AMap1);
-		  for (unsigned int j = 0; j < AMap1.Size(); j++)
+      n->AConnection[0] = Connection(A0_entry, A0_ret);
+		  // n->AConnection[1].entryPointHandle = Restrict(g->AConnection[1].entryPointHandle, i - 1, val, AMap1);
+		  NWAOBDDNodeHandle A1_entry = Restrict(*(g->AConnection[1].entryPointHandle), i - 1, val, AMap1);
+      ReturnMapHandle<intpair> A1_ret;
+      for (unsigned int j = 0; j < AMap1.Size(); j++)
 		  {
 			  int retPoint = AMap1.Lookup(j);
 			  int b0 = g->AConnection[1].returnMapHandle.Lookup(retPoint).First();
@@ -3869,6 +3881,7 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 			  }
 			  n->AConnection[1].returnMapHandle.AddToEnd(intpair(index0, index1));
 		  }
+      n -> AConnection[1] = Connection(A1_entry, A1_ret);
 		n->AConnection[0].returnMapHandle.Canonicalize();
 		n->AConnection[1].returnMapHandle.Canonicalize();
 
@@ -3878,8 +3891,8 @@ NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val,
 		for (unsigned fin = 0; fin < numB; fin++)
 		{
 		  int midB = BList.Lookup(fin);
-		  n->BConnection[0][fin].entryPointHandle = NWAOBDDNodeHandle(g->BConnection[0][midB].entryPointHandle);
-		  n->BConnection[1][fin].entryPointHandle = NWAOBDDNodeHandle(g->BConnection[1][midB].entryPointHandle);
+		  n->BConnection[0][fin].entryPointHandle = g->BConnection[0][midB].entryPointHandle;
+		  n->BConnection[1][fin].entryPointHandle = g->BConnection[1][midB].entryPointHandle;
 		  for (unsigned int l = 0; l < 2; l++)
 		  {
 			  ReturnMapHandle<intpair> BMap = g->BConnection[l][midB].returnMapHandle;
@@ -3940,7 +3953,7 @@ NWAOBDDTopNodeRefPtr MkPathSummary(NWAOBDDTopNodeRefPtr n)
 NWAOBDDTopNodeRefPtr MkRestrict(NWAOBDDTopNodeRefPtr n, unsigned int i, bool val)
 {
   ReturnMapHandle<int> MapHandle;
-  NWAOBDDNodeHandle g = Restrict(n->rootConnection.entryPointHandle, i, val,
+  NWAOBDDNodeHandle g = Restrict(*(n->rootConnection.entryPointHandle), i, val,
                                  MapHandle);
   g.Canonicalize();
 
@@ -3966,8 +3979,8 @@ NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
 {
   // Perform 2-way cross product of n1 and n2
      PairProductMapHandle MapHandle;
-     NWAOBDDNodeHandle n = PairProduct(n1->rootConnection.entryPointHandle,
-                                       n2->rootConnection.entryPointHandle,
+     NWAOBDDNodeHandle n = PairProduct(*(n1->rootConnection.entryPointHandle),
+                                       *(n2->rootConnection.entryPointHandle),
                                        MapHandle);
   // Create returnMapHandle from MapHandle: Fold the pairs in MapHandle by applying
   // [n1->rootConnection.returnMapHandle, n2->rootConnection.returnMapHandle]
@@ -4004,7 +4017,7 @@ NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
 NWAOBDDBaseNodeRefPtr MkRestrict(NWAOBDDBaseNodeRefPtr n, unsigned int i, bool val)
 {
 	ReturnMapHandle<int> MapHandle;
-	NWAOBDDNodeHandle g = Restrict(n->rootConnection.entryPointHandle, i, val,
+	NWAOBDDNodeHandle g = Restrict(*(n->rootConnection.entryPointHandle), i, val,
 		MapHandle);
 	g.Canonicalize();
 
@@ -4030,8 +4043,9 @@ NWAOBDDBaseNodeRefPtr ApplyAndReduce(NWAOBDDBaseNodeRefPtr n1,
 {
 	// Perform 2-way cross product of n1 and n2
 	PairProductMapHandle MapHandle;
-	NWAOBDDNodeHandle n = PairProduct(n1->rootConnection.entryPointHandle,
-		n2->rootConnection.entryPointHandle,
+	NWAOBDDNodeHandle n = PairProduct(
+    *(n1->rootConnection.entryPointHandle),
+		*(n2->rootConnection.entryPointHandle),
 		MapHandle);
 
 	// Create returnMapHandle from MapHandle: Fold the pairs in MapHandle by applying

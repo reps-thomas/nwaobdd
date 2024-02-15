@@ -565,15 +565,26 @@ namespace NWA_OBDD {
 
 				// Perform the pair product of the 0-AConnections and the 1-AConnections and put the resulting
 				// pair product return maps into AMap1 and AMap2
-				n->AConnection[0].entryPointHandle =
-					PairProduct(n1->AConnection[0].entryPointHandle,
-					n2->AConnection[0].entryPointHandle,
+				auto A0_entry = PairProduct(
+					*(n1->AConnection[0].entryPointHandle),
+					*(n2->AConnection[0].entryPointHandle),
 					AMap1
 					);
-				n->AConnection[1].entryPointHandle = PairProduct(n1->AConnection[1].entryPointHandle,
-					n2->AConnection[1].entryPointHandle,
+				// n->AConnection[0].entryPointHandle = PairProduct(
+				// 	*(n1->AConnection[0].entryPointHandle),
+				// 	*(n2->AConnection[0].entryPointHandle),
+				// 	AMap1
+				// 	);
+				auto A1_entry = PairProduct(
+					*(n1->AConnection[1].entryPointHandle),
+					*(n2->AConnection[1].entryPointHandle),
 					AMap2
 					);
+				// n->AConnection[1].entryPointHandle = PairProduct(
+				// 	*(n1->AConnection[1].entryPointHandle),
+				// 	*(n2->AConnection[1].entryPointHandle),
+				// 	AMap2
+				// 	);
 
 				ReturnMapHandle<intpair> A0ReturnMap, A1ReturnMap;
 				// Fill in n->AConnection.returnMapHandle
@@ -582,8 +593,8 @@ namespace NWA_OBDD {
 				PopulateReturnMaps(n1, n2, AMap1, AMap2, A0ReturnMap, A1ReturnMap, AMap, curANode, true, 0, 0);
 
 				//Canonicalize the return maps.
-				n->AConnection[0].returnMapHandle = A0ReturnMap;
-				n->AConnection[1].returnMapHandle = A1ReturnMap;
+				n->AConnection[0] = Connection(A0_entry, A0ReturnMap);
+				n->AConnection[1] = Connection(A1_entry, A1ReturnMap);
 
 				// Perform the appropriate cross products of the BConnections
 				j = 0;
@@ -601,22 +612,33 @@ namespace NWA_OBDD {
 					b1 = AMapIterator.Current().First();
 					b2 = AMapIterator.Current().Second();
 					//Perform a pair product on the 0th B-Connections that come from b1 and b2 in n1 and n2
-					n->BConnection[0][j].entryPointHandle =
-						PairProduct(n1->BConnection[0][b1].entryPointHandle,
-						n2->BConnection[0][b2].entryPointHandle,
+					
+					auto B0_entry = PairProduct(
+						*(n1->BConnection[0][b1].entryPointHandle),
+						*(n2->BConnection[0][b2].entryPointHandle),
 						BMap
 						);
-					n->BConnection[1][j].entryPointHandle =
-						PairProduct(n1->BConnection[1][b1].entryPointHandle,
-						n2->BConnection[1][b2].entryPointHandle,
+					// n->BConnection[0][j].entryPointHandle = PairProduct(
+					// 	*(n1->BConnection[0][b1].entryPointHandle),
+					// 	*(n2->BConnection[0][b2].entryPointHandle),
+					// 	BMap
+					// 	);
+					auto B1_entry = PairProduct(
+						*(n1->BConnection[1][b1].entryPointHandle),
+						*(n2->BConnection[1][b2].entryPointHandle),
 						BMap2
 						);
+					// n->BConnection[1][j].entryPointHandle = PairProduct(
+					// 	*(n1->BConnection[1][b1].entryPointHandle),
+					// 	*(n2->BConnection[1][b2].entryPointHandle),
+					// 	BMap2
+					// 	);
 
 					ReturnMapHandle<intpair> B0ReturnMap, B1ReturnMap;
 					PopulateReturnMaps(n1, n2, BMap, BMap2, B0ReturnMap, B1ReturnMap, pairProductMapHandle, curExit, false, b1, b2);
 
-					n->BConnection[0][j].returnMapHandle = B0ReturnMap;
-					n->BConnection[1][j].returnMapHandle = B1ReturnMap;
+					n->BConnection[0][j] = Connection(B0_entry, B0ReturnMap);
+					n->BConnection[1][j] = Connection(B1_entry, B1ReturnMap);
 					AMapIterator.Next();
 					j++;
 				}

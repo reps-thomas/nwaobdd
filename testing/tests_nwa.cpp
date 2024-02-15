@@ -546,8 +546,8 @@ void NWATests::ApplyAndReduceUnitTests(){
   G = MkIdRelationNested();
 
   PairProductMapHandle testMap;
-  NWAOBDDNodeHandle n = PairProduct(F.root->rootConnection.entryPointHandle,
-                                       G.root->rootConnection.entryPointHandle,
+  NWAOBDDNodeHandle n = PairProduct(*(F.root->rootConnection.entryPointHandle),
+                                       *(G.root->rootConnection.entryPointHandle),
                                        testMap);
 
   std::cout << "--------- Resulting NWAOBDD ------" << std::endl;

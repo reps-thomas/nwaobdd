@@ -1,5 +1,5 @@
 #include "nwaobdd_node.h"
-#include "connection.h"
+#include "connectionT.h"
 // #include "return_map_specializations.h"
 
 namespace NWA_OBDD {
@@ -78,8 +78,8 @@ std::ostream& ConnectionT<Handle>::print(std::ostream & out) const
 
 template <typename Handle>	
 std::ostream& operator<< (std::ostream & out, const ConnectionT<Handle> &c)
-{
-	c.print(out);
-	return(out);
-}
+	{
+		c.print(out);
+		return(out);
+	}
 } // namespace NWA_OBDD

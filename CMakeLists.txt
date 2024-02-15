@@ -13,10 +13,11 @@ add_executable(nwaobdd.out
     nwaobdd.cpp
     nwaobdd_node.cpp
     reduction_map.cpp
-    return_map_specializations.cpp
+    return_map_impl.cpp
     traverse_state_nwa.cpp
     testing/tests_nwa.cpp
     connection.cpp
+    connectionT_impl.cpp
 )
 target_compile_options(nwaobdd.out PRIVATE -w -lm -std=c++2a -O3 -I${path_to_boost})
 target_link_libraries(nwaobdd.out PRIVATE infra)
