@@ -1,3 +1,4 @@
+#pragma once
 
 #include "nwaobdd_node.h"
 #include "cstdarg"
@@ -8,66 +9,6 @@
 
 namespace NWA_OBDD {
 typedef ref_ptr<NWAOBDDTopNode> NWAOBDDTopNodeRefPtr;
-typedef ref_ptr<NWAOBDDBaseNode> NWAOBDDBaseNodeRefPtr;
-
-class NWAOBDDBaseNode {
-
-
-	friend NWAOBDDBaseNodeRefPtr MkRestrict(NWAOBDDBaseNodeRefPtr f, unsigned int i, bool val);  // \f. f | (x_i = val)
-	friend NWAOBDDBaseNodeRefPtr ApplyAndReduce(NWAOBDDBaseNodeRefPtr n1, NWAOBDDBaseNodeRefPtr n2, BoolOp op);
-	friend NWAOBDDBaseNodeRefPtr ApplyAndReduce(NWAOBDDBaseNodeRefPtr n1, NWAOBDDBaseNodeRefPtr n2, NWAOBDDBaseNodeRefPtr n3, BoolOp3 op);
-public:
-	NWAOBDDBaseNode(NWAOBDDNode *n, ReturnMapHandle<intpair>(&mapHandle));                // Constructor
-	NWAOBDDBaseNode(NWAOBDDNodeHandle &nodeHandle, ReturnMapHandle<intpair>(&mapHandle)); // Constructor
-	~NWAOBDDBaseNode();                                   // Destructor
-	void DeallocateMemory();
-	unsigned int level;
-	void PrintYield(std::ostream * out);
-	unsigned int Hash(unsigned int modsize);
-	bool operator!= (const NWAOBDDBaseNode & C);          // Overloaded !=
-	bool operator== (const NWAOBDDBaseNode & C);          // Overloaded ==
-	Connection rootConnection;                           // A single Connection
-	RefCounter count;
-
-private:
-	NWAOBDDBaseNode();                                    // Default constructor (hidden)
-	NWAOBDDBaseNode(const NWAOBDDBaseNode &n);             // Copy constructor (hidden)
-	NWAOBDDBaseNode& operator= (const NWAOBDDBaseNode &n); // Overloaded = (hidden)
-public:
-	void PrintYieldAux(std::ostream * out, List<ConsCell<TraverseState> *> &T, ConsCell<TraverseState> *S);
-	std::ostream& print(std::ostream & out = std::cout) const;
-};
-
-// Unary operations on NWAOBDDBaseNodes --------------------------------------
-NWAOBDDBaseNodeRefPtr MkNot(NWAOBDDBaseNodeRefPtr f);               // \f.!f
-
-// Binary operations on NWAOBDDBaseNodes --------------------------------------
-NWAOBDDBaseNodeRefPtr MkAnd(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);          // \f.\g.(f && g)
-NWAOBDDBaseNodeRefPtr MkNand(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);         // \f.\g.!(f && g)
-NWAOBDDBaseNodeRefPtr MkOr(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);           // \f.\g.(f || g)
-NWAOBDDBaseNodeRefPtr MkNor(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);          // \f.\g.!(f || g)
-NWAOBDDBaseNodeRefPtr MkIff(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);          // \f.\g.(f == g)
-NWAOBDDBaseNodeRefPtr MkExclusiveOr(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);  // \f.\g.(f != g)
-NWAOBDDBaseNodeRefPtr MkImplies(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);      // \f.\g.(!f || g)
-NWAOBDDBaseNodeRefPtr MkMinus(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);        // \f.\g.(f && !g)
-NWAOBDDBaseNodeRefPtr MkQuotient(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);     // \f.\g.(!g || f)
-NWAOBDDBaseNodeRefPtr MkNotQuotient(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);  // \f.\g.(g && !f)
-NWAOBDDBaseNodeRefPtr MkFirst(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);        // \f.\g.f
-NWAOBDDBaseNodeRefPtr MkNotFirst(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);     // \f.\g.!f
-NWAOBDDBaseNodeRefPtr MkSecond(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);       // \f.\g.g
-NWAOBDDBaseNodeRefPtr MkNotSecond(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g);    // \f.\g.!g
-
-// Ternary operations on NWAOBDDBaseNodes ------------------------------------
-
-// \a.\b.\c.(a && b) || (!a && c)
-NWAOBDDBaseNodeRefPtr MkIfThenElse(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g, NWAOBDDBaseNodeRefPtr h);
-
-// \a.\b.\c.(b && !a) || (c && !a) || (b && c)
-NWAOBDDBaseNodeRefPtr MkNegMajority(NWAOBDDBaseNodeRefPtr f, NWAOBDDBaseNodeRefPtr g, NWAOBDDBaseNodeRefPtr h);
-
-NWAOBDDBaseNodeRefPtr MkExists(NWAOBDDBaseNodeRefPtr f, unsigned int i);              // \f. exists x_i : f
-NWAOBDDBaseNodeRefPtr MkForall(NWAOBDDBaseNodeRefPtr f, unsigned int i);              // \f. forall x_i : f
-NWAOBDDBaseNodeRefPtr MkComposeBase(NWAOBDDBaseNodeRefPtr f, int i, NWAOBDDBaseNodeRefPtr g);              // \f. f | x_i = g
 
 
 //********************************************************************
@@ -75,7 +16,7 @@ NWAOBDDBaseNodeRefPtr MkComposeBase(NWAOBDDBaseNodeRefPtr f, int i, NWAOBDDBaseN
 //********************************************************************
 
 
-class NWAOBDDTopNode: public NWAOBDDBaseNode
+class NWAOBDDTopNode
 {
   friend NWAOBDDTopNodeRefPtr MkRestrict(NWAOBDDTopNodeRefPtr f, unsigned int i, bool val);  // \f. f | (x_i = val)
   friend NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1, NWAOBDDTopNodeRefPtr n2, BoolOp op);
@@ -89,6 +30,7 @@ class NWAOBDDTopNode: public NWAOBDDBaseNode
   bool EvaluateIteratively(SH_OBDD::Assignment &assignment);  // Evaluate a Boolean function (iterative)
   void PrintYield(std::ostream * out);
   static unsigned const int maxLevel;
+  unsigned int level;
 #ifdef PATH_COUNTING_ENABLED
   unsigned int NumSatisfyingAssignments();
 #endif

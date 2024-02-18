@@ -34,7 +34,6 @@
 namespace NWA_OBDD {
 // Node classes declared in this file --------------------------------
 class NWAOBDDTopNode;
-class NWAOBDDBaseNode;
 class NWAOBDDNode;
 class NWAOBDDInternalNode;   //  : public NWAOBDDNode
 class NWAOBDDLeafNode;       //  : public NWAOBDDNode
@@ -62,19 +61,15 @@ class NWAOBDDNodeHandle;
 
 namespace NWA_OBDD {
 typedef ref_ptr<NWAOBDDTopNode> NWAOBDDTopNodeRefPtr;
-typedef ref_ptr<NWAOBDDBaseNode> NWAOBDDBaseNodeRefPtr;
 
 // Node classes declared in this file --------------------------------
 class NWAOBDDTopNode;
-class NWAOBDDBaseNode;
 class NWAOBDDNode;
 class NWAOBDDInternalNode;   //  : public NWAOBDDNode
 class NWAOBDDLeafNode;       //  : public NWAOBDDNode
 class NWAOBDDEpsilonNode;   //  : public NWAOBDDLeafNode
 class NWAOBDDNodeHandle;
 
-typedef ref_ptr<NWAOBDDTopNode> NWAOBDDTopNodeRefPtr;
-typedef ref_ptr<NWAOBDDBaseNode> NWAOBDDBaseNodeRefPtr;
 //********************************************************************
 // NWAOBDDNodeHandle
 //********************************************************************
