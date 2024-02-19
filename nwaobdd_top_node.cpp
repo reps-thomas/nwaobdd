@@ -359,39 +359,47 @@ NWAOBDDNodeHandle MkAdditionNested(unsigned int level, bool carry)
 
 // Initializations of static members ---------------------------------
 
-unsigned int const NWAOBDDTopNode::maxLevel = NWAOBDDMaxLevel;
-Hashset<NWAOBDDTopNode> *NWAOBDDTopNode::computedCache = new Hashset<NWAOBDDTopNode>(10000);
+template<typename T>
+unsigned int const NWAOBDDTopNode<T>::maxLevel = NWAOBDDMaxLevel;
+
+template<typename T>
+Hashset<NWAOBDDTopNode<T>> *NWAOBDDTopNode<T>::computedCache = new Hashset<NWAOBDDTopNode>(10000);
+
 
 // Constructors/Destructor -------------------------------------------
-
-NWAOBDDTopNode::NWAOBDDTopNode(NWAOBDDNode *n, ReturnMapHandle<intpair>(&mapHandle))
+template<typename T>
+NWAOBDDTopNode<T>::NWAOBDDTopNode(NWAOBDDNode *n, ReturnMapHandle<T>(&mapHandle))
 {
-	rootConnection = Connection(n, mapHandle);
+	rootConnection = ConnectionT(n, mapHandle);
   level = n->level;
 }
 
-NWAOBDDTopNode::NWAOBDDTopNode(NWAOBDDNodeHandle &nodeHandle, ReturnMapHandle<intpair>(&mapHandle)) 
+template<typename T>
+NWAOBDDTopNode<T>::NWAOBDDTopNode(NWAOBDDNodeHandle &nodeHandle, ReturnMapHandle<T>(&mapHandle)) 
 {
-	rootConnection = Connection(nodeHandle, mapHandle);
+	rootConnection = ConnectionT(nodeHandle, mapHandle);
   level = nodeHandle.handleContents->level;
 }
 
-NWAOBDDTopNode::~NWAOBDDTopNode()
+template<typename T>
+NWAOBDDTopNode<T>::~NWAOBDDTopNode()
 {
 }
 
-void NWAOBDDTopNode::DeallocateMemory()
+template<typename T>
+void NWAOBDDTopNode<T>::DeallocateMemory()
 {
-	NWAOBDDTopNode::~NWAOBDDTopNode();
+	// NWAOBDDTopNode::~NWAOBDDTopNode();
 }
 
 // Evaluate
 //    Return the value of the Boolean function under the given assignment
-bool NWAOBDDTopNode::Evaluate(SH_OBDD::Assignment &assignment)
+template<typename T>
+T NWAOBDDTopNode<T>::Evaluate(SH_OBDD::Assignment &assignment)
 {
   SH_OBDD::AssignmentIterator ai(assignment);
   int i = rootConnection.entryPointHandle->handleContents->Traverse(ai);
-  bool ans = rootConnection.returnMapHandle.Lookup(i).First();
+  T ans = rootConnection.returnMapHandle.Lookup(i);
   return ans;
 }
 
@@ -399,9 +407,14 @@ bool NWAOBDDTopNode::Evaluate(SH_OBDD::Assignment &assignment)
 //ETTODO IterativeEvaluation
 // EvaluateIteratively
 //    Return the value of the Boolean function under the given assignment
-bool NWAOBDDTopNode::EvaluateIteratively(SH_OBDD::Assignment &assignment)
+template<typename T>
+T NWAOBDDTopNode<T>::EvaluateIteratively(SH_OBDD::Assignment &assignment)
 {
-  return true; //ETTODO
+  // return true; //ETTODO
+    SH_OBDD::AssignmentIterator ai(assignment);
+  int i = rootConnection.entryPointHandle->handleContents->Traverse(ai);
+  T ans = rootConnection.returnMapHandle.Lookup(i);
+  return ans;
   /*
   AssignmentIterator ai(assignment);
 
@@ -448,7 +461,8 @@ bool NWAOBDDTopNode::EvaluateIteratively(SH_OBDD::Assignment &assignment)
 
 //ETTODO PrintYield
 // PrintYieldAux
-void NWAOBDDTopNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseState> *> &T, ConsCell<TraverseState> *S)
+template<typename T>
+void NWAOBDDTopNode<T>::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseState> *> &L, ConsCell<TraverseState> *S)
 {//ETTODO
   unsigned int exitIndex = 0;
   TraverseState ts;
@@ -464,16 +478,16 @@ void NWAOBDDTopNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseSta
       NWAOBDDInternalNode *n = (NWAOBDDInternalNode *)ts.node;
 
       if (ts.visitState == FirstVisit) {
-		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartFirst), S));
+		  L.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartFirst), S));
         S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit, 0, 0), S);
         S = new ConsCell<TraverseState>(TraverseState(n->AConnection[0].entryPointHandle->handleContents, FirstVisit), S);
       } else if (ts.visitState == RestartFirst) {
         S = new ConsCell<TraverseState>(TraverseState(n, SecondVisit, 0, 1), S);
         S = new ConsCell<TraverseState>(TraverseState(n->AConnection[1].entryPointHandle->handleContents, FirstVisit), S);
 	  } else if (ts.visitState == SecondVisit) {
-		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,SecondVisitOne, 0, ts.val1, 0, exitIndex), S));
+		  L.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,SecondVisitOne, 0, ts.val1, 0, exitIndex), S));
           int i = n->AConnection[ts.val1].returnMapHandle.Lookup(exitIndex).First();
-		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartSecond, i, ts.val1, 0), S));
+		  L.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartSecond, i, ts.val1, 0), S));
         S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i, ts.val1, 0), S);
         S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle->handleContents, FirstVisit), S);
       } else if (ts.visitState == RestartSecond) {
@@ -481,18 +495,18 @@ void NWAOBDDTopNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseSta
         S = new ConsCell<TraverseState>(TraverseState(n->BConnection[1][ts.index].entryPointHandle->handleContents, FirstVisit), S);
 	  } else if (ts.visitState == SecondVisitOne) {
 		  int i = n->AConnection[ts.val1].returnMapHandle.Lookup(ts.exitIndex).Second();
-		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartSecond, i, ts.val1, 0), S));
+		  L.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartSecond, i, ts.val1, 0), S));
 		  S = new ConsCell<TraverseState>(TraverseState(n, ThirdVisit, i, ts.val1, 0), S);
 		  S = new ConsCell<TraverseState>(TraverseState(n->BConnection[0][i].entryPointHandle->handleContents, FirstVisit), S);
 	  } else if (ts.visitState == ThirdVisit) {
-		  T.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartThird, ts.index, 0, ts.val2, exitIndex), S));
+		  L.AddToFront(new ConsCell<TraverseState>(TraverseState(ts.node,RestartThird, ts.index, 0, ts.val2, exitIndex), S));
 		  exitIndex = n->BConnection[ts.val2][ts.index].returnMapHandle.Lookup(exitIndex).First();
 	  } else {  // if (ts.visitState == RestartThird)
         exitIndex = n->BConnection[ts.val2][ts.index].returnMapHandle.Lookup(ts.exitIndex).Second();
       }
     }
   }
-  ans = rootConnection.returnMapHandle.Lookup(exitIndex).First();
+  ans = rootConnection.returnMapHandle.Lookup(exitIndex);
   if (out != NULL) *out << ans;
 }
 
@@ -502,16 +516,17 @@ void NWAOBDDTopNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseSta
 // print the yield of the NWAOBDDTopNode (i.e., the leaves of 0's and 1's
 // in "left-to-right order").
 //
-void NWAOBDDTopNode::PrintYield(std::ostream * out)
+template<typename T>
+void NWAOBDDTopNode<T>::PrintYield(std::ostream * out)
 {
   ConsCell<TraverseState> *S = NULL;   // Traversal stack
-  List<ConsCell<TraverseState> *> T;   // Snapshot stack
+  List<ConsCell<TraverseState> *> L;   // Snapshot stack
 
   S = new ConsCell<TraverseState>(TraverseState(rootConnection.entryPointHandle->handleContents,FirstVisit), S);
-  PrintYieldAux(out, T, S);
-  while (!T.IsEmpty()) {
-    S = T.RemoveFirst();
-    PrintYieldAux(out, T, S);
+  PrintYieldAux(out, L, S);
+  while (!L.IsEmpty()) {
+    S = L.RemoveFirst();
+    PrintYieldAux(out, L, S);
   }
 }
 
@@ -546,11 +561,13 @@ unsigned int NWAOBDDTopNode::NumSatisfyingAssignments()
 // Otherwise return false.
 //
 // Running time: Linear in the number of variables
-//
-bool NWAOBDDTopNode::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
+
+// XsZ TBD: is it correct?
+template<typename T>
+bool NWAOBDDTopNode<T>::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
 {
   for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
-    unsigned int k = rootConnection.returnMapHandle.Lookup(i).First();
+    unsigned int k = rootConnection.returnMapHandle.Lookup(i);
     if (k == 1) {  // A satisfying assignment must exist
       unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDTopNode::maxLevel + 2)) - (unsigned int)4));
       assignment = new SH_OBDD::Assignment(size);
@@ -561,42 +578,49 @@ bool NWAOBDDTopNode::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignme
   return false;
 }
 
-void NWAOBDDTopNode::DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out /* = std::cout */)
+template<typename T>
+void NWAOBDDTopNode<T>::DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out /* = std::cout */)
 {
   rootConnection.entryPointHandle->handleContents->DumpConnections(visited, out);
   out << rootConnection << std::endl;
 }
 
 //ETTODO CountNodesAndEdges
-void NWAOBDDTopNode::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount)
+template<typename T>
+void NWAOBDDTopNode<T>::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount)
 {//ETTODO
   rootConnection.entryPointHandle->handleContents->CountNodesAndEdges(visitedNodes, visitedEdges, nodeCount, edgeCount);
-  if (visitedEdges->Lookup(rootConnection.returnMapHandle.mapContents) == NULL) {
-    visitedEdges->Insert(rootConnection.returnMapHandle.mapContents);
-    edgeCount += rootConnection.returnMapHandle.Size();
-  }
+  return;
+  // if (visitedEdges->Lookup(rootConnection.returnMapHandle.mapContents) == NULL) {
+  //   visitedEdges->Insert(rootConnection.returnMapHandle.mapContents);
+  //   edgeCount += rootConnection.returnMapHandle.Size();
+  // }
 }
 
 // Hash
-unsigned int NWAOBDDTopNode::Hash(unsigned int modsize)
+template<typename T>
+unsigned int NWAOBDDTopNode<T>::Hash(unsigned int modsize)
 {
   return rootConnection.Hash(modsize);
 }
 
 // Overloaded !=
-bool NWAOBDDTopNode::operator!= (const NWAOBDDTopNode & C)
+template<typename T>
+bool NWAOBDDTopNode<T>::operator!= (const NWAOBDDTopNode & C)
 {
   return rootConnection != C.rootConnection;
 }
 
 // Overloaded ==
-bool NWAOBDDTopNode::operator== (const NWAOBDDTopNode & C)
+template<typename T>
+bool NWAOBDDTopNode<T>::operator== (const NWAOBDDTopNode & C)
 {
   return rootConnection == C.rootConnection;
 }
 
 // print
-std::ostream& NWAOBDDTopNode::print(std::ostream & out) const
+template<typename T>
+std::ostream& NWAOBDDTopNode<T>::print(std::ostream & out) const
 {
   out << rootConnection.entryPointHandle << std::endl;
   out << rootConnection.returnMapHandle << std::endl;
@@ -613,8 +637,8 @@ void setMaxLevel(unsigned int level)
 	NWAOBDDMaxLevel = level;
 }
 
-
-std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode &d)
+template<typename T>
+std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode<T> &d)
 {
   d.print(out);
   return(out);
@@ -626,12 +650,12 @@ std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode &d)
 NWAOBDDTopNodeRefPtr MkTrueTop()
 {
   NWAOBDDTopNodeRefPtr v;
-  ReturnMapHandle<intpair> m;
+  ReturnMapHandle<int> m;
 
-  m.AddToEnd(intpair(1,1));  // Map the one exit of the body to T
+  m.AddToEnd(1);  // Map the one exit of the body to T
   m.Canonicalize();
   
-  v = new NWAOBDDTopNode(NWAOBDDNodeHandle::NoDistinctionNode[NWAOBDDMaxLevel], m);
+  v = new NWAOBDDTopNode<int>(NWAOBDDNodeHandle::NoDistinctionNode[NWAOBDDMaxLevel], m);
   return v;
 }
 
@@ -639,12 +663,12 @@ NWAOBDDTopNodeRefPtr MkTrueTop()
 NWAOBDDTopNodeRefPtr MkFalseTop()
 {
   NWAOBDDTopNodeRefPtr v;
-  ReturnMapHandle<intpair> m;
+  ReturnMapHandle<int> m;
 
-  m.AddToEnd(intpair(0,0));  // Map the one exit of the body to F
+  m.AddToEnd(0);  // Map the one exit of the body to F
   m.Canonicalize();
 
-  v = new NWAOBDDTopNode(NWAOBDDNodeHandle::NoDistinctionNode[NWAOBDDMaxLevel], m);
+  v = new NWAOBDDTopNode<int>(NWAOBDDNodeHandle::NoDistinctionNode[NWAOBDDMaxLevel], m);
   return v;
 }
 
@@ -653,16 +677,16 @@ NWAOBDDTopNodeRefPtr MkDistinction(unsigned int i)
 {
   NWAOBDDTopNodeRefPtr v;
   NWAOBDDNodeHandle tempHandle;
-  ReturnMapHandle<intpair> m;
+  ReturnMapHandle<int> m;
 
   assert(i < ((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));   // i.e., i < 2**maxLevel
 
   tempHandle = MkDistinction(NWAOBDDMaxLevel, i);
-  m.AddToEnd(intpair(0,0));
-  m.AddToEnd(intpair(1,1));
+  m.AddToEnd(0);
+  m.AddToEnd(1);
   m.Canonicalize();
 
-  v = new NWAOBDDTopNode(tempHandle, m);
+  v = new NWAOBDDTopNode<int>(tempHandle, m);
   return v;
 }
 
@@ -673,14 +697,14 @@ NWAOBDDTopNodeRefPtr MkIdRelationInterleavedTop()
 {
   NWAOBDDTopNodeRefPtr v;
   NWAOBDDNodeHandle tempHandle;
-  ReturnMapHandle<intpair> m;
+  ReturnMapHandle<int> m;
 
   tempHandle = MkIdRelationInterleaved(NWAOBDDMaxLevel, MATCH);
-  m.AddToEnd(intpair(1,1));
-  m.AddToEnd(intpair(0,0));
+  m.AddToEnd(1);
+  m.AddToEnd(0);
   m.Canonicalize();
 
-  v = new NWAOBDDTopNode(tempHandle, m);
+  v = new NWAOBDDTopNode<int>(tempHandle, m);
   return v;
 }
 
@@ -688,14 +712,14 @@ NWAOBDDTopNodeRefPtr MkIdRelationNestedTop()
 {
   NWAOBDDTopNodeRefPtr v;
   NWAOBDDNodeHandle tempHandle;
-  ReturnMapHandle<intpair> m;
+  ReturnMapHandle<int> m;
 
   tempHandle = MkIdRelationNested(NWAOBDDMaxLevel);
-  m.AddToEnd(intpair(1,1));
-  m.AddToEnd(intpair(0,0));
+  m.AddToEnd(1);
+  m.AddToEnd(0);
   m.Canonicalize();
 
-  v = new NWAOBDDTopNode(tempHandle, m);
+  v = new NWAOBDDTopNode<int>(tempHandle, m);
   return v;
 }
 
@@ -705,15 +729,14 @@ NWAOBDDTopNodeRefPtr MkAdditionNestedTop()
 {
   NWAOBDDTopNodeRefPtr v;
   NWAOBDDNodeHandle n;
-  ReturnMapHandle<intpair> m10;
+  ReturnMapHandle<int> m10;
 
   n = MkAdditionNested(NWAOBDDMaxLevel, false);
 
   //ETTODO FixReductionMap
   // Reduce n by mapping the "carry=0" and "carry=1" exits to accept
-     ReturnMapHandle<intpair> retMapHandle;
-     m10.AddToEnd(intpair(1,1));
-     m10.AddToEnd(intpair(0,0));
+     m10.AddToEnd(1);
+     m10.AddToEnd(0);
      m10.Canonicalize();
      ReductionMapHandle reductionMapHandle;
      reductionMapHandle.AddToEnd(0);
@@ -725,7 +748,7 @@ NWAOBDDTopNodeRefPtr MkAdditionNestedTop()
 
 
   // Create and return NWAOBDDTopNode
-     v = new NWAOBDDTopNode(reduced_n, m10);
+     v = new NWAOBDDTopNode<int>(reduced_n, m10);
      return(v);
 }
 
@@ -751,14 +774,14 @@ NWAOBDDTopNodeRefPtr MkParityTop()
 {
   NWAOBDDTopNodeRefPtr v; 
   NWAOBDDNodeHandle tempHandle;
-  ReturnMapHandle<intpair> m;
+  ReturnMapHandle<int> m;
 
   tempHandle = MkParity(NWAOBDDMaxLevel);
-  m.AddToEnd(intpair(0,0));
-  m.AddToEnd(intpair(1,1));
+  m.AddToEnd(0);
+  m.AddToEnd(1);
   m.Canonicalize();
 
-  v = new NWAOBDDTopNode(tempHandle, m);
+  v = new NWAOBDDTopNode<int>(tempHandle, m);
   return v;
 }
 
@@ -864,9 +887,8 @@ NWAOBDDTopNodeRefPtr MkStepDownTop(unsigned int i)
 NWAOBDDTopNodeRefPtr MkNot(NWAOBDDTopNodeRefPtr f)
 {
   NWAOBDDTopNodeRefPtr answer;
-  ReturnMapHandle<intpair> m = f->rootConnection.returnMapHandle.Complement();
-
-  answer = new NWAOBDDTopNode(*(f->rootConnection.entryPointHandle), m);
+  ReturnMapHandle<int> m = f->rootConnection.returnMapHandle.Complement();
+  answer = new NWAOBDDTopNode<int>(*(f->rootConnection.entryPointHandle), m);
   return answer;
 }
 
@@ -875,61 +897,61 @@ NWAOBDDTopNodeRefPtr MkNot(NWAOBDDTopNodeRefPtr f)
 // \f.\g.(f && g)
 NWAOBDDTopNodeRefPtr MkAnd(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, andOp);
+  return ApplyAndReduce<int>(f, g, andOp);
 }
 
 // \f.\g.!(f && g)
 NWAOBDDTopNodeRefPtr MkNand(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, nandOp);
+  return ApplyAndReduce<int>(f, g, nandOp);
 }
 
 // \f.\g.(f || g)
 NWAOBDDTopNodeRefPtr MkOr(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, orOp);
+  return ApplyAndReduce<int>(f, g, orOp);
 }
 
 // \f.\g.!(f || g)
 NWAOBDDTopNodeRefPtr MkNor(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, norOp);
+  return ApplyAndReduce<int>(f, g, norOp);
 }
 
 // \f.\g.(f == g)
 NWAOBDDTopNodeRefPtr MkIff(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, iffOp);
+  return ApplyAndReduce<int>(f, g, iffOp);
 }
 
 // \f.\g.(f != g)
 NWAOBDDTopNodeRefPtr MkExclusiveOr(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, exclusiveOrOp);
+  return ApplyAndReduce<int>(f, g, exclusiveOrOp);
 }
 
 // \f.\g.(!f || g)
 NWAOBDDTopNodeRefPtr MkImplies(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, impliesOp);
+  return ApplyAndReduce<int>(f, g, impliesOp);
 }
 
 // \f.\g.(f && !g)
 NWAOBDDTopNodeRefPtr MkMinus(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, minusOp);
+  return ApplyAndReduce<int>(f, g, minusOp);
 }
 
 // \f.\g.(!g || f)
 NWAOBDDTopNodeRefPtr MkQuotient(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, quotientOp);
+  return ApplyAndReduce<int>(f, g, quotientOp);
 }
 
 // \f.\g.(g && !f)
 NWAOBDDTopNodeRefPtr MkNotQuotient(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g)
 {
-  return ApplyAndReduce(f, g, notQuotientOp);
+  return ApplyAndReduce<int>(f, g, notQuotientOp);
 }
 
 // \f.\g.f
@@ -1027,13 +1049,13 @@ NWAOBDDTopNodeRefPtr  MkNor(int N, ...)
 // \a.\b.\c.(a && b) || (!a && c)
 NWAOBDDTopNodeRefPtr MkIfThenElse(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g, NWAOBDDTopNodeRefPtr h)
 {
-  return ApplyAndReduce(f, g, h, ifThenElseOp);
+  return ApplyAndReduce<int>(f, g, h, ifThenElseOp);
 }
 
 // \a.\b.\c.(b && !a) || (c && !a) || (b && c)
 NWAOBDDTopNodeRefPtr MkNegMajority(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g, NWAOBDDTopNodeRefPtr h)
 {
-  return ApplyAndReduce(f, g, h, negMajorityOp);
+  return ApplyAndReduce<int>(f, g, h, negMajorityOp);
 }
 
 // Create representation of \f . exists x_i : f
@@ -1707,7 +1729,8 @@ NWAOBDDTopNodeRefPtr MkPathSummary(NWAOBDDTopNodeRefPtr n)
 	return g;
 }
 
-NWAOBDDTopNodeRefPtr MkRestrict(NWAOBDDTopNodeRefPtr n, unsigned int i, bool val)
+template<typename T>
+ref_ptr<NWAOBDDTopNode<T>> MkRestrict(ref_ptr<NWAOBDDTopNode<T>> n, unsigned int i, bool val)
 {
   ReturnMapHandle<int> MapHandle;
   NWAOBDDNodeHandle g = Restrict(*(n->rootConnection.entryPointHandle), i, val,
@@ -1715,24 +1738,28 @@ NWAOBDDTopNodeRefPtr MkRestrict(NWAOBDDTopNodeRefPtr n, unsigned int i, bool val
   g.Canonicalize();
 
   // Create returnMapHandle from MapHandle
-     ReturnMapHandle<intpair> returnMapHandle;
+     ReturnMapHandle<int> returnMapHandle;
 	 unsigned mapSize = MapHandle.mapContents->mapArray.size();
      for (unsigned i = 0; i <mapSize; i++) {
 		 int d = MapHandle.mapContents->mapArray[i];
-       int c = n->rootConnection.returnMapHandle.Lookup(d).First();
-       returnMapHandle.AddToEnd(intpair(c,c));
+       int c = n->rootConnection.returnMapHandle.Lookup(d);
+       returnMapHandle.AddToEnd(c);
      }
      returnMapHandle.Canonicalize();
 
   // Create and return NWAOBDDTopNode
 
-     return(new NWAOBDDTopNode(g, returnMapHandle));
+     return(new NWAOBDDTopNode<int>(g, returnMapHandle));
 }
 
-// ApplyAndReduce -----------------------------------------------------------
-NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
-                               NWAOBDDTopNodeRefPtr n2,
-                               BoolOp op)
+
+template <typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
+// ApplyAndReduce -----------------------------------------------------
+ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
+            BoolOp op
+            )
 {
   // Perform 2-way cross product of n1 and n2
      PairProductMapHandle MapHandle;
@@ -1742,25 +1769,25 @@ NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
   // Create returnMapHandle from MapHandle: Fold the pairs in MapHandle by applying
   // [n1->rootConnection.returnMapHandle, n2->rootConnection.returnMapHandle]
   // (component-wise) to each pair.
-     ReturnMapHandle<intpair> returnMapHandle;
+     ReturnMapHandle<T> returnMapHandle;
      PairProductMapBodyIterator MapIterator(*MapHandle.mapContents);
      MapIterator.Reset();
      while (!MapIterator.AtEnd()) {
-       int c1, c2;
+       T c1, c2;
        int first, second;
        first = MapIterator.Current().First();
        second = MapIterator.Current().Second();
-       c1 = n1->rootConnection.returnMapHandle.Lookup(first).First();
-       c2 = n2->rootConnection.returnMapHandle.Lookup(second).First();
-	   int r = op[c1][c2];
-       returnMapHandle.AddToEnd(intpair(r,r));
+       c1 = n1->rootConnection.returnMapHandle.Lookup(first);
+       c2 = n2->rootConnection.returnMapHandle.Lookup(second);
+	     T r = op[c1][c2];
+       returnMapHandle.AddToEnd(r);
        MapIterator.Next();
      }
      returnMapHandle.Canonicalize();
 
   // Perform reduction on n, with respect to the common elements that returnMapHandle maps together
      ReductionMapHandle inducedReductionMapHandle;
-     ReturnMapHandle<intpair> inducedReturnMap;
+     ReturnMapHandle<int> inducedReturnMap;
      returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
      //     NWAOBDDNodeHandle::InitReduceCache();
      NWAOBDDNodeHandle reduced_n = n.Reduce(inducedReductionMapHandle, inducedReturnMap.Size());
@@ -1771,10 +1798,13 @@ NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
 }
 
 //ETTODO Ternary ApplyAndReduce
-NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
-                               NWAOBDDTopNodeRefPtr n2,
-                               NWAOBDDTopNodeRefPtr n3,
-                               BoolOp3 op)
+template <typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
+// ApplyAndReduce -----------------------------------------------------
+ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n3,
+            BoolOp3 op)
 {/*ETTODO
   // Perform 3-way cross product of n1, n2, and n3
      TripleProductMapHandle MapHandle;
@@ -1820,5 +1850,26 @@ NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1,
 	 NWAOBDDTopNodeRefPtr  temp;
 	 return temp;
 }
+
+template class NWAOBDDTopNode<int>;
+template std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode<int> &d);
+template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr ApplyAndReduce<int>(
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n1,
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n2,
+    BoolOp op);
+
+template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr ApplyAndReduce<int>(
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n1,
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n2,
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n3,
+    BoolOp3 op);
+// template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkPlusTopNode<int>(
+//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
+//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
+
+// template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkExorTopNode<int>(
+//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
+//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
+
 
 }

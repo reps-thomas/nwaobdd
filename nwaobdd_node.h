@@ -33,7 +33,7 @@
 
 namespace NWA_OBDD {
 // Node classes declared in this file --------------------------------
-class NWAOBDDTopNode;
+template<typename T> class NWAOBDDTopNode;
 class NWAOBDDNode;
 class NWAOBDDInternalNode;   //  : public NWAOBDDNode
 class NWAOBDDLeafNode;       //  : public NWAOBDDNode
@@ -60,15 +60,8 @@ class NWAOBDDNodeHandle;
 
 
 namespace NWA_OBDD {
-typedef ref_ptr<NWAOBDDTopNode> NWAOBDDTopNodeRefPtr;
+typedef ref_ptr<NWAOBDDTopNode<int>> NWAOBDDTopNodeRefPtr;
 
-// Node classes declared in this file --------------------------------
-class NWAOBDDTopNode;
-class NWAOBDDNode;
-class NWAOBDDInternalNode;   //  : public NWAOBDDNode
-class NWAOBDDLeafNode;       //  : public NWAOBDDNode
-class NWAOBDDEpsilonNode;   //  : public NWAOBDDLeafNode
-class NWAOBDDNodeHandle;
 
 //********************************************************************
 // NWAOBDDNodeHandle
@@ -286,8 +279,6 @@ NWAOBDDNodeHandle MkParity(unsigned int level);
 NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i);
 NWAOBDDNodeHandle MkIdRelationNested(unsigned int level);
 //********************************************************************
-
-std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode &d);
 
 //********************************************************************
 // NWAOBDDLeafNode

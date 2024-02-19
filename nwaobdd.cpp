@@ -31,6 +31,7 @@
 #include "nwaobdd.h"
 #include "nwaobdd_node.h"
 #include "nwaobdd_top_node.h"
+#include "nwaobdd_top_node_impl.cpp"
 #include "assignment.h"
 #include "bool_op.h"
 

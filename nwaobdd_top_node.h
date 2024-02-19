@@ -8,26 +8,23 @@
 //********************************************************************
 
 namespace NWA_OBDD {
-typedef ref_ptr<NWAOBDDTopNode> NWAOBDDTopNodeRefPtr;
+typedef ref_ptr<NWAOBDDTopNode<int> > NWAOBDDTopNodeRefPtr;
 
 
 //********************************************************************
 // NWAOBDDTopNode
 //********************************************************************
 
-
+template<typename T>
 class NWAOBDDTopNode
 {
-  friend NWAOBDDTopNodeRefPtr MkRestrict(NWAOBDDTopNodeRefPtr f, unsigned int i, bool val);  // \f. f | (x_i = val)
-  friend NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1, NWAOBDDTopNodeRefPtr n2, BoolOp op);
-  friend NWAOBDDTopNodeRefPtr ApplyAndReduce(NWAOBDDTopNodeRefPtr n1, NWAOBDDTopNodeRefPtr n2, NWAOBDDTopNodeRefPtr n3, BoolOp3 op);
  public:
-  NWAOBDDTopNode(NWAOBDDNode *n, ReturnMapHandle<intpair> (&mapHandle));                // Constructor
-  NWAOBDDTopNode(NWAOBDDNodeHandle &nodeHandle, ReturnMapHandle<intpair> (&mapHandle)); // Constructor
+  NWAOBDDTopNode(NWAOBDDNode *n, ReturnMapHandle<T> (&mapHandle));                // Constructor
+  NWAOBDDTopNode(NWAOBDDNodeHandle &nodeHandle, ReturnMapHandle<T> (&mapHandle)); // Constructor
   ~NWAOBDDTopNode();                                   // Destructor
   void DeallocateMemory();
-  bool Evaluate(SH_OBDD::Assignment &assignment);             // Evaluate a Boolean function (recursive)
-  bool EvaluateIteratively(SH_OBDD::Assignment &assignment);  // Evaluate a Boolean function (iterative)
+  T Evaluate(SH_OBDD::Assignment &assignment);             // Evaluate a Boolean function (recursive)
+  T EvaluateIteratively(SH_OBDD::Assignment &assignment);  // Evaluate a Boolean function (iterative)
   void PrintYield(std::ostream * out);
   static unsigned const int maxLevel;
   unsigned int level;
@@ -40,18 +37,44 @@ class NWAOBDDTopNode
   void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount);
   bool operator!= (const NWAOBDDTopNode & C);          // Overloaded !=
   bool operator== (const NWAOBDDTopNode & C);          // Overloaded ==
-  Connection rootConnection;                           // A single Connection; TWR: Only need one between BaseNode and TopNode
+  ConnectionT<ReturnMapHandle<T>> rootConnection;                           // A single Connection; TWR: Only need one between BaseNode and TopNode
   RefCounter count;                                    // TWR: Dangerous because NWAOBDDBaseNode has a RefCounter, too
 
  private:
-  static Hashset<NWAOBDDTopNode> *computedCache;       // TEMPORARY: should be HashCache
+  static Hashset<NWAOBDDTopNode<T>> *computedCache;       // TEMPORARY: should be HashCache
   NWAOBDDTopNode();                                    // Default constructor (hidden)
-  NWAOBDDTopNode(const NWAOBDDTopNode &n);             // Copy constructor (hidden)
-  NWAOBDDTopNode& operator= (const NWAOBDDTopNode &n); // Overloaded = (hidden)
+  NWAOBDDTopNode(const NWAOBDDTopNode<T> &n);             // Copy constructor (hidden)
+  NWAOBDDTopNode& operator= (const NWAOBDDTopNode<T> &n); // Overloaded = (hidden)
  public:
-  void PrintYieldAux(std::ostream * out, List<ConsCell<TraverseState> *> &T, ConsCell<TraverseState> *S);
+  void PrintYieldAux(std::ostream * out, List<ConsCell<TraverseState> *> &L, ConsCell<TraverseState> *S);
   std::ostream& print(std::ostream & out = std::cout) const;
+  typedef ref_ptr<NWAOBDDTopNode<T>> NWAOBDDTopNodeTRefPtr;
 };
+template<typename T>
+std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode<T> &d);
+
+template<typename T>
+ref_ptr<NWAOBDDTopNode<T>> MkRestrict(ref_ptr<NWAOBDDTopNode<T>> f, unsigned int i, bool val);  // \f. f | (x_i = val)
+
+template<typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr ApplyAndReduce(
+    typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
+    typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
+    BoolOp op);
+
+
+template<typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr ApplyAndReduce(
+    typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
+    typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
+    typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n3,
+    BoolOp3 op);
+
+
+// template <typename T>
+//     typename NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkPlusTopNode(
+//     typename NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
+//     typename NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
 
 // NWAOBDDTopNode-creation operations --------------------------------------
 NWAOBDDTopNodeRefPtr MkTrueTop();                    // Representation of \x.true
