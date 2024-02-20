@@ -41,28 +41,33 @@ using namespace NWA_OBDD;
 // NWAOBDD
 //********************************************************************
 
-unsigned int const NWAOBDD::maxLevel = NWAOBDDMaxLevel;
+template<typename T>
+unsigned int const NWAOBDD<T>::maxLevel = NWAOBDDMaxLevel;
 
 // Constructors/Destructor -------------------------------------------
 
 // Default constructor
-NWAOBDD::NWAOBDD()
+template <typename T>
+NWAOBDD<T>::NWAOBDD()
   : root(MkTrueTop())
 {
 }
 
-NWAOBDD::NWAOBDD(NWAOBDDTopNodeRefPtr n)
-  : root(n)
+template <typename T>
+NWAOBDD<T>::NWAOBDD(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n)
 {
+	root = n;
 }
 
 // Copy constructor
-NWAOBDD::NWAOBDD(const NWAOBDD &c)
+template <typename T>
+NWAOBDD<T>::NWAOBDD(const NWAOBDD<T> &c)
 {
   root = c.root;
 }
 
-NWAOBDD::~NWAOBDD()
+template <typename T>
+NWAOBDD<T>::~NWAOBDD()
 {
 }
 
@@ -70,13 +75,14 @@ NWAOBDD::~NWAOBDD()
 
 // Evaluate
 //    Return the value of the Boolean function under the given assignment
-bool NWAOBDD::Evaluate(SH_OBDD::Assignment &assignment)
+template <typename T>
+T NWAOBDD<T>::Evaluate(SH_OBDD::Assignment &assignment)
 {
   return root->Evaluate(assignment);
 }
 
-
-bool NWAOBDD::Evaluate(SH_OBDD::Assignment &&assignment)
+template <typename T>
+T NWAOBDD<T>::Evaluate(SH_OBDD::Assignment &&assignment)
 { // rvalue-ref version, to pass compiling
   return root->Evaluate(assignment);
 }
@@ -86,7 +92,8 @@ bool NWAOBDD::Evaluate(SH_OBDD::Assignment &&assignment)
 // print the yield of the NWAOBDD (i.e., the leaves of 0's and 1's
 // in "left-to-right order").
 //
-void NWAOBDD::PrintYieldSemantic(std::ostream & out)
+template <typename T>
+void NWAOBDD<T>::PrintYieldSemantic(std::ostream & out)
 {
   if (NWAOBDDMaxLevel == 1 || NWAOBDDMaxLevel == 2) {
     unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));
@@ -114,7 +121,8 @@ void NWAOBDD::PrintYieldSemantic(std::ostream & out)
 // print the yield of the NWAOBDD (i.e., the leaves of 0's and 1's
 // in "left-to-right order").
 //
-void NWAOBDD::PrintYield(std::ostream * out)
+template <typename T>
+void NWAOBDD<T>::PrintYield(std::ostream * out)
 {
   root->PrintYield(out);
 }
@@ -142,31 +150,36 @@ unsigned int NWAOBDD::NumSatisfyingAssignments()
 //
 // Running time: Linear in the number of variables
 //
-bool NWAOBDD::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
+template <typename T>
+bool NWAOBDD<T>::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
 {
   return root->FindOneSatisfyingAssignment(assignment);
 }
 
 // Hash
-unsigned int NWAOBDD::Hash(unsigned int modsize)
+template <typename T>
+unsigned int NWAOBDD<T>::Hash(unsigned int modsize)
 {
   return root->Hash(modsize);
 }
 
 // Overloaded !=
-bool NWAOBDD::operator!= (const NWAOBDD & C) const
+template <typename T>
+bool NWAOBDD<T>::operator!= (const NWAOBDD & C) const
 {
   return *root != *C.root;
 }
 
 // Overloaded ==
-bool NWAOBDD::operator== (const NWAOBDD & C) const
+template <typename T>
+bool NWAOBDD<T>::operator== (const NWAOBDD & C) const
 {
   return *root == *C.root;
 }
 
 // Overloaded assignment
-NWAOBDD & NWAOBDD::operator= (const NWAOBDD &c)
+template <typename T>
+NWAOBDD<T>& NWAOBDD<T>::operator= (const NWAOBDD<T> &c)
 {
   if (this != &c)      // don't assign to self!
   {
@@ -176,13 +189,15 @@ NWAOBDD & NWAOBDD::operator= (const NWAOBDD &c)
 }
 
 // print
-std::ostream& NWAOBDD::print(std::ostream & out) const
+template <typename T>
+std::ostream& NWAOBDD<T>::print(std::ostream & out) const
 {
   out << *root << std::endl;
   return out;
 }
 
-bool NWAOBDD::DependsOn(int i) const
+template <typename T>
+bool NWAOBDD<T>::DependsOn(int i) const
 {
   // horrible performance!
   if (MkRestrict(*this, i, false) == *this) {
@@ -193,12 +208,14 @@ bool NWAOBDD::DependsOn(int i) const
   return true;
 }
 
-bool NWAOBDD::IsPositiveCube() const
+template <typename T>
+bool NWAOBDD<T>::IsPositiveCube() const
 {
   return IsPositiveCubeInt(0);
 }
 
-bool NWAOBDD::IsPositiveCubeInt(int least) const
+template <typename T>
+bool NWAOBDD<T>::IsPositiveCubeInt(int least) const
 {
   // base case:
   if (*this == MkFalse()) return false;
@@ -218,7 +235,8 @@ bool NWAOBDD::IsPositiveCubeInt(int least) const
   return true;
 }
 
-bool NWAOBDD::SupportSetIs(const apvector<int> &ss) const
+template <typename T>
+bool NWAOBDD<T>::SupportSetIs(const apvector<int> &ss) const
 {
   assert(&ss != NULL);
   apvector<int> *truess = GetSupportSet();
@@ -227,7 +245,8 @@ bool NWAOBDD::SupportSetIs(const apvector<int> &ss) const
   return rc;
 }
 
-apvector<int> *NWAOBDD::GetSupportSet() const
+template <typename T>
+apvector<int> *NWAOBDD<T>::GetSupportSet() const
   // Returns a new, sorted-in-increasing-order array
   // containing the support set (the set of VarNums
   // corresponding to indices of projection functions upon which bdd
@@ -261,7 +280,8 @@ apvector<int> *NWAOBDD::GetSupportSet() const
 
 namespace NWA_OBDD {
 
-std::ostream& operator<< (std::ostream & out, const NWAOBDD &d)
+template <typename T>
+std::ostream& operator<< (std::ostream & out, const NWAOBDD<T> &d)
 {
   d.print(out);
   return(out);
@@ -270,61 +290,61 @@ std::ostream& operator<< (std::ostream & out, const NWAOBDD &d)
 // NWAOBDD-creation operations --------------------------------------
 
 // Create representation of \x.true
-NWAOBDD MkTrue()
+NWAOBDD<int> MkTrue()
 {
-  return NWAOBDD(MkTrueTop());
+  return NWAOBDD<int>(MkTrueTop());
 }
 
 // Create representation of \x.false
-NWAOBDD MkFalse()
+NWAOBDD<int> MkFalse()
 {
-  return NWAOBDD(MkFalseTop());
+  return NWAOBDD<int>(MkFalseTop());
 }
 
 // Create representation of \x.x_i
-NWAOBDD MkProjection(unsigned int i)
+NWAOBDD<int> MkProjection(unsigned int i)
 {
   assert(i < ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4)));
-  return NWAOBDD(MkDistinction(i));
+  return NWAOBDD<int>(MkDistinction(i));
 }
 
-NWAOBDD MkCompose(NWAOBDD f, int i, NWAOBDD g)
+NWAOBDD<int> MkCompose(NWAOBDD<int> f, int i, NWAOBDD<int> g)
 {
 #ifdef NDEBUG
   return  MkComposeTop(f.root, i, g.root);
 #else
-  NWAOBDD comp = MkComposeTop(f.root, i, g.root);
+  NWAOBDD<int> comp = MkComposeTop(f.root, i, g.root);
   assert(comp.root->count == 1);
   return comp;
 #endif
 }
 
 // Create representation of identity relation
-NWAOBDD MkIdRelationInterleaved()
+NWAOBDD<int> MkIdRelationInterleaved()
 {
-  return NWAOBDD(MkIdRelationInterleavedTop());
+  return NWAOBDD<int>(MkIdRelationInterleavedTop());
 }
 
-NWAOBDD MkIdRelationNested()
+NWAOBDD<int> MkIdRelationNested()
 {
-	return NWAOBDD(MkIdRelationNestedTop());
+	return NWAOBDD<int>(MkIdRelationNestedTop());
 }
 
 // MkXBit, MkYBit, MkZBit -----------------------------------------------
 //
 // MISSING: introduce a level of indirection so that the bits can be
 // in a different order than interleaved.
-static NWAOBDD MkXBit(unsigned int j) {
+static NWAOBDD<int> MkXBit(unsigned int j) {
 	return MkProjection(j * 4);
 }
 
-static NWAOBDD MkYBit(unsigned int j) {
+static NWAOBDD<int> MkYBit(unsigned int j) {
 	return MkProjection(j * 4 + 1);
 }
 
 #define EVEN(x) (((x)/2) * 2 == (x))
 
-static NWAOBDD MkZBit(unsigned int j) {
+static NWAOBDD<int> MkZBit(unsigned int j) {
 //	return MkProjection((j/2) * 4 + 2 + (EVEN(j) ? 0 : 1));
 	return MkProjection(j * 4 + 2);
 }
@@ -333,10 +353,10 @@ static NWAOBDD MkZBit(unsigned int j) {
 // { (xi yi zi _)* | vec{x} * vec{y} = vec{z} }.
 // We create entries only for sums where the highest bit of vec{x} and vec{y}
 // are 0.
-NWAOBDD MkAdditionNested()
+NWAOBDD<int> MkAdditionNested()
 {
 	//ETTODO
-	NWAOBDD quasiAns = NWAOBDD(MkAdditionNestedTop());
+	NWAOBDD<int> quasiAns = NWAOBDD<int>(MkAdditionNestedTop());
 
 	// Restrict the highest bits of x and y to 0
 	NWAOBDD xRestriction = MkNot(MkXBit(1 << ((NWAOBDDMaxLevel - 2) - 1)));
@@ -348,7 +368,7 @@ NWAOBDD MkAdditionNested()
 // { (xi yi zi _)* | vec{x} * vec{y} = vec{z} } by brute force.
 // We create entries only for sums where the highest bit of vec{x} and vec{y}
 // are 0.
-NWAOBDD MkAdditionInterleavedBruteForce() {
+NWAOBDD<int> MkAdditionInterleavedBruteForce() {
 	NWAOBDD ans = MkFalse();
 	if (2 <= NWAOBDDMaxLevel && NWAOBDDMaxLevel <= 7) {
 		unsigned int numBits = 1 << (NWAOBDDMaxLevel - 2);   // i.e., 2**(maxLevel-2)
@@ -368,7 +388,7 @@ NWAOBDD MkAdditionInterleavedBruteForce() {
 }
 
 // Bits of i -> vec{x} for addition relation
-NWAOBDD MkX(unsigned int i) {
+NWAOBDD<int> MkX(unsigned int i) {
  	NWAOBDD ans = MkTrue();
 	if (2 <= NWAOBDDMaxLevel && NWAOBDDMaxLevel <= 7) {
 		unsigned int bits = 1 << (NWAOBDDMaxLevel - 2);   // i.e., 2**(maxLevel-2)
@@ -386,7 +406,7 @@ NWAOBDD MkX(unsigned int i) {
 }
 
 // Bits of i -> vec{y} for addition relation
-NWAOBDD MkY(unsigned int i) {
+NWAOBDD<int> MkY(unsigned int i) {
  	NWAOBDD ans = MkTrue();
 	if (2 <= NWAOBDDMaxLevel && NWAOBDDMaxLevel <= 7) {
 		unsigned int bits = 1 << (NWAOBDDMaxLevel - 2);   // i.e., 2**(maxLevel-2)
@@ -404,7 +424,7 @@ NWAOBDD MkY(unsigned int i) {
 }
 
 // Bits of i -> vec{z} for addition relation
-NWAOBDD MkZ(unsigned int i) {
+NWAOBDD<int> MkZ(unsigned int i) {
  	NWAOBDD ans = MkTrue();
 	if (2 <= NWAOBDDMaxLevel && NWAOBDDMaxLevel <= 7) {
 		unsigned int bits = 1 << (NWAOBDDMaxLevel - 2);   // i.e., 2**(maxLevel-2)
@@ -427,7 +447,7 @@ NWAOBDD MkZ(unsigned int i) {
 // products of the form x * 1 and 1 * y.
 // The current method is brute force.
 // As an optimization, we only create entries for x * y where x >= y.
-NWAOBDD MkMultiplicationInterleavedBruteForce() {
+NWAOBDD<int> MkMultiplicationInterleavedBruteForce() {
 	NWAOBDD ans = MkFalse();
 	if (2 <= NWAOBDDMaxLevel && NWAOBDDMaxLevel <= 7) {
 		unsigned int numBits = 1 << (NWAOBDDMaxLevel - 2);   // i.e., 2**(maxLevel-2)
@@ -537,16 +557,16 @@ static int HighOrderBitPosition(unsigned int z) {
 //        i.e., the k-th bit of both factors must be 0.
 //        Consequently, we try the 0,0 case first
 //
-bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &v1, unsigned int &v2) {
+bool FactorZ(NWAOBDD<int> R, unsigned int z, NWAOBDD<int> &f1, NWAOBDD<int> &f2, unsigned int &v1, unsigned int &v2) {
 	assert(NWAOBDDMaxLevel >= 2);
 	unsigned int numBits = 1 << (NWAOBDDMaxLevel - 2);   // i.e., 2**(maxLevel-2)
 	
-	NWAOBDD False = MkFalse();
-	NWAOBDD temp;
-	NWAOBDD Z = MkZ(z);
-	NWAOBDD curRel = MkAnd(R, Z);  // assert that the product is z
-	NWAOBDD g1 = MkTrue();         // g1 initially unconstrained
-	NWAOBDD g2 = g1;               // g2 initially unconstrained
+	NWAOBDD<int> False = MkFalse();
+	NWAOBDD<int> temp;
+	NWAOBDD<int> Z = MkZ(z);
+	NWAOBDD<int> curRel = MkAnd(R, Z);  // assert that the product is z
+	NWAOBDD<int> g1 = MkTrue();         // g1 initially unconstrained
+	NWAOBDD<int> g2 = g1;               // g2 initially unconstrained
 	unsigned int w1 = 0;
 	unsigned int w2 = 0;
 
@@ -562,10 +582,10 @@ bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &
 
 	// Zero out the high-order bits
 	for (unsigned int j = hobp+1; j < numBits; j++) {
-		NWAOBDD curXTrue = MkXBit(j);
-		NWAOBDD curXFalse = MkNot(curXTrue);
-		NWAOBDD curYTrue = MkYBit(j);
-		NWAOBDD curYFalse = MkNot(curYTrue);
+		NWAOBDD<int> curXTrue = MkXBit(j);
+		NWAOBDD<int> curXFalse = MkNot(curXTrue);
+		NWAOBDD<int> curYTrue = MkYBit(j);
+		NWAOBDD<int> curYFalse = MkNot(curYTrue);
 		g1 = MkAnd(g1, curXFalse);
 		g2 = MkAnd(g2, curYFalse);
 		w1 = w1 & ~((unsigned int)(1 << j));
@@ -575,10 +595,10 @@ bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &
 	// Search for the values of the rest of the bits, from high-order to low-order
 	for (unsigned int j = 0; j <= hobp; j++) {
 		unsigned int i = hobp - j;
-		NWAOBDD curXTrue = MkXBit(i);
-		NWAOBDD curXFalse = MkNot(curXTrue);
-		NWAOBDD curYTrue = MkYBit(i);
-		NWAOBDD curYFalse = MkNot(curYTrue);
+		NWAOBDD<int> curXTrue = MkXBit(i);
+		NWAOBDD<int> curXFalse = MkNot(curXTrue);
+		NWAOBDD<int> curYTrue = MkYBit(i);
+		NWAOBDD<int> curYFalse = MkNot(curYTrue);
 		
 		// One of the following four possibilities must be true
 		// 0,0 case performed first
@@ -628,8 +648,8 @@ bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &
 	f2 = g2;
 	v1 = w1;
 	v2 = w2;
-	NWAOBDD XOne = MkX(1);
-	NWAOBDD YOne = MkY(1);
+	NWAOBDD<int> XOne = MkX(1);
+	NWAOBDD<int> YOne = MkY(1);
 	return (g1 != XOne && g2 != YOne);  // Return true if neither factor is 1
 }
 
@@ -640,75 +660,75 @@ bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &
 namespace NWA_OBDD {
 
 // Create representation of detensor-constraint relation
-NWAOBDD MkDetensorConstraintInterleaved()
+NWAOBDD<int> MkDetensorConstraintInterleaved()
 {
-  return NWAOBDD(MkDetensorConstraintInterleavedTop());
+  return NWAOBDD<int>(MkDetensorConstraintInterleavedTop());
 }
 
 // Create representation of parity function
-NWAOBDD MkParity()
+NWAOBDD<int> MkParity()
 {
-  return NWAOBDD(MkParityTop());
+  return NWAOBDD<int>(MkParityTop());
 }
 
 // Create representation of the Walsh matrix W(2**(i-1))
 // [i.e., a matrix of size 2**(2**(i-1))) x 2**(2**(i-1)))]
 // with interleaved indexing of components: that is, input
 // (x0,y0,x1,y1,...,xN,yN) yields W[(x0,x1,...,xN)][(y0,y1,...,yN)]
-NWAOBDD MkWalshInterleaved(unsigned int i)
+NWAOBDD<int> MkWalshInterleaved(unsigned int i)
 {
   assert(i <= NWAOBDDMaxLevel);
-  return NWAOBDD(MkWalshInterleavedTop(i));
+  return NWAOBDD<int>(MkWalshInterleavedTop(i));
 }
 
 // Create representation of the Inverse Reed-Muller matrix IRM(2**(i-1))
 // [i.e., a matrix of size 2**(2**(i-1))) x 2**(2**(i-1)))]
 // with interleaved indexing of components: that is, input
 // (x0,y0,x1,y1,...,xN,yN) yields IRM[(x0,x1,...,xN)][(y0,y1,...,yN)]
-NWAOBDD MkInverseReedMullerInterleaved(unsigned int i)
+NWAOBDD<int> MkInverseReedMullerInterleaved(unsigned int i)
 {
   assert(i <= NWAOBDDMaxLevel);
-  return NWAOBDD(MkInverseReedMullerInterleavedTop(i));
+  return NWAOBDD<int>(MkInverseReedMullerInterleavedTop(i));
 }
 
 // Create the representation of a step function
-NWAOBDD MkStepUpOneFourth()
+NWAOBDD<int> MkStepUpOneFourth()
 {
   assert(NWAOBDDMaxLevel >= 1);
-  return NWAOBDD(MkStepUpOneFourthTop());
+  return NWAOBDD<int>(MkStepUpOneFourthTop());
 }
 
 // Create the representation of a step function
-NWAOBDD MkStepDownOneFourth()
+NWAOBDD<int> MkStepDownOneFourth()
 {
   assert(NWAOBDDMaxLevel >= 1);
-  return NWAOBDD(MkStepDownOneFourthTop());
+  return NWAOBDD<int>(MkStepDownOneFourthTop());
 }
 
 #ifdef ARBITRARY_STEP_FUNCTIONS
 // Create the representation of a step function
-NWAOBDD MkStepUp(unsigned int i)
+NWAOBDD<int> MkStepUp(unsigned int i)
 {
   assert(NWAOBDDMaxLevel <= 5);
-  return NWAOBDD(MkStepUpTop(i));
+  return NWAOBDD<int>(MkStepUpTop(i));
 }
 
 // Create the representation of a step function
-NWAOBDD MkStepDown(unsigned int i)
+NWAOBDD<int> MkStepDown(unsigned int i)
 {
   assert(NWAOBDDMaxLevel <= 5);
-  return NWAOBDD(MkStepDownTop(i));
+  return NWAOBDD<int>(MkStepDownTop(i));
 }
 
 // Create the representation of an up-pulse function
-NWAOBDD MkPulseUp(unsigned int i, unsigned int j)
+NWAOBDD<int> MkPulseUp(unsigned int i, unsigned int j)
 {
   assert(i < j);
   return MkAnd(MkStepUp(i), MkStepDown(j));
 }
 
 // Create the representation of a down-pulse function
-NWAOBDD MkPulseDown(unsigned int i, unsigned int j)
+NWAOBDD<int> MkPulseDown(unsigned int i, unsigned int j)
 {
   assert(i < j);
   return MkOr(MkStepDown(i), MkStepUp(j));
@@ -719,138 +739,138 @@ NWAOBDD MkPulseDown(unsigned int i, unsigned int j)
 // Unary operations on NWAOBDDs --------------------------------------
 
 // Implements \f.!f
-NWAOBDD MkNot(NWAOBDD f)
+NWAOBDD<int> MkNot(NWAOBDD<int> f)
 {
-  return NWAOBDD(MkNot(f.root));
+  return NWAOBDD<int>(MkNot(f.root));
 }
 
 // Binary operations on NWAOBDDs --------------------------------------
 
 // \f.\g.(f && g)
-NWAOBDD MkAnd(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkAnd(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkAnd(f.root, g.root));
+  return NWAOBDD<int>(MkAnd(f.root, g.root));
 }
 
 // \f.\g.!(f && g)
-NWAOBDD MkNand(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkNand(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkNand(f.root, g.root));
+  return NWAOBDD<int>(MkNand(f.root, g.root));
 }
 
 // \f.\g.(f || g)
-NWAOBDD MkOr(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkOr(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkOr(f.root, g.root));
+  return NWAOBDD<int>(MkOr(f.root, g.root));
 }
 
 // \f.\g.!(f || g)
-NWAOBDD MkNor(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkNor(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkNor(f.root, g.root));
+  return NWAOBDD<int>(MkNor(f.root, g.root));
 }
 
 // \f.\g.(f == g)
-NWAOBDD MkIff(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkIff(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkIff(f.root, g.root));
+  return NWAOBDD<int>(MkIff(f.root, g.root));
 }
 
 // \f.\g.(f != g)
-NWAOBDD MkExclusiveOr(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkExclusiveOr(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkExclusiveOr(f.root, g.root));
+  return NWAOBDD<int>(MkExclusiveOr(f.root, g.root));
 }
 
 // \f.\g.(!f || g)
-NWAOBDD MkImplies(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkImplies(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkImplies(f.root, g.root));
+  return NWAOBDD<int>(MkImplies(f.root, g.root));
 }
 
 // \f.\g.(f && !g)
-NWAOBDD MkMinus(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkMinus(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkMinus(f.root, g.root));
+  return NWAOBDD<int>(MkMinus(f.root, g.root));
 }
 
 // \f.\g.(!g || f)
-NWAOBDD MkQuotient(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkQuotient(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkQuotient(f.root, g.root));
+  return NWAOBDD<int>(MkQuotient(f.root, g.root));
 }
 
 // \f.\g.(g && !f)
-NWAOBDD MkNotQuotient(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkNotQuotient(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkNotQuotient(f.root, g.root));
+  return NWAOBDD<int>(MkNotQuotient(f.root, g.root));
 }
 
 // \f.\g.f
-NWAOBDD MkFirst(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkFirst(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkFirst(f.root, g.root));
+  return NWAOBDD<int>(MkFirst(f.root, g.root));
 }
 
 // \f.\g.!f
-NWAOBDD MkNotFirst(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkNotFirst(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkNotFirst(f.root, g.root));
+  return NWAOBDD<int>(MkNotFirst(f.root, g.root));
 }
 
 // \f.\g.g
-NWAOBDD MkSecond(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkSecond(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkSecond(f.root, g.root));
+  return NWAOBDD<int>(MkSecond(f.root, g.root));
 }
 
 // \f.\g.!g
-NWAOBDD MkNotSecond(NWAOBDD f, NWAOBDD g)
+NWAOBDD<int> MkNotSecond(NWAOBDD<int> f, NWAOBDD<int> g)
 {
-  return NWAOBDD(MkNotSecond(f.root, g.root));
+  return NWAOBDD<int>(MkNotSecond(f.root, g.root));
 }
 
 // Ternary operations on NWAOBDDs --------------------------------------
 
 // \a.\b.\c.(a && b) || (!a && c)
-NWAOBDD MkIfThenElse(NWAOBDD f, NWAOBDD g, NWAOBDD h)
+NWAOBDD<int> MkIfThenElse(NWAOBDD<int> f, NWAOBDD<int> g, NWAOBDD<int> h)
 {
-  return NWAOBDD(MkIfThenElse(f.root, g.root, h.root));
+  return NWAOBDD<int>(MkIfThenElse(f.root, g.root, h.root));
 }
 
 // \a.\b.\c.(b && !a) || (c && !a) || (b && c)
-NWAOBDD MkNegMajority(NWAOBDD f, NWAOBDD g, NWAOBDD h)
+NWAOBDD<int> MkNegMajority(NWAOBDD<int> f, NWAOBDD<int> g, NWAOBDD<int> h)
 {
-  return NWAOBDD(MkNegMajority(f.root, g.root, h.root));
+  return NWAOBDD<int>(MkNegMajority(f.root, g.root, h.root));
 }
 
 // \f. f | (x_i = val)
-NWAOBDD MkRestrict(NWAOBDD f, unsigned int i, bool val)
+NWAOBDD<int> MkRestrict(NWAOBDD<int> f, unsigned int i, bool val)
 {
-  return NWAOBDD(MkRestrict(f.root, i, val));
+  return NWAOBDD<int>(MkRestrict(f.root, i, val));
 }
 
 // \f. exists x_i : f
-NWAOBDD MkExists(NWAOBDD f, unsigned int i)
+NWAOBDD<int> MkExists(NWAOBDD<int> f, unsigned int i)
 {
-  return NWAOBDD(MkExists(f.root, i));
+  return NWAOBDD<int>(MkExists(f.root, i));
 }
 
-NWAOBDD SchemaAdjust(NWAOBDD f, int s[4])
+NWAOBDD<int> SchemaAdjust(NWAOBDD<int> f, int s[4])
 {
-  return NWAOBDD(MkSchemaAdjust(f.root, s));
+  return NWAOBDD<int>(MkSchemaAdjust(f.root, s));
 }
 
-NWAOBDD PathSummary(NWAOBDD f)
+NWAOBDD<int> PathSummary(NWAOBDD<int> f)
 {
-	return NWAOBDD(MkPathSummary(f.root));
+	return NWAOBDD<int>(MkPathSummary(f.root));
 }
 
 
 // \f. forall x_i : f
-NWAOBDD MkForall(NWAOBDD f, unsigned int i)
+NWAOBDD<int> MkForall(NWAOBDD<int> f, unsigned int i)
 {
-  return NWAOBDD(MkForall(f.root, i));
+  return NWAOBDD<int>(MkForall(f.root, i));
 }
 }
 //********************************************************************
@@ -859,34 +879,42 @@ NWAOBDD MkForall(NWAOBDD f, unsigned int i)
 
 // Statistics on Connections ----------------------------------
 
-void NWAOBDD::DumpConnections(std::ostream & out /* = std::cout */)
+template <typename T>
+void NWAOBDD<T>::DumpConnections(std::ostream & out /* = std::cout */)
 {
   Hashset<NWAOBDDNode> *visited = new Hashset<NWAOBDDNode>;
   root->DumpConnections(visited, out);
   delete visited;
 }
 
-Hashset<NWAOBDDNode> *NWAOBDD::visitedDuringGroupDumpConnections = NULL;
+template <typename T>
+Hashset<NWAOBDDNode> *NWAOBDD<T>::visitedDuringGroupDumpConnections = NULL;
+
 namespace NWA_OBDD {
+
+template <typename T>
 void GroupDumpConnectionsStart()
 {
-  NWAOBDD::visitedDuringGroupDumpConnections = new Hashset<NWAOBDDNode>;
+  NWAOBDD<T>::visitedDuringGroupDumpConnections = new Hashset<NWAOBDDNode>;
 }
 
+template <typename T>
 void GroupDumpConnectionsEnd()
 {
-  delete NWAOBDD::visitedDuringGroupDumpConnections;
-  NWAOBDD::visitedDuringGroupDumpConnections = NULL;
+  delete NWAOBDD<T>::visitedDuringGroupDumpConnections;
+  NWAOBDD<T>::visitedDuringGroupDumpConnections = NULL;
 }
 
-void NWAOBDD::GroupDumpConnections(std::ostream & out /* = std::cout */)
+template <typename T>
+void NWAOBDD<T>::GroupDumpConnections(std::ostream & out /* = std::cout */)
 {
-  root->DumpConnections(NWAOBDD::visitedDuringGroupDumpConnections, out);
+  root->DumpConnections(NWAOBDD<T>::visitedDuringGroupDumpConnections, out);
 }
 }
 // Statistics on size ----------------------------------------------------
 
-void NWAOBDD::CountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCount)
+template <typename T>
+void NWAOBDD<T>::CountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCount)
 {
   Hashset<NWAOBDDNode> *visitedNodes = new Hashset<NWAOBDDNode>;
   Hashset<ReturnMapBody<intpair>> *visitedEdges = new Hashset<ReturnMapBody<intpair>>;
@@ -897,31 +925,43 @@ void NWAOBDD::CountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCoun
   delete visitedEdges;
 }
 
-Hashset<NWAOBDDNode> *NWAOBDD::visitedNodesDuringGroupCountNodesAndEdges = NULL;
-Hashset<ReturnMapBody<intpair>> *NWAOBDD::visitedEdgesDuringGroupCountNodesAndEdges = NULL;
+template <typename T>
+Hashset<NWAOBDDNode> *NWAOBDD<T>::visitedNodesDuringGroupCountNodesAndEdges = NULL;
+
+template <typename T>
+Hashset<ReturnMapBody<intpair>> *NWAOBDD<T>::visitedEdgesDuringGroupCountNodesAndEdges = NULL;
 
 namespace NWA_OBDD {
+
+template <typename T>
 void GroupCountNodesAndEdgesStart(unsigned int &nodeCount, unsigned int &edgeCount)
 {
   nodeCount = 0;
   edgeCount = 0;
-  NWAOBDD::visitedNodesDuringGroupCountNodesAndEdges = new Hashset<NWAOBDDNode>;
-  NWAOBDD::visitedEdgesDuringGroupCountNodesAndEdges = new Hashset<ReturnMapBody<intpair>>;
+  NWAOBDD<T>::visitedNodesDuringGroupCountNodesAndEdges = new Hashset<NWAOBDDNode>;
+  NWAOBDD<T>::visitedEdgesDuringGroupCountNodesAndEdges = new Hashset<ReturnMapBody<intpair>>;
 }
 
+template <typename T>
 void GroupCountNodesAndEdgesEnd()
 {
-  delete NWAOBDD::visitedNodesDuringGroupCountNodesAndEdges;
-  delete NWAOBDD::visitedEdgesDuringGroupCountNodesAndEdges;
-  NWAOBDD::visitedNodesDuringGroupCountNodesAndEdges = NULL;
-  NWAOBDD::visitedEdgesDuringGroupCountNodesAndEdges = NULL;
+  delete NWAOBDD<T>::visitedNodesDuringGroupCountNodesAndEdges;
+  delete NWAOBDD<T>::visitedEdgesDuringGroupCountNodesAndEdges;
+  NWAOBDD<T>::visitedNodesDuringGroupCountNodesAndEdges = NULL;
+  NWAOBDD<T>::visitedEdgesDuringGroupCountNodesAndEdges = NULL;
 }
 }
 
-void NWAOBDD::GroupCountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCount)
+template <typename T>
+void NWAOBDD<T>::GroupCountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCount)
 {
-  root->CountNodesAndEdges(NWAOBDD::visitedNodesDuringGroupCountNodesAndEdges,
-                           NWAOBDD::visitedEdgesDuringGroupCountNodesAndEdges,
+  root->CountNodesAndEdges(NWAOBDD<T>::visitedNodesDuringGroupCountNodesAndEdges,
+                           NWAOBDD<T>::visitedEdgesDuringGroupCountNodesAndEdges,
                            nodeCount, edgeCount
                           );
 }
+
+namespace NWA_OBDD {
+	template class NWAOBDD<int>;
+	template std::ostream& operator<< (std::ostream & out, const NWAOBDD<int> &d);
+};

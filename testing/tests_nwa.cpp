@@ -13,8 +13,8 @@
 using namespace NWA_OBDD;
 using namespace SH_OBDD;
 
-static void factoringTest(unsigned int testNo, NWAOBDD rel, unsigned int product) {
-    NWAOBDD f1, f2;
+static void factoringTest(unsigned int testNo, NWAOBDD<int> rel, unsigned int product) {
+    NWAOBDD<int> f1, f2;
     unsigned int v1, v2;
     bool testResult = FactorZ(rel, product, f1, f2, v1, v2);
     std::cout << "Test " << testNo << ": factor " << product << ": " << testResult << std::endl;
@@ -24,8 +24,8 @@ static void factoringTest(unsigned int testNo, NWAOBDD rel, unsigned int product
 void NWATests::testTopNodes(){
 	std::cout << "Test of TopNodes --------------------------------------" << std::endl;
   // Create all of the possible projection NWAOBDDTopNodes
-     NWAOBDD F;
-     for (unsigned int i = 0; i < (unsigned int)(1 << NWAOBDD::maxLevel); i++) {
+     NWAOBDD<int> F;
+     for (unsigned int i = 0; i < (unsigned int)(1 << NWAOBDD<int>::maxLevel); i++) {
        F = MkProjection(i);
      }
 }
@@ -54,7 +54,7 @@ static bool say_is_active = true;
 
 void NWATests::testSatisfyingAssignments(){
 	std::cout << "Testing finding satisfying assignments ------------" << std::endl;
-  NWAOBDD F;
+  NWAOBDD<int> F;
   F = MkTrue();
   #ifdef PATH_COUNTING_ENABLED
   // std::cout << F.NumSatisfyingAssignments() << std::endl;
@@ -77,12 +77,12 @@ int NWATests::test_restrict_exists_and_forall(void)
 {
   int jk;
 
-  NWAOBDD F, G, H, I;
-  NWAOBDD J, K, L, M;
-  NWAOBDD N, O, P, Q;
+  NWAOBDD<int> F, G, H, I;
+  NWAOBDD<int> J, K, L, M;
+  NWAOBDD<int> N, O, P, Q;
 #define WORLDC(func) func
 
-  if (NWAOBDD::maxLevel > 1) {
+  if (NWAOBDD<int>::maxLevel > 1) {
     // DLC use a manager for this test.
     SAY("MaxLevel must be no more than 1 for this test to be meaniningful to you.");
     return TEST_NOT_RUN;
@@ -106,7 +106,7 @@ int NWATests::test_restrict_exists_and_forall(void)
   for (jk = 0; jk < 3; jk++)
     ss[jk] = jk;
   {
-    NWAOBDD tmp = WORLDC(MkOr)(WORLDC(MkAnd)(F, G), H); // x0*x1 + x2
+    NWAOBDD<int> tmp = WORLDC(MkOr)(WORLDC(MkAnd)(F, G), H); // x0*x1 + x2
     for (jk = 0; jk < 3; jk++)
       VERIFY(tmp.DependsOn(jk));
     VERIFY(!tmp.IsPositiveCube());
@@ -175,7 +175,7 @@ int NWATests::test_restrict_exists_and_forall(void)
   K.PrintYield(OUTPUT_STREAM());
   SAY(std::endl << std::endl);
   SAY("Test whether False == I[false/x1] <Expected answer: equal>" << std::endl);
-  NWAOBDD falseflob = WORLDC(MkFalse)();
+  NWAOBDD<int> falseflob = WORLDC(MkFalse)();
   if (K != falseflob) {
     SAY("K != MkFalse()" << std::endl);
     SAY(*K.root << std::endl);
@@ -200,9 +200,9 @@ int NWATests::test_restrict_exists_and_forall(void)
 
 int NWATests::test_restrict_exists_and_forall_deeper(void)
 {
-	NWAOBDD F, G, H, I;
-	NWAOBDD J, K, L, M;
-	NWAOBDD N, O, P, Q;
+	NWAOBDD<int> F, G, H, I;
+	NWAOBDD<int> J, K, L, M;
+	NWAOBDD<int> N, O, P, Q;
   SAY("Test 2: ---------------------------------" << std::endl);
 
   F = WORLDC(MkProjection)(1);
@@ -360,8 +360,8 @@ int NWATests::test_restrict_exists_and_forall_deeper(void)
     K = WORLDC(MkProjection)(5);
     L = WORLDC(MkProjection)(2);
 
-    NWAOBDD tmp = WORLDC(MkOr)(WORLDC(MkAnd)(F, G), H);  // x1*x4+x7
-    NWAOBDD tmp2 = WORLDC(MkOr)(WORLDC(MkAnd)(tmp, G), H);  // (x1*x4+x7)*x4+x7
+    NWAOBDD<int> tmp = WORLDC(MkOr)(WORLDC(MkAnd)(F, G), H);  // x1*x4+x7
+    NWAOBDD<int> tmp2 = WORLDC(MkOr)(WORLDC(MkAnd)(tmp, G), H);  // (x1*x4+x7)*x4+x7
     VERIFY(MkCompose(tmp, 1, tmp) == tmp2);
     VERIFY(MkCompose(tmp, 1, K) == WORLDC(MkOr)(WORLDC(MkAnd)(K, G), H)); // x5*x4+x7
     VERIFY(MkCompose(tmp, 1, WORLDC(MkFalse)()) == H); // 0*x4+x7 === x7
@@ -395,14 +395,14 @@ void NWATests::testMkIdRelationInterleaved()
 {
 // Test of MkIdRelationInterleaved function ----------------------------------
   std::cout << "Test of MkIdRelationInterleaved function --------------------------------------" << std::endl;
-  NWAOBDD F = MkIdRelationInterleaved();
+  NWAOBDD<int> F = MkIdRelationInterleaved();
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD::maxLevel == 1 || NWAOBDD::maxLevel == 2) {
+  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD::maxLevel + 2)) - (unsigned int)4));
+    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -436,14 +436,14 @@ void NWATests::testMkIdRelationNested()
 {
 // Test of MkIdRelationNested function ----------------------------------
   std::cout << "Test of MkIdRelationNested function --------------------------------------" << std::endl;
-  NWAOBDD F = MkIdRelationNested();
+  NWAOBDD<int> F = MkIdRelationNested();
 
   // if MaxLevel is 2 or 3, test all assignments
-  if (NWAOBDD::maxLevel == 1 || NWAOBDD::maxLevel == 2) {
+  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD::maxLevel + 2)) - (unsigned int)4));
+    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -453,7 +453,7 @@ void NWATests::testMkIdRelationNested()
       for (int j = size - 1; j >= 0; j--) {  // for each variable
 		unsigned long int temp = i & mask;
         a[j] = (temp != 0);
-		if (NWAOBDD::maxLevel == 2) {
+		if (NWAOBDD<int>::maxLevel == 2) {
 			if ((j == 0) || (j == 6)){
 				if (a[j+5] != a[j]){
 					bb = false;
@@ -465,7 +465,7 @@ void NWATests::testMkIdRelationNested()
 				}
 			}
 		}
-		if (NWAOBDD::maxLevel == 1) {
+		if (NWAOBDD<int>::maxLevel == 1) {
 			if ((j/2)*2 == j) { // j is even
 				if (a[j+1] != a[j]) {  // mismatch for interleaved ordering
 					bb = false;
@@ -491,14 +491,14 @@ void NWATests::testParity()
 {
   // Test of parity function ----------------------------------
   std::cout << "Test of parity function --------------------------------------" << std::endl;
-  NWAOBDD F = MkParity();
+  NWAOBDD<int> F = MkParity();
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD::maxLevel == 1 || NWAOBDD::maxLevel == 2) {
+  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD::maxLevel + 2)) - (unsigned int)4));
+    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -525,7 +525,7 @@ void NWATests::testParity()
 
 void NWATests::testAnd(){
   std::cout << "Testing MkAnd" << std::endl;
-  NWAOBDD F, G, H;
+  NWAOBDD<int> F, G, H;
   F = MkProjection(0);
   std::cout << F << std::endl;
   std::cout << "----------------------------------------------------------------" << std::endl;
@@ -542,7 +542,7 @@ void NWATests::ApplyAndReduceUnitTests(){
   std::cout << "----------------------------------------------------------------" << std::endl;
   std::cout << "-- Testing Pair Product --" << std::endl;
 
-  NWAOBDD F,G;
+  NWAOBDD<int> F,G;
   F = MkParity();
   G = MkIdRelationNested();
 
@@ -579,7 +579,7 @@ void NWATests::ApplyAndReduceUnitTests(){
 }
 
 void NWATests::test1(){
-  NWAOBDD F, G, H, I;
+  NWAOBDD<int> F, G, H, I;
   F = MkProjection(3);
   std::cout << F << std::endl;
   G = MkProjection(7);
@@ -590,11 +590,11 @@ void NWATests::test1(){
   std::cout << I << std::endl;
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD::maxLevel == 1 || NWAOBDD::maxLevel == 2) {
+  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD::maxLevel + 2)) - (unsigned int)4));
+    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -617,18 +617,18 @@ void NWATests::test1(){
 }
 
 void NWATests::test2(){
-  NWAOBDD F, G, H, I;
+  NWAOBDD<int> F, G, H, I;
   F = MkProjection(3);
   G = MkProjection(7);
   H = MkProjection(5);
   I = MkNegMajority(F, G, H);
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD::maxLevel == 1 || NWAOBDD::maxLevel == 2) {
+  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = 1 << NWAOBDD::maxLevel;
+    unsigned int size = 1 << NWAOBDD<int>::maxLevel;
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -650,7 +650,7 @@ void NWATests::test2(){
 }
 
 void NWATests::test3(){
-  NWAOBDD F, G, H, I, J, K, L, M, N, O, P, Q;
+  NWAOBDD<int> F, G, H, I, J, K, L, M, N, O, P, Q;
 
   std::cout << "Test 1: ---------------------------------" << std::endl;
   F = MkProjection(0);
@@ -743,7 +743,7 @@ void NWATests::test3(){
 }
 
 void NWATests::testAllAssignments(){
-  NWAOBDD F, G, H, I;
+  NWAOBDD<int> F, G, H, I;
   F = MkProjection(3);
   std::cout << "F: " << std::endl;
   std::cout << F << std::endl;
@@ -754,11 +754,11 @@ void NWATests::testAllAssignments(){
   I = MkNot(H);
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD::maxLevel == 1 || NWAOBDD::maxLevel == 2) {
+  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD::maxLevel + 2)) - (unsigned int)4));
+    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -799,14 +799,14 @@ void NWATests::testIscas85()
 }
 
 void NWATests::testSchema() {
-	NWAOBDD n = MkAdditionNested();
+	NWAOBDD<int> n = MkAdditionNested();
 	int s[4];
 	s[0] = 5;
 	s[1] = 5;
 	s[2] = 1;
 	s[3] = 0;
 
-	NWAOBDD t = SchemaAdjust(n,s);
+	NWAOBDD<int> t = SchemaAdjust(n,s);
 
 	std::cout << t << std::endl;
 
@@ -815,7 +815,7 @@ void NWATests::testSchema() {
 //Testing method for the weight code
 void NWATests::testWeights(){
 
-	NWAOBDD n = MkIdRelationNested();
+	NWAOBDD<int> n = MkIdRelationNested();
 	int s[4];
 	s[0] = 0;
 	s[1] = 2;
@@ -835,7 +835,7 @@ void NWATests::testWeights(){
 	vLocs[2] = 6;
 	vLocs[3] = 11;
 
-	NWAOBDD t = GetWeight(s,vals,vLocs,0);
+	NWAOBDD<int> t = GetWeight(s,vals,vLocs,0);
 	std::cout << t << std::endl;
 }
 
@@ -844,7 +844,7 @@ void NWATests::testWeights(){
 void NWATests::testCanonicalness(){
   // DeMorgan's law as a test of canonicalness ------------------
      std::cout << "Test of DeMorgan's law" << std::endl;
-     NWAOBDD F, G, H, I, J, K;
+     NWAOBDD<int> F, G, H, I, J, K;
      F = MkProjection(3);
      G = MkProjection(7);
      H = MkNand(F, G);
@@ -879,7 +879,7 @@ int NWATests::test_demorgans(void)
   CFLOBDD F(&testWorld1);
 #define WORLDCX3(func) testWorld1.func
 #else // USE_WORLDS
-  NWAOBDD F;
+  NWAOBDD<int> F;
 #define WORLDCX3(func) func
 #endif // USE_WORLDS
 #ifdef USE_WORLDS
@@ -887,7 +887,7 @@ int NWATests::test_demorgans(void)
   CFLOBDD F(&testWorld1), G(&testWorld1), H(&testWorld1), I(&testWorld1);
   CFLOBDD J(&testWorld1), K(&testWorld1);
 #else
-  NWAOBDD G, H, I, J, K;
+  NWAOBDD<int> G, H, I, J, K;
 #endif
 
   // DeMorgan's law as a test of canonicalness ------------------
@@ -932,11 +932,11 @@ void NWATests::testAddition()
 	start = std::clock();
 	//NWAOBDDNodeHandle::canonicalNodeTable->PrintTable();    duration = ( std::clock() - start )/(double) CLOCKS_PER_SEC;
 	//std::cout<<"c6288_8: " << duration << '\n';
-	NWAOBDD AdditionRel = MkAdditionNestedTop();
+	NWAOBDD<int> AdditionRel = MkAdditionNestedTop();
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 	// Show alpha01 + beta01 = (alpha+beta)10
 	// Should succeed for (maxLevel >= 3)
-	unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD::maxLevel + 2)) - (unsigned int)4));
+	unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
 	Assignment A(size);
 	for (unsigned i = 0; i < NWAOBDDMaxLevel - 2; i++)
 	{
@@ -975,7 +975,7 @@ void NWATests::testAddition()
 void NWATests::testStepFunction()
 {
 	std::cout << "Test of Step Function --------------------------------------" << std::endl;
-     NWAOBDD F = MkStepUpOneFourth();
+     NWAOBDD<int> F = MkStepUpOneFourth();
      Assignment *assignmentPtr;
      if (F.FindOneSatisfyingAssignment(assignmentPtr)) {
        //std::cout << *assignmentPtr << std::endl; ETTODO -Fix
