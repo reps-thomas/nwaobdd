@@ -126,6 +126,9 @@ int main(int argc, char * argv[])
 		}
 	}
     printf("%llu\n", checker);
+    printf("%d\n", NWA_OBDD::NWAOBDDNodeHandle::canonicalNodeTable->Size());
+    printf("%d\n", ReturnMapHandle<intpair>::canonicalReturnMapBodySet->Size());
+    // ReturnMapHandle<intpair>::canonicalReturnMapBodySet->print();
 	/*
 	char* a = new char[10];
 	char* b = (char *)malloc(20);

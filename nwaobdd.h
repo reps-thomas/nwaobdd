@@ -31,19 +31,21 @@
 #include <iostream>
 #include <fstream>
 #include "nwaobdd_node.h"
+#include "nwaobdd_top_node.h"
 #include "assignment.h"
 #include "bool_op.h"
 
 namespace NWA_OBDD {
 
 // Node classes declared in this file --------------------------------
-class NWAOBDD;
+template<typename T>class NWAOBDD;
 
 //********************************************************************
 // NWAOBDD
 //********************************************************************
 
 // Representation of a Boolean function
+template <typename T>
 class NWAOBDD {
   friend void GroupCountNodesAndEdgesStart(unsigned int &nodeCount, unsigned int &edgeCount);
   friend void GroupCountNodesAndEdgesEnd();
@@ -51,12 +53,12 @@ class NWAOBDD {
   friend void GroupDumpConnectionsEnd();
  public:
   NWAOBDD();                                    // Default constructor (rep. of \a.true)
-  NWAOBDD(NWAOBDDTopNodeRefPtr n);              // Constructor
+  NWAOBDD(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n);              // Constructor
   NWAOBDD(const NWAOBDD &d);                    // Copy constructor
   ~NWAOBDD();                                   // Destructor
   static unsigned int const maxLevel;
-  bool Evaluate(SH_OBDD::Assignment &assignment);        // Evaluate a Boolean function
-  bool Evaluate(SH_OBDD::Assignment &&assignment);        // rvalue-ref version to pass comiling
+  T Evaluate(SH_OBDD::Assignment &assignment);        // Evaluate a Boolean function
+  T Evaluate(SH_OBDD::Assignment &&assignment);        // rvalue-ref version to pass comiling
   void PrintYield(std::ostream * out);               // print the yield of the "tree"
   void PrintYieldSemantic(std::ostream & out);       // print the yield of the "tree"
 #ifdef PATH_COUNTING_ENABLED
@@ -68,7 +70,7 @@ class NWAOBDD {
   bool operator!= (const NWAOBDD & C) const;          // Overloaded !=
   bool operator== (const NWAOBDD & C) const;          // Overloaded ==
   NWAOBDD & operator= (const NWAOBDD &c);       // assignment
-  NWAOBDDTopNodeRefPtr root;
+  ref_ptr<NWAOBDDTopNode<T>> root;
   bool DependsOn(int i) const;
   bool IsPositiveCube() const;
   bool IsPositiveCubeInt(int least) const;
@@ -88,27 +90,28 @@ class NWAOBDD {
   static Hashset<NWAOBDDNode> *visitedDuringGroupDumpConnections;
 };
 
-std::ostream& operator<< (std::ostream & out, const NWAOBDD &d);
+template <typename T>
+std::ostream& operator<< (std::ostream & out, const NWAOBDD<T> &d);
 
 // NWAOBDD-creation operations --------------------------------------
-NWAOBDD MkTrue();                             // Representation of \x.true
-NWAOBDD MkFalse();                            // Representation of \x.false
-NWAOBDD MkProjection(unsigned int i);         // Representation of \x.x_i
-NWAOBDD MkIdRelationNested();
-NWAOBDD MkIdRelationInterleaved();            // Representation of identity relation
-NWAOBDD MkAdditionNested();                   // Representation of addition relation { (xi yi zi _)* | vec{x} + vec{y} = vec{z} }
-NWAOBDD MkAdditionInterleavedBruteForce();    // Representation of addition relation { (xi yi zi _)* | vec{x} + vec{y} = vec{z} }, created by brute force
-NWAOBDD MkX(unsigned int i);                  // Bits of i -> vec{x} for addition relation
-NWAOBDD MkY(unsigned int i);                  // Bits of i -> vec{y} for addition relation
-NWAOBDD MkZ(unsigned int i);                  // Bits of i -> vec{z} for addition relation
-NWAOBDD MkMultiplicationInterleavedBruteForce(); // Representation of multiplication relation { (xi yi zi _)* | vec{x} * vec{y} = vec{z} }
-bool FactorZ(NWAOBDD R, unsigned int z, NWAOBDD &f1, NWAOBDD &f2, unsigned int &v1, unsigned int &v2);   // Return true if z has a non-trivial factorization
-NWAOBDD MkDetensorConstraintInterleaved();    // Representation of (W,X,Y,Z) s.t. X==Y with interleaved variables
-NWAOBDD MkParity();                           // Representation of parity function
-NWAOBDD MkWalshInterleaved(unsigned int i);   // Representation of Walsh matrix
-NWAOBDD MkInverseReedMullerInterleaved(unsigned int i);   // Representation of Inverse Reed-Muller matrix
-NWAOBDD MkStepUpOneFourth();                  // Representation of step function
-NWAOBDD MkStepDownOneFourth();                // Representation of step function
+NWAOBDD<int> MkTrue();                             // Representation of \x.true
+NWAOBDD<int> MkFalse();                            // Representation of \x.false
+NWAOBDD<int> MkProjection(unsigned int i);         // Representation of \x.x_i
+NWAOBDD<int> MkIdRelationNested();
+NWAOBDD<int> MkIdRelationInterleaved();            // Representation of identity relation
+NWAOBDD<int> MkAdditionNested();                   // Representation of addition relation { (xi yi zi _)* | vec{x} + vec{y} = vec{z} }
+NWAOBDD<int> MkAdditionInterleavedBruteForce();    // Representation of addition relation { (xi yi zi _)* | vec{x} + vec{y} = vec{z} }, created by brute force
+NWAOBDD<int> MkX(unsigned int i);                  // Bits of i -> vec{x} for addition relation
+NWAOBDD<int> MkY(unsigned int i);                  // Bits of i -> vec{y} for addition relation
+NWAOBDD<int> MkZ(unsigned int i);                  // Bits of i -> vec{z} for addition relation
+NWAOBDD<int> MkMultiplicationInterleavedBruteForce(); // Representation of multiplication relation { (xi yi zi _)* | vec{x} * vec{y} = vec{z} }
+bool FactorZ(NWAOBDD<int> R, unsigned int z, NWAOBDD<int> &f1, NWAOBDD<int> &f2, unsigned int &v1, unsigned int &v2);   // Return true if z has a non-trivial factorization
+NWAOBDD<int> MkDetensorConstraintInterleaved();    // Representation of (W,X,Y,Z) s.t. X==Y with interleaved variables
+NWAOBDD<int> MkParity();                           // Representation of parity function
+NWAOBDD<int> MkWalshInterleaved(unsigned int i);   // Representation of Walsh matrix
+NWAOBDD<int> MkInverseReedMullerInterleaved(unsigned int i);   // Representation of Inverse Reed-Muller matrix
+NWAOBDD<int> MkStepUpOneFourth();                  // Representation of step function
+NWAOBDD<int> MkStepDownOneFourth();                // Representation of step function
 #ifdef ARBITRARY_STEP_FUNCTIONS
   NWAOBDD MkStepUp(unsigned int i);           // Representation of step function
   NWAOBDD MkStepDown(unsigned int i);         // Representation of step function
@@ -119,34 +122,34 @@ NWAOBDD MkStepDownOneFourth();                // Representation of step function
 #endif
 
 // Unary operations on NWAOBDDs --------------------------------------
-NWAOBDD MkNot(NWAOBDD f);                     // \f.!f
+NWAOBDD<int> MkNot(NWAOBDD<int> f);                     // \f.!f
 
 // Binary operations on NWAOBDDs --------------------------------------
-NWAOBDD MkAnd(NWAOBDD f, NWAOBDD g);          // \f.\g.(f && g)
-NWAOBDD MkNand(NWAOBDD f, NWAOBDD g);         // \f.\g.!(f && g)
-NWAOBDD MkOr(NWAOBDD f, NWAOBDD g);           // \f.\g.(f || g)
-NWAOBDD MkNor(NWAOBDD f, NWAOBDD g);          // \f.\g.!(f || g)
-NWAOBDD MkIff(NWAOBDD f, NWAOBDD g);          // \f.\g.(f == g)
-NWAOBDD MkExclusiveOr(NWAOBDD f, NWAOBDD g);  // \f.\g.(f != g)
-NWAOBDD MkImplies(NWAOBDD f, NWAOBDD g);      // \f.\g.(!f || g)
-NWAOBDD MkMinus(NWAOBDD f, NWAOBDD g);        // \f.\g.(f && !g)
-NWAOBDD MkQuotient(NWAOBDD f, NWAOBDD g);     // \f.\g.(!g || f)
-NWAOBDD MkNotQuotient(NWAOBDD f, NWAOBDD g);  // \f.\g.(g && !f)
-NWAOBDD MkFirst(NWAOBDD f, NWAOBDD g);        // \f.\g.f
-NWAOBDD MkNotFirst(NWAOBDD f, NWAOBDD g);     // \f.\g.!f
-NWAOBDD MkSecond(NWAOBDD f, NWAOBDD g);       // \f.\g.g
-NWAOBDD MkNotSecond(NWAOBDD f, NWAOBDD g);    // \f.\g.!g
+NWAOBDD<int> MkAnd(NWAOBDD<int> f, NWAOBDD<int> g);          // \f.\g.(f && g)
+NWAOBDD<int> MkNand(NWAOBDD<int> f, NWAOBDD<int> g);         // \f.\g.!(f && g)
+NWAOBDD<int> MkOr(NWAOBDD<int> f, NWAOBDD<int> g);           // \f.\g.(f || g)
+NWAOBDD<int> MkNor(NWAOBDD<int> f, NWAOBDD<int> g);          // \f.\g.!(f || g)
+NWAOBDD<int> MkIff(NWAOBDD<int> f, NWAOBDD<int> g);          // \f.\g.(f == g)
+NWAOBDD<int>MkExclusiveOr(NWAOBDD<int>f, NWAOBDD<int>g);  // \f.\g.(f != g)
+NWAOBDD<int>MkImplies(NWAOBDD<int>f, NWAOBDD<int>g);      // \f.\g.(!f || g)
+NWAOBDD<int>MkMinus(NWAOBDD<int>f, NWAOBDD<int>g);        // \f.\g.(f && !g)
+NWAOBDD<int>MkQuotient(NWAOBDD<int>f, NWAOBDD<int>g);     // \f.\g.(!g || f)
+NWAOBDD<int>MkNotQuotient(NWAOBDD<int>f, NWAOBDD<int>g);  // \f.\g.(g && !f)
+NWAOBDD<int>MkFirst(NWAOBDD<int>f, NWAOBDD<int>g);        // \f.\g.f
+NWAOBDD<int>MkNotFirst(NWAOBDD<int>f, NWAOBDD<int>g);     // \f.\g.!f
+NWAOBDD<int>MkSecond(NWAOBDD<int>f, NWAOBDD<int>g);       // \f.\g.g
+NWAOBDD<int>MkNotSecond(NWAOBDD<int>f, NWAOBDD<int>g);    // \f.\g.!g
 
 // Ternary operations on NWAOBDDs --------------------------------------
-NWAOBDD MkIfThenElse(NWAOBDD f, NWAOBDD g, NWAOBDD h);  // \a.\b.\c.(a && b) || (!a && c)
-NWAOBDD MkNegMajority(NWAOBDD f, NWAOBDD g, NWAOBDD h); // \a.\b.\c.(b && !a) || (c && !a) || (b && c)
+NWAOBDD<int>MkIfThenElse(NWAOBDD<int>f, NWAOBDD<int>g, NWAOBDD<int>h);  // \a.\b.\c.(a && b) || (!a && c)
+NWAOBDD<int>MkNegMajority(NWAOBDD<int>f, NWAOBDD<int>g, NWAOBDD<int>h); // \a.\b.\c.(b && !a) || (c && !a) || (b && c)
 
-NWAOBDD MkRestrict(NWAOBDD f, unsigned int i, bool val);  // \f. f | (x_i = val)
-NWAOBDD MkExists(NWAOBDD f, unsigned int i);              // \f. exists x_i : f
-NWAOBDD MkForall(NWAOBDD f, unsigned int i);              // \f. forall x_i : f
-NWAOBDD SchemaAdjust(NWAOBDD f, int s[4]);
-NWAOBDD PathSummary(NWAOBDD f);
-NWAOBDD MkCompose(NWAOBDD f, int i, NWAOBDD g);  // \f. f | (x_i = g)
+NWAOBDD<int>MkRestrict(NWAOBDD<int>f, unsigned int i, bool val);  // \f. f | (x_i = val)
+NWAOBDD<int>MkExists(NWAOBDD<int>f, unsigned int i);              // \f. exists x_i : f
+NWAOBDD<int>MkForall(NWAOBDD<int>f, unsigned int i);              // \f. forall x_i : f
+NWAOBDD<int>SchemaAdjust(NWAOBDD<int>f, int s[4]);
+NWAOBDD<int>PathSummary(NWAOBDD<int>f);
+NWAOBDD<int>MkCompose(NWAOBDD<int>f, int i, NWAOBDD<int>g);  // \f. f | (x_i = g)
 
 } // namespace NWA_OBDD
 

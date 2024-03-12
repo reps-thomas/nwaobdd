@@ -30,7 +30,7 @@ class NWATests
         static int test_arbitrary_step_functions(unsigned int mlev);
         static int test_restrict_exists_and_forall(void);
 		static int test_restrict_exists_and_forall_deeper(void);
-        static void factoringTest(unsigned int testNo, NWA_OBDD::NWAOBDD rel, unsigned int product);
+        static void factoringTest(unsigned int testNo, NWA_OBDD::NWAOBDD<int> rel, unsigned int product);
 		static void ApplyAndReduceUnitTests();
 		static void testWeights();
 		static void testSchema();

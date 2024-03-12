@@ -19,6 +19,7 @@ add_executable(nwaobdd.out
     connection.cpp
     connectionT_impl.cpp
     nwaobdd_top_node.cpp
+    # nwaobdd_top_node_impl.cpp
 )
 target_compile_options(nwaobdd.out PRIVATE -w -lm -std=c++2a -O3 -I${path_to_boost})
 target_link_libraries(nwaobdd.out PRIVATE infra)
