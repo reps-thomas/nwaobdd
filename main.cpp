@@ -77,16 +77,6 @@ int main (int argc, char * argv[])
 
 }*/
 
-
-class B{
-	int x;
-};
-
-class A{
-public:
-	B* b;
-};
-
 extern unsigned long long checker;
 
 int main(int argc, char * argv[])
@@ -100,6 +90,8 @@ int main(int argc, char * argv[])
 	//_CrtMemState ms = { 0 };
 	//_CrtMemCheckpoint(&ms);
 	// Check for missing arg
+    NWA_OBDD::NWATests::RunAllTests();
+    return 0;
 	if (argc < 1){
 		std::cerr << "usage: " << argv[0] << " ..." << std::endl;
 		return(1);

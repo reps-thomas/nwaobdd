@@ -11,6 +11,7 @@ add_executable(nwaobdd.out
     cross_product_nwa.cpp
     main.cpp
     nwaobdd.cpp
+    nwaobdd_int.cpp
     nwaobdd_node.cpp
     reduction_map.cpp
     return_map_impl.cpp

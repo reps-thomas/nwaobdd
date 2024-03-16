@@ -981,68 +981,68 @@ NWAOBDDTopNodeRefPtr MkNotSecond(NWAOBDDTopNodeRefPtr , NWAOBDDTopNodeRefPtr g)
 // N-ary operations on NWAOBDDTopNodes -----------------------------------
 
 // \f1. ... \fk.(f1 && ... && fk)
-NWAOBDDTopNodeRefPtr  MkAnd(int N, ...)
-{
-  NWAOBDDTopNodeRefPtr  temp;
+// NWAOBDDTopNodeRefPtr  MkAnd(int N, ...)
+// {
+//   NWAOBDDTopNodeRefPtr  temp;
 
-  assert(N >= 2);
-  va_list ap;
-  va_start(ap, N);
-  temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
-  for (int k = 1; k < N; k++) {
-    temp = MkAnd(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
-  }
-  va_end(ap);
-  return temp;
-}
+//   assert(N >= 2);
+//   va_list ap;
+//   va_start(ap, N);
+//   temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
+//   for (int k = 1; k < N; k++) {
+//     temp = MkAnd(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
+//   }
+//   va_end(ap);
+//   return temp;
+// }
 
-// \f1. ... \fk.!(f1 && ... && fk)
-NWAOBDDTopNodeRefPtr  MkNand(int N, ...)
-{
-  NWAOBDDTopNodeRefPtr  temp;
+// // \f1. ... \fk.!(f1 && ... && fk)
+// NWAOBDDTopNodeRefPtr  MkNand(int N, ...)
+// {
+//   NWAOBDDTopNodeRefPtr  temp;
 
-  assert(N >= 2);
-  va_list ap;
-  va_start(ap, N);
-  temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
-  for (int k = 1; k < N; k++) {
-    temp = MkAnd(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
-  }
-  va_end(ap);
-  return MkNot(temp);
-}
+//   assert(N >= 2);
+//   va_list ap;
+//   va_start(ap, N);
+//   temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
+//   for (int k = 1; k < N; k++) {
+//     temp = MkAnd(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
+//   }
+//   va_end(ap);
+//   return MkNot(temp);
+// }
 
-// \f1. ... \fk.(f1 || ... || fk)
-NWAOBDDTopNodeRefPtr  MkOr(int N, ...)
-{
-  NWAOBDDTopNodeRefPtr  temp;
+// // \f1. ... \fk.(f1 || ... || fk)
+// NWAOBDDTopNodeRefPtr  MkOr(int N, ...)
+// {
+//   NWAOBDDTopNodeRefPtr  temp;
 
-  assert(N >= 2);
-  va_list ap;
-  va_start(ap, N);
-  temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
-  for (int k = 1; k < N; k++) {
-    temp = MkOr(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
-  }
-  va_end(ap);
-  return temp;
-}
+//   assert(N >= 2);
+//   va_list ap;
+//   va_start(ap, N);
+//   temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
+//   for (int k = 1; k < N; k++) {
+//     temp = MkOr(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
+//   }
+//   va_end(ap);
+//   return temp;
+// }
 
-// \f1. ... \fk.!(f1 || ... || fk)
-NWAOBDDTopNodeRefPtr  MkNor(int N, ...)
-{
-  NWAOBDDTopNodeRefPtr  temp;
+// // \f1. ... \fk.!(f1 || ... || fk)
+// NWAOBDDTopNodeRefPtr  MkNor(int N, ...)
+// {
+//   NWAOBDDTopNodeRefPtr  temp;
 
-  assert(N >= 2);
-  va_list ap;
-  va_start(ap, N);
-  temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
-  for (int k = 1; k < N; k++) {
-    temp = MkOr(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
-  }
-  va_end(ap);
-  return MkNot(temp);
-}
+//   assert(N >= 2);
+//   va_list ap;
+//   va_start(ap, N);
+//   temp = va_arg(ap, NWAOBDDTopNodeRefPtr );
+//   for (int k = 1; k < N; k++) {
+//     temp = MkOr(temp, va_arg(ap, NWAOBDDTopNodeRefPtr ));
+//   }
+//   va_end(ap);
+//   return MkNot(temp);
+// }
 
 // Ternary operations on NWAOBDDTopNodes ------------------------------------
 

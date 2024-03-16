@@ -650,7 +650,11 @@ NWAOBDDTopNodeRefPtr NWAOBDDInternalNode::SchemaAdjust(NWAOBDDInternalNode * n, 
 									//Get the weights of the AConnection and BConnection found along with their exits
 									NWAOBDDTopNodeRefPtr AWeight = NWAOBDDNodeHandle::SchemaAdjust(n->AConnection[k].entryPointHandle,aExit.First(),s,offset+1);
 									NWAOBDDTopNodeRefPtr BWeight = NWAOBDDNodeHandle::SchemaAdjust(n->BConnection[j][i].entryPointHandle,bExit.First(),s,offset + size/2 + 1);
-									NWAOBDDTopNodeRefPtr path = MkAnd(6, AEnt,AWeight,AExit,BEnt,BWeight,BExit); //Determine the weight of the path found from the start of the node to the given exit
+																		NWAOBDDTopNodeRefPtr path = MkAnd(MkAnd(AEnt, BEnt),
+                      MkAnd(MkAnd(AWeight, BWeight), 
+                      MkAnd(AExit, BExit)
+                      )
+                    );
 									f = MkOr(path,f); //Or the found weight with current final weight that's been built up
 								}
 								// Repeat the above if the 1 return of the current exit of the given A connection connects to the given BConnection node
@@ -663,7 +667,12 @@ NWAOBDDTopNodeRefPtr NWAOBDDInternalNode::SchemaAdjust(NWAOBDDInternalNode * n, 
 									NWAOBDDTopNodeRefPtr BExit = GetWeight(s,vals,vLocs,3);
 									NWAOBDDTopNodeRefPtr AWeight = NWAOBDDNodeHandle::SchemaAdjust(n->AConnection[k].entryPointHandle,aExit.Second(),s,offset+1);
 									NWAOBDDTopNodeRefPtr BWeight = NWAOBDDNodeHandle::SchemaAdjust(n->BConnection[j][i].entryPointHandle,bExit.First(),s,offset + size/2 + 1);
-									NWAOBDDTopNodeRefPtr path = MkAnd(6, AEnt,AWeight,AExit,BEnt,BWeight,BExit);
+									NWAOBDDTopNodeRefPtr path = MkAnd(MkAnd(AEnt, BEnt),
+                      MkAnd(MkAnd(AWeight, BWeight), 
+                      MkAnd(AExit, BExit)
+                      )
+                    );
+                  //  MkAnd(6, AEnt,AWeight,AExit,BEnt,BWeight,BExit);
 									f = MkOr(path,f);
 								}
 							}
@@ -690,7 +699,11 @@ NWAOBDDTopNodeRefPtr NWAOBDDInternalNode::SchemaAdjust(NWAOBDDInternalNode * n, 
 									NWAOBDDTopNodeRefPtr BExit = GetWeight(s,vals,vLocs,3);
 									NWAOBDDTopNodeRefPtr AWeight = NWAOBDDNodeHandle::SchemaAdjust(n->AConnection[k].entryPointHandle,aExit.First(),s,offset+1);
 									NWAOBDDTopNodeRefPtr BWeight = NWAOBDDNodeHandle::SchemaAdjust(n->BConnection[j][i].entryPointHandle,bExit.Second(),s,offset + size/2 + 1);
-									NWAOBDDTopNodeRefPtr path = MkAnd(6,AEnt,AWeight,AExit,BEnt,BWeight,BExit);
+									NWAOBDDTopNodeRefPtr path = MkAnd(MkAnd(AEnt, BEnt),
+                      MkAnd(MkAnd(AWeight, BWeight), 
+                      MkAnd(AExit, BExit)
+                      )
+                    );
 									f = MkOr(path,f);
 								}
 								if (i == aExit.Second())
@@ -702,7 +715,11 @@ NWAOBDDTopNodeRefPtr NWAOBDDInternalNode::SchemaAdjust(NWAOBDDInternalNode * n, 
 									NWAOBDDTopNodeRefPtr BExit = GetWeight(s,vals,vLocs,3);
 									NWAOBDDTopNodeRefPtr AWeight = NWAOBDDNodeHandle::SchemaAdjust(n->AConnection[k].entryPointHandle,aExit.Second(),s,offset+1);
 									NWAOBDDTopNodeRefPtr BWeight = NWAOBDDNodeHandle::SchemaAdjust(n->BConnection[j][i].entryPointHandle,bExit.Second(),s,offset + size/2 + 1);
-									NWAOBDDTopNodeRefPtr path = MkAnd(6,AEnt,AWeight,AExit,BEnt,BWeight,BExit);
+									NWAOBDDTopNodeRefPtr path = MkAnd(MkAnd(AEnt, BEnt),
+                      MkAnd(MkAnd(AWeight, BWeight), 
+                      MkAnd(AExit, BExit)
+                      )
+                    );
 									f = MkOr(path,f);
 								}
 							}

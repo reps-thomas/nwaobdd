@@ -53,24 +53,31 @@ static bool say_is_active = true;
 #define TEST_FAILED 1
 
 void NWATests::testSatisfyingAssignments(){
-	std::cout << "Testing finding satisfying assignments ------------" << std::endl;
-  NWAOBDD<int> F;
-  F = MkTrue();
-  #ifdef PATH_COUNTING_ENABLED
-  // std::cout << F.NumSatisfyingAssignments() << std::endl;
-  #endif
+	std::cout << "  testing FindOneSatisfyingAssignment ------------" << std::endl;
+  // generating formulas like "x[0] /\ ~x[1] /\ ...", 
+  // so that we can check the solution easily
+
+  unsigned num_of_vars = (1 << (NWAOBDD<int>::maxLevel + 2)) - 4;
+  bool *target = new bool [num_of_vars];
+  for(unsigned i = 0; i < num_of_vars; ++i)
+    target[i] = rand() & 1;
+  
+  NWAOBDD<int> F; // constant true
+  for(unsigned i = 0; i < num_of_vars; ++i) {
+    NWAOBDD<int>G = MkProjection(i);
+    if(target[i])
+      F = MkAnd(F, G);
+    else {
+      G = MkNot(G);
+      F = MkAnd(F, G);
+    }
+  }
   Assignment *assignmentPtr;
-  if (F.FindOneSatisfyingAssignment(assignmentPtr)) {
-    //std::cout << *assignmentPtr << std::endl; ETTODO - Fix
-    bool b = F.Evaluate(*assignmentPtr);
-    std::cout << "Value = " << b << std::endl;
-    delete assignmentPtr;
-  }
-  else {
-    std::cout << "No satisfying assignment exists" << std::endl;
-  }
-  F.PrintYield(&std::cout);
-  std::cout << std::endl;
+  assert(F.FindOneSatisfyingAssignment(assignmentPtr));
+  for(unsigned i = 0; i < num_of_vars; ++i) 
+    assert( (assignmentPtr -> operator[](i)) == target[i] );
+  // assignmentPtr -> print(); std::cout << "\n";
+  delete [] target;
 }
 
 int NWATests::test_restrict_exists_and_forall(void)
@@ -398,7 +405,7 @@ void NWATests::testMkIdRelationInterleaved()
   NWAOBDD<int> F = MkIdRelationInterleaved();
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
+  // if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
@@ -426,10 +433,11 @@ void NWATests::testMkIdRelationInterleaved()
 		  break;
       }
     }
-  }
-  else {
-    std::cout << "Cannot test all assignments: maxLevel must be 1 or 2" << std::endl;
-  }
+  std::cout << "Id-Interleaved passed.\n";
+  // }
+  // else {
+  //   std::cout << "Cannot test all assignments: maxLevel must be 1 or 2" << std::endl;
+  // }
 }
 
 void NWATests::testMkIdRelationNested()
@@ -493,32 +501,17 @@ void NWATests::testParity()
   std::cout << "Test of parity function --------------------------------------" << std::endl;
   NWAOBDD<int> F = MkParity();
 
-  // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
-
-    std::cout << "Testing all assignments" << std::endl;
-
-    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
-    Assignment a(size);
-    bool b;
-    unsigned long int range = 1UL << size;
-    for (unsigned long int i = 0UL; i < range; i++) {
-      unsigned long int mask = 1UL;
-      bool bb = false;
-      for (int j = size - 1; j >= 0; j--) {
-        a[j] = (i & mask);
-        bb ^= a[j];
-        mask = mask << 1;
-      }
-      b = F.Evaluate(a);
-      // std::cout << a << ": " << b << std::endl;
-      if (b != bb) {
-        std::cerr << "Error: " << i << std::endl; //ETTODO -Fix
-      }
+  // doing some random tests
+  unsigned num_of_vars = (1 << (NWAOBDD<int>::maxLevel + 2)) - 4;
+  Assignment sample(num_of_vars);
+  for(int tim = 0; tim < 20000; ++tim) {
+    bool res = false;
+    for(unsigned i = 0; i < num_of_vars; ++i) {
+      bool b = rand() & 1;
+      sample[i] = b;
+      res ^= b;
     }
-  }
-  else {
-    std::cout << "Cannot test all assignments: maxLevel must be 3 or 4" << std::endl;
+    assert(F.Evaluate(sample) == res);
   }
 }
 
@@ -581,16 +574,12 @@ void NWATests::ApplyAndReduceUnitTests(){
 void NWATests::test1(){
   NWAOBDD<int> F, G, H, I;
   F = MkProjection(3);
-  std::cout << F << std::endl;
   G = MkProjection(7);
-  std::cout << G << std::endl;
   H = MkProjection(5);
-  std::cout << H << std::endl;
   I = MkIfThenElse(F, G, H);
-  std::cout << I << std::endl;
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
+  // if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
@@ -604,16 +593,15 @@ void NWATests::test1(){
         a[j] = (i & mask);
         mask = mask << 1;
       }
-	  std::cout << "i: " << i << std::endl;
-      b = I.Evaluate(a);
-      if (b != ((a[3] && a[7]) || (!a[3] && a[5])) ) {
-        //std::cerr << a << ": " << b << std::endl; ETTODO -Fix
-      }
+    if(i % 100000 == 0)
+	    std::cout << "i: " << i << std::endl;
+    b = I.Evaluate(a);
+    assert(b == ((a[3] && a[7]) || (!a[3] && a[5])) );
     }
-  }
-  else {
-    std::cout << "Cannot test all assignments: maxLevel must be 1 or 2" << std::endl;
-  }
+  // }
+  // else {
+  //   std::cout << "Cannot test all assignments: maxLevel must be 1 or 2" << std::endl;
+  // }
 }
 
 void NWATests::test2(){
@@ -624,11 +612,11 @@ void NWATests::test2(){
   I = MkNegMajority(F, G, H);
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
+
 
     std::cout << "Testing all assignments" << std::endl;
 
-    unsigned int size = 1 << NWAOBDD<int>::maxLevel;
+    unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDD<int>::maxLevel + 2)) - (unsigned int)4));
     Assignment a(size);
     bool b;
     unsigned long int range = 1UL << size;
@@ -639,14 +627,9 @@ void NWATests::test2(){
         mask = mask << 1;
       }
       b = I.Evaluate(a);
-      if (b != ((a[7] && !a[3]) || (a[5] && !a[3]) || (a[7] && a[5])) ) {
-        //std::cerr << a << ": " << b << std::endl; ETTODO -Fix
-      }
+      assert(b == ((a[7] && !a[3]) || (a[5] && !a[3]) || (a[7] && a[5])) );
     }
-  }
-  else {
-    std::cout << "Cannot test all assignments: maxLevel must be 1 or 2" << std::endl;
-  }
+  std::cout << "test2 passed.\n";
 }
 
 void NWATests::test3(){
@@ -656,17 +639,17 @@ void NWATests::test3(){
   F = MkProjection(0);
   G = MkProjection(1);
   H = MkProjection(2);
-  I = MkAnd(3, F, G, H);
+  I = MkAnd(F, MkAnd(G, H));
   std::cout << "(x0 & x1 & x2)" << std::endl;
-  I.PrintYield(&std::cout);
+  // I.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Restrict, x1 <- true" << std::endl;
   J = MkRestrict(I, 1, true);
-  J.PrintYield(&std::cout);
+  // J.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Restrict, x1 <- false" << std::endl;
   K = MkRestrict(I, 1, false);
-  K.PrintYield(&std::cout);
+  // K.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Test whether False == Restrict, x1 <- false [Expected answer: K == MkFalse()]" << std::endl;
   if (K != MkFalse()) {
@@ -678,7 +661,7 @@ void NWATests::test3(){
   std::cout << std::endl;
   std::cout << "Exists x1" << std::endl;
   L = MkExists(I, 1);
-  L.PrintYield(&std::cout);
+  // L.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
 
   std::cout << "Test 2: ---------------------------------" << std::endl;
@@ -686,17 +669,17 @@ void NWATests::test3(){
   F = MkProjection(1);
   G = MkProjection(4);
   H = MkProjection(7);
-  I = MkAnd(3, F, G, H);
+  I = MkAnd( MkAnd(F, G), H);
   std::cout << "(x1 & x4 & x7)" << std::endl;
-  I.PrintYield(&std::cout);
+  // I.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Restrict, x4 <- true" << std::endl;
   J = MkRestrict(I, 4, true);
-  J.PrintYield(&std::cout);
+  // J.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Restrict, x4 <- false" << std::endl;
   K = MkRestrict(I, 4, false);
-  K.PrintYield(&std::cout);
+  // K.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Test whether False == Restrict, x4 <- false [Expected answer: K == MkFalse()]" << std::endl;
   if (K != MkFalse()) {
@@ -708,7 +691,7 @@ void NWATests::test3(){
   std::cout << std::endl;
   std::cout << "Exists x4" << std::endl;
   L = MkExists(I, 4);
-  L.PrintYield(&std::cout);
+  // L.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
 
   std::cout << "Test 3: ---------------------------------" << std::endl;
@@ -716,45 +699,44 @@ void NWATests::test3(){
   F = MkProjection(1);
   G = MkProjection(4);
   H = MkProjection(7);
-  I = MkAnd(3, F, G, H);
+  I = MkAnd(MkAnd(F, G), H);
   J = MkNot(F);
   K = MkProjection(5);
   L = MkAnd(J,K);
   M = MkOr(I,L);
   std::cout << "(x1 & x4 & x7) | (!x1 & x5)" << std::endl;
-  M.PrintYield(&std::cout);
+  // M.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Restrict, x4 <- true" << std::endl;
   N = MkRestrict(M, 4, true);
-  N.PrintYield(&std::cout);
+  // N.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Restrict, x4 <- false" << std::endl;
   O = MkRestrict(M, 4, false);
-  O.PrintYield(&std::cout);
+  // O.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Exists x4" << std::endl;
   P = MkExists(M, 4);
-  P.PrintYield(&std::cout);
+  // P.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
   std::cout << "Forall x4" << std::endl;
   Q = MkForall(M, 4);
-  Q.PrintYield(&std::cout);
+  // Q.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
 }
 
 void NWATests::testAllAssignments(){
   NWAOBDD<int> F, G, H, I;
   F = MkProjection(3);
-  std::cout << "F: " << std::endl;
-  std::cout << F << std::endl;
+  // std::cout << "F: " << std::endl;
+  // std::cout << F << std::endl;
   G = MkProjection(7);
-  std::cout << "G: " << std::endl;
-  std::cout << G << std::endl;
+  // std::cout << "G: " << std::endl;
+  // std::cout << G << std::endl;
   H = MkExclusiveOr(F, G);
   I = MkNot(H);
 
   // if MaxLevel is 3 or 4, test all assignments
-  if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
 
     std::cout << "Testing all assignments" << std::endl;
 
@@ -770,14 +752,9 @@ void NWATests::testAllAssignments(){
       }
       b = I.Evaluate(a);
       // std::cout << a << ": " << b << std::endl;
-      if (b != !(a[3] != a[7])) {
-        std::cerr << "ERROR: " << i << std::endl; //ETTODO -Fix
-      }
+      assert(b == !(a[3] != a[7]));
     }
-  }
-  else {
-    std::cout << "Cannot test all assignments: maxLevel must be 1 or 2" << std::endl;
-  }
+    std::cout << "testAllAssignments finished.\n";
 }
 
 #include "c6288-10_nwa.cpp"
@@ -843,7 +820,7 @@ void NWATests::testWeights(){
 
 void NWATests::testCanonicalness(){
   // DeMorgan's law as a test of canonicalness ------------------
-     std::cout << "Test of DeMorgan's law" << std::endl;
+     std::cout << "Test of Canonicalness" << std::endl;
      NWAOBDD<int> F, G, H, I, J, K;
      F = MkProjection(3);
      G = MkProjection(7);
@@ -854,19 +831,19 @@ void NWATests::testCanonicalness(){
    
      std::cout << (H == K) << std::endl;
    
-     unsigned int nodeCount, edgeCount;
-     F.CountNodesAndEdges(nodeCount, edgeCount);
-     std::cout << nodeCount << ", " << edgeCount << std::endl;
-     G.CountNodesAndEdges(nodeCount, edgeCount);
-     std::cout << nodeCount << ", " << edgeCount << std::endl;
-     H.CountNodesAndEdges(nodeCount, edgeCount);
-     std::cout << nodeCount << ", " << edgeCount << std::endl;
-     I.CountNodesAndEdges(nodeCount, edgeCount);
-     std::cout << nodeCount << ", " << edgeCount << std::endl;
-     J.CountNodesAndEdges(nodeCount, edgeCount);
-     std::cout << nodeCount << ", " << edgeCount << std::endl;
-     K.CountNodesAndEdges(nodeCount, edgeCount);
-     std::cout << nodeCount << ", " << edgeCount << std::endl;
+    //  unsigned int nodeCount, edgeCount;
+    //  F.CountNodesAndEdges(nodeCount, edgeCount);
+    //  std::cout << nodeCount << ", " << edgeCount << std::endl;
+    //  G.CountNodesAndEdges(nodeCount, edgeCount);
+    //  std::cout << nodeCount << ", " << edgeCount << std::endl;
+    //  H.CountNodesAndEdges(nodeCount, edgeCount);
+    //  std::cout << nodeCount << ", " << edgeCount << std::endl;
+    //  I.CountNodesAndEdges(nodeCount, edgeCount);
+    //  std::cout << nodeCount << ", " << edgeCount << std::endl;
+    //  J.CountNodesAndEdges(nodeCount, edgeCount);
+    //  std::cout << nodeCount << ", " << edgeCount << std::endl;
+    //  K.CountNodesAndEdges(nodeCount, edgeCount);
+    //  std::cout << nodeCount << ", " << edgeCount << std::endl;
 }
 
 #define VERIFY_EDGECOUNT(ec, maxec) VERIFY((ec) <= (maxec))
@@ -924,7 +901,7 @@ int NWATests::test_demorgans(void)
   return TEST_PASSED;
 }
 
-void NWATests::testAddition()
+void NWATests::test_Addition()
 {
 	std::clock_t start;
 	double duration;
@@ -1096,4 +1073,27 @@ bool NWATests::runTests(const char * argv, int start, int size){
 	return false;
 }
 
+void NWATests::RunAllTests() {
 
+    std::cout << "Starting to Run All Tests:\n";
+
+    NWAOBDDNodeHandle::InitNoDistinctionTable();
+    NWAOBDDNodeHandle::InitReduceCache();
+    InitPairProductCache();
+	  InitPathSummaryCache();
+	  InitPairProductMapCaches();
+
+    srand(time(0));
+    // testStepFunction(); 
+    // testIscas85();
+    // test3();
+    // testAnd();
+    // testSatisfyingAssignments();
+    // test_demorgans();
+    // test_Addition();
+    // test1();
+    // test2();
+    // testAllAssignments();
+    testMkIdRelationInterleaved();
+    std::cout << "Finishing\n";
+}

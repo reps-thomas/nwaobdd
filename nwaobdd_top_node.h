@@ -116,10 +116,10 @@ NWAOBDDTopNodeRefPtr MkSecond(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g);  
 NWAOBDDTopNodeRefPtr MkNotSecond(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g);    // \f.\g.!g
 
 // N-ary operations on NWAOBDDTopNodes --------------------------------------
-NWAOBDDTopNodeRefPtr MkAnd(int N, ...);      // \f1. ... \fk.(f1 && ... && fk)
-NWAOBDDTopNodeRefPtr MkNand(int N, ...);     // \f1. ... \fk.!(f1 && ... && fk)
-NWAOBDDTopNodeRefPtr MkOr(int N, ...);       // \f1. ... \fk.(f1 || ... || fk)
-NWAOBDDTopNodeRefPtr MkNor(int N, ...);      // \f1. ... \fk.!(f1 || ... || fk)
+// NWAOBDDTopNodeRefPtr MkAnd(int N, ...);      // \f1. ... \fk.(f1 && ... && fk)
+// NWAOBDDTopNodeRefPtr MkNand(int N, ...);     // \f1. ... \fk.!(f1 && ... && fk)
+// NWAOBDDTopNodeRefPtr MkOr(int N, ...);       // \f1. ... \fk.(f1 || ... || fk)
+// NWAOBDDTopNodeRefPtr MkNor(int N, ...);      // \f1. ... \fk.!(f1 || ... || fk)
 
 // Ternary operations on NWAOBDDTopNodes ------------------------------------
 
