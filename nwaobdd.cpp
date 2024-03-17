@@ -130,19 +130,6 @@ void NWAOBDD<T>::PrintYield(std::ostream * out)
 
 // Satisfaction Operations ------------------------------------
 
-#ifdef PATH_COUNTING_ENABLED
-// NumSatisfyingAssignments
-//
-// Return the number of satisfying assignments
-//
-// Running time: Linear in the size of the NWAOBDD
-//
-unsigned int NWAOBDD::NumSatisfyingAssignments()
-{
-  return root->NumSatisfyingAssignments();
-}
-#endif
-
 // FindOneSatisfyingAssignment
 //
 // If a satisfying assignment exists, allocate and place such an
@@ -151,6 +138,16 @@ unsigned int NWAOBDD::NumSatisfyingAssignments()
 //
 // Running time: Linear in the number of variables
 //
+
+template<typename T>
+void NWAOBDD<T>::DumpValueTuple() {
+  root -> DumpValueTuple();
+}
+template<typename T>
+void NWAOBDD<T>::DumpPathCountings() {
+  root -> DumpPathCountings();
+}
+
 template <typename T>
 bool NWAOBDD<T>::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
 {

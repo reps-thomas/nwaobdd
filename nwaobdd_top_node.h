@@ -26,6 +26,8 @@ class NWAOBDDTopNode
   T Evaluate(SH_OBDD::Assignment &assignment);             // Evaluate a Boolean function (recursive)
   T EvaluateIteratively(SH_OBDD::Assignment &assignment);  // Evaluate a Boolean function (iterative)
   void PrintYield(std::ostream * out);
+  void DumpPathCountings();
+  void DumpValueTuple();
   static unsigned const int maxLevel;
   unsigned int level;
 #ifdef PATH_COUNTING_ENABLED

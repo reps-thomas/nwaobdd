@@ -403,6 +403,8 @@ void NWATests::testMkIdRelationInterleaved()
 // Test of MkIdRelationInterleaved function ----------------------------------
   std::cout << "Test of MkIdRelationInterleaved function --------------------------------------" << std::endl;
   NWAOBDD<int> F = MkIdRelationInterleaved();
+  F.DumpValueTuple();
+  F.DumpPathCountings();
 
   // if MaxLevel is 3 or 4, test all assignments
   // if (NWAOBDD<int>::maxLevel == 1 || NWAOBDD<int>::maxLevel == 2) {
@@ -878,6 +880,8 @@ int NWATests::test_demorgans(void)
 
   SAY((H == K) << " should be non-zero" << std::endl);
   VERIFY(H == K);
+  H.DumpValueTuple();
+  H.DumpPathCountings();
 
  /* unsigned int nodeCount, edgeCount;
   F.CountNodesAndEdges(nodeCount, edgeCount);

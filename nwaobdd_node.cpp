@@ -44,6 +44,8 @@
 #include "infra/hash.h"
 #include "infra/hashset.h"
 #include "nwaobdd_top_node.h"
+#include <map>
+#include <algorithm>
 
 using namespace NWA_OBDD;
 
@@ -1311,8 +1313,11 @@ NWAOBDDInternalNode::~NWAOBDDInternalNode()
   delete [] BConnection[0];
   delete [] BConnection[1];
   #ifdef PATH_COUNTING_ENABLED
+  if(numPathsToExit)
     delete [] numPathsToExit;
-#endif
+  if(numPathsToMiddle)
+    delete [] numPathsToMiddle;
+  #endif
 }
 
 // print
@@ -1853,8 +1858,95 @@ unsigned int NWAOBDDInternalNode::InsertBConnection(unsigned int &j, Connection 
 //ETTODO PathCounts
 #ifdef PATH_COUNTING_ENABLED
 // InstallPathCounts
+
+long double addNumPathsToExit(const std::vector<long double>& logOfPaths){
+	if (logOfPaths.size() == 1)
+		return logOfPaths.back();
+	long double sum = 0.0;
+	for (int i = 0; i < logOfPaths.size() - 1; i++){
+		if (logOfPaths[i] != -1.0 * std::numeric_limits<long double>::infinity())
+			sum += pow(2, logOfPaths[i] - logOfPaths.back());
+	}
+	long double logOfSum = logOfPaths.back() + log1p(sum)/((long double)log(2));
+	return logOfSum;
+}
+
 void NWAOBDDInternalNode::InstallPathCounts()
-{/* ETTODO
+{
+  numPathsToMiddle = new long double[numBConnections];
+  numPathsToExit = new long double[numExits];
+  isNumPathsMemAllocated = true;
+  for(int i = 0; i < numBConnections; ++i) numPathsToMiddle[i] = 0;
+  for(int i = 0; i < numExits; ++i) numPathsToExit[i] = 0;
+
+  std::map<unsigned int, std::vector<long double>> storingNumPathsToMiddle;
+  for(unsigned b = 0; b <= 1; ++b)
+  {
+    for(unsigned j = 0; j < AConnection[b].entryPointHandle->handleContents->numExits; ++j) {
+      unsigned k0 = AConnection[b].returnMapHandle.Lookup(j).First();
+      unsigned k1 = AConnection[b].returnMapHandle.Lookup(j).Second();
+      long double numPathsValue = AConnection[b].entryPointHandle->handleContents->numPathsToExit[j];
+
+      if (storingNumPathsToMiddle.find(k0) == storingNumPathsToMiddle.end()) {
+        std::vector<long double> logOfPaths;
+        logOfPaths.push_back(numPathsValue);
+        storingNumPathsToMiddle[k0] = logOfPaths;
+      }
+      else {
+        storingNumPathsToMiddle[k0].push_back(numPathsValue);
+      }
+
+      if (storingNumPathsToMiddle.find(k1) == storingNumPathsToMiddle.end()) {
+        std::vector<long double> logOfPaths;
+        logOfPaths.push_back(numPathsValue);
+        storingNumPathsToMiddle[k1] = logOfPaths;
+      }
+      else {
+        storingNumPathsToMiddle[k1].push_back(numPathsValue);
+      }
+
+    }
+  }
+	for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToMiddle.begin(); it != storingNumPathsToMiddle.end(); it++){
+		std::sort(it->second.begin(), it->second.end());
+		numPathsToMiddle[it->first] = addNumPathsToExit(it->second);
+	}
+
+  std::map<unsigned int, std::vector<long double>> storingNumPathsToExit;
+  for(unsigned i = 0; i < numBConnections; ++i) {
+    for(unsigned b = 0; b <= 1; ++b)
+    {
+      for(unsigned j = 0; j < BConnection[b][i].entryPointHandle->handleContents->numExits; ++j) {
+        unsigned k0 = BConnection[b][i].returnMapHandle.Lookup(j).First();
+        unsigned k1 = BConnection[b][i].returnMapHandle.Lookup(j).Second();
+        long double numPathsValue = numPathsToMiddle[i] + BConnection[b][i].entryPointHandle->handleContents->numPathsToExit[j];
+
+        if (storingNumPathsToExit.find(k0) == storingNumPathsToExit.end()) {
+          std::vector<long double> logOfPaths;
+          logOfPaths.push_back(numPathsValue);
+          storingNumPathsToExit[k0] = logOfPaths;
+        }
+        else {
+          storingNumPathsToExit[k0].push_back(numPathsValue);
+        }
+
+        if (storingNumPathsToExit.find(k1) == storingNumPathsToExit.end()) {
+          std::vector<long double> logOfPaths;
+          logOfPaths.push_back(numPathsValue);
+          storingNumPathsToExit[k1] = logOfPaths;
+        }
+        else {
+          storingNumPathsToExit[k1].push_back(numPathsValue);
+        }
+
+      }
+    }
+  }
+	for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToExit.begin(); it != storingNumPathsToExit.end(); it++){
+		std::sort(it->second.begin(), it->second.end());
+		numPathsToExit[it->first] = addNumPathsToExit(it->second);
+	}
+  /* ETTODO
   numPathsToExit = new unsigned int[numExits];
   for (unsigned int i = 0; i < numExits; i++) {
     numPathsToExit[i] = 0;
@@ -1871,40 +1963,6 @@ void NWAOBDDInternalNode::InstallPathCounts()
 }
 #endif
 
-
-//********************************************************************
-// NWAOBDDLeafNode
-//********************************************************************
-
-// Constructors/Destructor -------------------------------------------
-
-// Default constructor
-NWAOBDDLeafNode::NWAOBDDLeafNode()
-  :  NWAOBDDNode(0)
-{
-  refCount = 1;
-}
-
-NWAOBDDLeafNode::~NWAOBDDLeafNode()
-{
-}
-
-void NWAOBDDLeafNode::DumpConnections(Hashset<NWAOBDDNode> *, std::ostream & /* = std::cout */ )
-{
-}
-
-//ETTODO CountNodesAndEdges
-void NWAOBDDLeafNode::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *, unsigned int &nodeCount, unsigned int &)
-{
-  if (visitedNodes->Lookup(this) == NULL) {
-    visitedNodes->Insert(this);
-    nodeCount++;
-  }
-}
-
-void NWAOBDDLeafNode::IncrRef() { }
-void NWAOBDDLeafNode::DecrRef() { }
-
 //********************************************************************
 // NWAOBDDEpsilonNode
 //********************************************************************
@@ -1913,12 +1971,12 @@ void NWAOBDDLeafNode::DecrRef() { }
 
 // Default constructor
 NWAOBDDEpsilonNode::NWAOBDDEpsilonNode()
-  :  NWAOBDDLeafNode()
+  :  NWAOBDDNode()
 {
   numExits = 1;
 #ifdef PATH_COUNTING_ENABLED //ETTODO
-  numPathsToExit = new unsigned int[1];
-  numPathsToExit[0] = 2;
+  numPathsToExit = new long double[1];
+  numPathsToExit[0] = 0.0;
 #endif
 }
 
@@ -1966,4 +2024,14 @@ bool NWAOBDDEpsilonNode::operator!= (const NWAOBDDNode & n)
 bool NWAOBDDEpsilonNode::operator== (const NWAOBDDNode & n)
 {
   return n.NodeKind() == NWAOBDD_EPSILON;
+}
+
+void NWAOBDDEpsilonNode::IncrRef() {}
+void NWAOBDDEpsilonNode::DecrRef() {}
+void NWAOBDDEpsilonNode::DumpConnections(Hashset<NWAOBDDNode>*, std::ostream &) {}
+void NWAOBDDEpsilonNode::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount) {
+  if(visitedNodes->Lookup(this) == NULL) {
+    visitedNodes -> Insert(this);
+    nodeCount++;
+  }
 }

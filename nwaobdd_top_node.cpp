@@ -11,7 +11,6 @@ NWAOBDDNodeHandle MkIdRelationInterleaved(unsigned int level, IDTYPE idtype)
 
   if (level == 0) {
     return NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-    n->numExits = 1;
   }
   else if (level == 1) {
       n = new NWAOBDDInternalNode(level);
@@ -173,7 +172,7 @@ NWAOBDDNodeHandle MkIdRelationInterleaved(unsigned int level, IDTYPE idtype)
           n->numExits = 3;
       }
   }
-  n->numExits = 2;
+  // n->numExits = 2;
 #ifdef PATH_COUNTING_ENABLED
   n->InstallPathCounts();
 #endif
@@ -530,29 +529,23 @@ void NWAOBDDTopNode<T>::PrintYield(std::ostream * out)
   }
 }
 
-// Satisfaction Operations ------------------------------------
-
-//ETTODO NumSatAssignments
-#ifdef PATH_COUNTING_ENABLED
-// NumSatisfyingAssignments
-//
-// Return the number of satisfying assignments
-//
-// Running time: Linear in the size of the NWAOBDDTopNode
-//
-unsigned int NWAOBDDTopNode::NumSatisfyingAssignments()
-{
-  unsigned int ans = 0;
-
-  /*for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
-    unsigned int k = rootConnection.returnMapHandle[0].Lookup(i);
-    if (k == 1) {
-      ans += rootConnection.entryPointHandle->handleContents->numPathsToExit[i];
-    }
-  }*/
-  return ans;
+template<typename T>
+void NWAOBDDTopNode<T>::DumpPathCountings() {
+  NWAOBDDNode* n = rootConnection.entryPointHandle->handleContents;
+  for(unsigned i = 0; i < n -> numExits; ++i)
+    printf("%.0lf ", pow(2, n->numPathsToExit[i]) + 1e-7);
+  printf("\n");
 }
-#endif
+
+template<typename T>
+void NWAOBDDTopNode<T>::DumpValueTuple() {
+  ReturnMapHandle<T> rmh = rootConnection.returnMapHandle;
+  for(unsigned i = 0; i < rmh.Size(); ++i)
+    std::cout << rmh[i] << ' ';
+  std::cout << '\n';
+}
+
+// Satisfaction Operations ------------------------------------
 
 // FindOneSatisfyingAssignment
 //

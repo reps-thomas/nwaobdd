@@ -79,6 +79,8 @@ class NWAOBDD {
 
 
   void DumpConnections(std::ostream & out = std::cout);
+  void DumpValueTuple();
+  void DumpPathCountings();
   void GroupDumpConnections(std::ostream & out = std::cout);
   void CountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCount);
   void GroupCountNodesAndEdges(unsigned int &nodeCount, unsigned int &edgeCount);

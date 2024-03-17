@@ -34,12 +34,8 @@
 
 namespace NWA_OBDD {
 
-	
 	class NWAOBDDNode;
 	class NWAOBDDInternalNode;   //  : public NWAOBDDNode
-	class NWAOBDDLeafNode;       //  : public NWAOBDDNode
-	class NWAOBDDForkNode;       //  : public NWAOBDDLeafNode
-	class NWAOBDDDontCareNode;   //  : public NWAOBDDLeafNode
 	class NWAOBDDNodeHandle;
 }
 

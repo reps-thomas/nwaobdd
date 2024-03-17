@@ -29,14 +29,13 @@
 
 
 // Configuration flags --------------------------------------------
-//#define PATH_COUNTING_ENABLED 1
+#define PATH_COUNTING_ENABLED 1
 
 namespace NWA_OBDD {
 // Node classes declared in this file --------------------------------
 template<typename T> class NWAOBDDTopNode;
 class NWAOBDDNode;
 class NWAOBDDInternalNode;   //  : public NWAOBDDNode
-class NWAOBDDLeafNode;       //  : public NWAOBDDNode
 class NWAOBDDEpsilonNode;   //  : public NWAOBDDLeafNode
 class NWAOBDDNodeHandle;
  }
@@ -195,7 +194,8 @@ class NWAOBDDNode {
   unsigned int numExits;
   static unsigned int const maxLevel;
 #ifdef PATH_COUNTING_ENABLED
-  unsigned int *numPathsToExit;       // unsigned int numPathsToExit[numExits]
+  long double *numPathsToExit;       // unsigned int numPathsToExit[numExits]
+  bool isNumPathsMemAllocated;
 #endif
   virtual void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index) = 0;
   virtual int Traverse(SH_OBDD::AssignmentIterator &ai) = 0;
@@ -247,6 +247,7 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   NWAOBDDInternalNode(const unsigned int l);   // Constructor
   ~NWAOBDDInternalNode();                      // Destructor
   NWAOBDD_NODEKIND NodeKind() const { return NWAOBDD_INTERNAL; }
+  long double *numPathsToMiddle;
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
   NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits);
@@ -281,34 +282,10 @@ NWAOBDDNodeHandle MkIdRelationNested(unsigned int level);
 //********************************************************************
 
 //********************************************************************
-// NWAOBDDLeafNode
-//********************************************************************
-
-class NWAOBDDLeafNode : public NWAOBDDNode {
- public:
-  NWAOBDDLeafNode();                   // Constructor
-  virtual ~NWAOBDDLeafNode();          // Destructor
-  virtual NWAOBDD_NODEKIND NodeKind() const = 0;
-  virtual void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index) = 0;
-  virtual int Traverse(SH_OBDD::AssignmentIterator &ai) = 0;
-  virtual NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits) = 0;
-  virtual unsigned int Hash(unsigned int modsize) = 0;
-  void DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out = std::cout);
-  void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount);
-  virtual bool operator!= (const NWAOBDDNode & n) = 0;  // Overloaded !=
-  virtual bool operator== (const NWAOBDDNode & n) = 0;  // Overloaded ==
-  void IncrRef();
-  void DecrRef();
-
- public:
-	 virtual std::ostream& print(std::ostream & out = std::cout) const = 0;
-};
-
-//********************************************************************
 // NWAOBDDEpsilonNode
 //********************************************************************
 
-class NWAOBDDEpsilonNode : public NWAOBDDLeafNode {
+class NWAOBDDEpsilonNode : public NWAOBDDNode {
  public:
   NWAOBDDEpsilonNode();                   // Constructor
   ~NWAOBDDEpsilonNode();                  // Destructor
@@ -319,6 +296,10 @@ class NWAOBDDEpsilonNode : public NWAOBDDLeafNode {
   unsigned int Hash(unsigned int modsize);
   bool operator!= (const NWAOBDDNode & n);        // Overloaded !=
   bool operator== (const NWAOBDDNode & n);        // Overloaded ==
+  void DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out = std::cout);
+  void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount);
+  void IncrRef();
+  void DecrRef();
 
  public:
 	 std::ostream& print(std::ostream & out = std::cout) const;
