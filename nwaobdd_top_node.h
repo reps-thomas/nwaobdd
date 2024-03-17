@@ -64,13 +64,19 @@ typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr ApplyAndReduce(
     typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
     BoolOp op);
 
-
 template<typename T>
 typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr ApplyAndReduce(
     typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
     typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
-    typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n3,
-    BoolOp3 op);
+    T(*func)(T, T));
+
+
+// template<typename T>
+// typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr ApplyAndReduce(
+//     typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
+//     typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
+//     typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n3,
+//     BoolOp3 op);
 
 
 // template <typename T>
@@ -137,4 +143,15 @@ NWAOBDDTopNodeRefPtr MkSchemaAdjust(NWAOBDDTopNodeRefPtr g, int s[4]);
 NWAOBDDTopNodeRefPtr MkPathSummary(NWAOBDDTopNodeRefPtr g);
 NWAOBDDTopNodeRefPtr MkComposeTop(NWAOBDDTopNodeRefPtr f, int i, NWAOBDDTopNodeRefPtr g);              // \f. f | x_i = g
 
+
+template <typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
+MkTimesTopNode(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr f,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr g);
+
+template <typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
+MkPlusTopNode(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr f,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr g);
+            
 } // namespace NWA_OBDD

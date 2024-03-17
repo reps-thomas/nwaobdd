@@ -25,6 +25,7 @@ class NWATests
         static void testParity(); // Pass
         static void test1(); // Pass
         static void test2(); // Pass
+        static void test4();
         static void testMaxLevelGreaterThan10();
         static int test_demorgans(void); // Pass
         static int test_irm4(void);

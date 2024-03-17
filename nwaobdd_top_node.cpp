@@ -1042,13 +1042,13 @@ NWAOBDDTopNodeRefPtr MkNotSecond(NWAOBDDTopNodeRefPtr , NWAOBDDTopNodeRefPtr g)
 // \a.\b.\c.(a && b) || (!a && c)
 NWAOBDDTopNodeRefPtr MkIfThenElse(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g, NWAOBDDTopNodeRefPtr h)
 {
-  return ApplyAndReduce<int>(f, g, h, ifThenElseOp);
+  return MkOr(MkAnd(f, g), MkAnd( MkNot(f), h));
 }
 
 // \a.\b.\c.(b && !a) || (c && !a) || (b && c)
 NWAOBDDTopNodeRefPtr MkNegMajority(NWAOBDDTopNodeRefPtr f, NWAOBDDTopNodeRefPtr g, NWAOBDDTopNodeRefPtr h)
 {
-  return ApplyAndReduce<int>(f, g, h, negMajorityOp);
+  return MkOr( MkAnd(g, MkNot(h)), MkOr(MkAnd(h, MkNot(f)), MkAnd(g,h) ) );
 }
 
 // Create representation of \f . exists x_i : f
@@ -1790,58 +1790,70 @@ ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
    return(new NWAOBDDTopNode(reduced_n, inducedReturnMap));
 }
 
-//ETTODO Ternary ApplyAndReduce
+
+
 template <typename T>
 typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
-// ApplyAndReduce -----------------------------------------------------
 ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
             typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n2,
-            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n3,
-            BoolOp3 op)
-{/*ETTODO
-  // Perform 3-way cross product of n1, n2, and n3
-     TripleProductMapHandle MapHandle;
-     NWAOBDDNodeHandle n = TripleProduct(n1->rootConnection.entryPointHandle,
-                                         n2->rootConnection.entryPointHandle,
-                                         n3->rootConnection.entryPointHandle,
-                                         MapHandle);
-
+            T(*func)(T, T)
+            )
+{
+  // Perform 2-way cross product of n1 and n2
+     PairProductMapHandle MapHandle;
+     NWAOBDDNodeHandle n = PairProduct(*(n1->rootConnection.entryPointHandle),
+                                       *(n2->rootConnection.entryPointHandle),
+                                       MapHandle);
   // Create returnMapHandle from MapHandle: Fold the pairs in MapHandle by applying
-  // [n1->rootConnection.returnMapHandle, n2->rootConnection.returnMapHandle, n3->rootConnection.returnMapHandle]
-  // (component-wise) to each triple.
-     ReturnMapHandle returnMapHandle;
-     TripleProductMapBodyIterator MapIterator(*MapHandle.mapContents);
+  // [n1->rootConnection.returnMapHandle, n2->rootConnection.returnMapHandle]
+  // (component-wise) to each pair.
+     ReturnMapHandle<T> returnMapHandle;
+     PairProductMapBodyIterator MapIterator(*MapHandle.mapContents);
      MapIterator.Reset();
      while (!MapIterator.AtEnd()) {
-       int c1, c2, c3;
-       int first, second, third;
+       T c1, c2;
+       int first, second;
        first = MapIterator.Current().First();
        second = MapIterator.Current().Second();
-       third = MapIterator.Current().Third();
-       c1 = n1->rootConnection.returnMapHandle[0].Lookup(first);
-       c2 = n2->rootConnection.returnMapHandle[0].Lookup(second);
-       c3 = n3->rootConnection.returnMapHandle[0].Lookup(third);
-       returnMapHandle.AddToEnd(op[c1][c2][c3]);
+       c1 = n1->rootConnection.returnMapHandle.Lookup(first);
+       c2 = n2->rootConnection.returnMapHandle.Lookup(second);
+	     T r = func(c1, c2);
+       returnMapHandle.AddToEnd(r);
        MapIterator.Next();
      }
-    returnMapHandle.Canonicalize();
+     returnMapHandle.Canonicalize();
 
   // Perform reduction on n, with respect to the common elements that returnMapHandle maps together
      ReductionMapHandle inducedReductionMapHandle;
-     ReturnMapHandle inducedReturnMap;
+     ReturnMapHandle<int> inducedReturnMap;
      returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
      //     NWAOBDDNodeHandle::InitReduceCache();
      NWAOBDDNodeHandle reduced_n = n.Reduce(inducedReductionMapHandle, inducedReturnMap.Size());
      //     NWAOBDDNodeHandle::DisposeOfReduceCache();
 
-     //ETTODO 
-     ReturnMapHandle rm[2];
-     rm[0] = inducedReturnMap;
-     rm[1] = inducedReturnMap;
   // Create and return NWAOBDDTopNode
-     return(new NWAOBDDTopNode(reduced_n, rm));*/
-	 NWAOBDDTopNodeRefPtr  temp;
-	 return temp;
+   return(new NWAOBDDTopNode(reduced_n, inducedReturnMap));
+}
+
+
+// Pointwise multiplication: \f.\g.(f * g) ---------------------------------------
+template <typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
+MkTimesTopNode(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr f,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr g
+            )
+{
+    return ApplyAndReduce<T>(f, g, TimesFunc);
+}
+
+// Pointwise multiplication: \f.\g.(f + g) ---------------------------------------
+template <typename T>
+typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr
+MkPlusTopNode(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr f,
+            typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr g
+            )
+{
+    return ApplyAndReduce<T>(f, g, PlusFunc);
 }
 
 template class NWAOBDDTopNode<int>;
@@ -1851,14 +1863,14 @@ template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr ApplyAndReduce<int>(
     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n2,
     BoolOp op);
 
-template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr ApplyAndReduce<int>(
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n1,
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n2,
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n3,
-    BoolOp3 op);
-// template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkPlusTopNode<int>(
-//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
-//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
+
+template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkTimesTopNode<int>(
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
+template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkPlusTopNode<int>(
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
+    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
+
 
 // template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkExorTopNode<int>(
 //     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,

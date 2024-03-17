@@ -187,6 +187,7 @@ static Hashtable<NWAReduceKey, NWAOBDDNodeHandle> *reduceCache = NULL;
 NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits)
 {
   if (replacementNumExits == 1) {
+    if(handleContents -> Level() == 3) abort();
     return NWAOBDDNodeHandle::NoDistinctionNode[handleContents->Level()];
   }
 
@@ -1678,16 +1679,22 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 	 n->BConnection[1] = new Connection[numBConnections];
      n->numBConnections = 0;
      for (unsigned int i = 0; i < numBConnections; i++) {
-        ReductionMapHandle inducedReductionMapHandle0, inducedReductionMapHandle1;
-        ReturnMapHandle<intpair> inducedReturnMap0, inducedReturnMap1;
+        
+        ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
+        ReductionMapHandle inducedReductionMapHandle1(redMapHandle.Size());
+        ReturnMapHandle<intpair> inducedReturnMap0;
+        ReturnMapHandle<intpair> inducedReturnMap1;
+
         ReturnMapHandle<intpair> reducedReturnMap0 = BConnection[0][i].returnMapHandle.Compose(redMapHandle);
-		ReturnMapHandle<intpair> reducedReturnMap1 = BConnection[1][i].returnMapHandle.Compose(redMapHandle);
+		    ReturnMapHandle<intpair> reducedReturnMap1 = BConnection[1][i].returnMapHandle.Compose(redMapHandle);
+
         reducedReturnMap0.InducedReductionAndReturnMap(inducedReductionMapHandle0, inducedReturnMap0);
-		reducedReturnMap1.InducedReductionAndReturnMap(inducedReductionMapHandle1, inducedReturnMap1);
+		    reducedReturnMap1.InducedReductionAndReturnMap(inducedReductionMapHandle1, inducedReturnMap1);
         NWAOBDDNodeHandle temp0 = BConnection[0][i].entryPointHandle->Reduce(inducedReductionMapHandle0, inducedReturnMap0.Size());
-		NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle->Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size());
+		    NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle->Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size());
+        
         Connection c0(temp0, inducedReturnMap0);
-		Connection c1(temp1, inducedReturnMap1);
+		    Connection c1(temp1, inducedReturnMap1);
         unsigned int position = n->InsertBConnection(n->numBConnections, c0, c1);
         AReductionMapHandle.AddToEnd(position);
      }
@@ -1855,15 +1862,15 @@ unsigned int NWAOBDDInternalNode::InsertBConnection(unsigned int &j, Connection 
   return j-1;
 }
 
-//ETTODO PathCounts
 #ifdef PATH_COUNTING_ENABLED
 // InstallPathCounts
 
 long double addNumPathsToExit(const std::vector<long double>& logOfPaths){
+  // assert(logOfPaths.size() > 0);
 	if (logOfPaths.size() == 1)
 		return logOfPaths.back();
 	long double sum = 0.0;
-	for (int i = 0; i < logOfPaths.size() - 1; i++){
+	for (unsigned i = 0; i + 1 < logOfPaths.size(); i++){
 		if (logOfPaths[i] != -1.0 * std::numeric_limits<long double>::infinity())
 			sum += pow(2, logOfPaths[i] - logOfPaths.back());
 	}
@@ -1886,7 +1893,6 @@ void NWAOBDDInternalNode::InstallPathCounts()
       unsigned k0 = AConnection[b].returnMapHandle.Lookup(j).First();
       unsigned k1 = AConnection[b].returnMapHandle.Lookup(j).Second();
       long double numPathsValue = AConnection[b].entryPointHandle->handleContents->numPathsToExit[j];
-
       if (storingNumPathsToMiddle.find(k0) == storingNumPathsToMiddle.end()) {
         std::vector<long double> logOfPaths;
         logOfPaths.push_back(numPathsValue);
@@ -1911,6 +1917,7 @@ void NWAOBDDInternalNode::InstallPathCounts()
 		std::sort(it->second.begin(), it->second.end());
 		numPathsToMiddle[it->first] = addNumPathsToExit(it->second);
 	}
+
 
   std::map<unsigned int, std::vector<long double>> storingNumPathsToExit;
   for(unsigned i = 0; i < numBConnections; ++i) {
@@ -1946,6 +1953,7 @@ void NWAOBDDInternalNode::InstallPathCounts()
 		std::sort(it->second.begin(), it->second.end());
 		numPathsToExit[it->first] = addNumPathsToExit(it->second);
 	}
+
   /* ETTODO
   numPathsToExit = new unsigned int[numExits];
   for (unsigned int i = 0; i < numExits; i++) {
@@ -1971,7 +1979,7 @@ void NWAOBDDInternalNode::InstallPathCounts()
 
 // Default constructor
 NWAOBDDEpsilonNode::NWAOBDDEpsilonNode()
-  :  NWAOBDDNode()
+  :  NWAOBDDNode(0)
 {
   numExits = 1;
 #ifdef PATH_COUNTING_ENABLED //ETTODO

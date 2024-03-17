@@ -527,10 +527,11 @@ void NWATests::testAnd(){
   G = MkProjection(1);
   std::cout << G << std::endl;
   std::cout << "----------------------------------------------------------------" << std::endl;
-  H = MkAnd(F, G);
+  H = F * G;
   std::cout << "----------------------------------------------------------------" << std::endl;
   std::cout << H << std::endl;
   std::cout << "----------------------------------------------------------------" << std::endl;
+  H.DumpPathCountings();
 }
 
 void NWATests::ApplyAndReduceUnitTests(){
@@ -725,6 +726,19 @@ void NWATests::test3(){
   Q = MkForall(M, 4);
   // Q.PrintYield(&std::cout);
   std::cout << std::endl << std::endl;
+}
+
+
+void NWATests::test4() {
+  NWAOBDD<int> F1 = MkProjection(7);
+  NWAOBDD<int> F2 = MkProjection(8);
+  NWAOBDD<int> F3 = MkProjection(10);
+  NWAOBDD<int> F4 = MkProjection(11);
+  auto F5 = MkProjection(13);
+  auto F6 = MkProjection(18);
+  NWAOBDD<int> r = (F1 + F2 + F3) * (F4 + F5 + F6);
+  r.DumpValueTuple();
+  r.DumpPathCountings();
 }
 
 void NWATests::testAllAssignments(){
@@ -1090,7 +1104,7 @@ void NWATests::RunAllTests() {
     srand(time(0));
     // testStepFunction(); 
     // testIscas85();
-    // test3();
+    test4();
     // testAnd();
     // testSatisfyingAssignments();
     // test_demorgans();
@@ -1098,6 +1112,6 @@ void NWATests::RunAllTests() {
     // test1();
     // test2();
     // testAllAssignments();
-    testMkIdRelationInterleaved();
+    // testMkIdRelationInterleaved();
     std::cout << "Finishing\n";
 }

@@ -97,4 +97,15 @@ std::ostream& operator<< (std::ostream & out, const NWAOBDD<T> &d);
 
 } // namespace NWA_OBDD
 
+namespace NWA_OBDD {
+  template<typename T>
+  NWAOBDD<T> operator* (NWAOBDD<T> f, NWAOBDD<T> g) {
+    return NWAOBDD<T>(MkTimesTopNode<T>(f.root, g.root));
+  }
+  template<typename T>
+  NWAOBDD<T> operator+ (NWAOBDD<T> f, NWAOBDD<T> g) {
+    return NWAOBDD<T>(MkPlusTopNode<T>(f.root, g.root));
+  }
+}
+
 #endif
