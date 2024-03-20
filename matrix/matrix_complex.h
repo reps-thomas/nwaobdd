@@ -31,8 +31,8 @@
 #include <fstream>
 #include <complex>
 #include <boost/multiprecision/cpp_complex.hpp>
-#include "nwaobdd.h"
-#include "fourier_semiring.h"
+#include "../nwaobdd.h"
+#include "../fourier_semiring.h"
 
 namespace mp = boost::multiprecision;
 

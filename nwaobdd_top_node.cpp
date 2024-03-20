@@ -465,7 +465,7 @@ void NWAOBDDTopNode<T>::PrintYieldAux(std::ostream * out, List<ConsCell<Traverse
 {//ETTODO
   unsigned int exitIndex = 0;
   TraverseState ts;
-  int ans;
+    T ans;
 
   while (S != NULL) {
     ts = S->Item();
@@ -560,9 +560,9 @@ template<typename T>
 bool NWAOBDDTopNode<T>::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
 {
   for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
-    unsigned int k = rootConnection.returnMapHandle.Lookup(i);
-    if (k == 1) {  // A satisfying assignment must exist
-      unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDTopNode::maxLevel + 2)) - (unsigned int)4));
+    T k = rootConnection.returnMapHandle.Lookup(i);
+    if (k) {  // A satisfying assignment must exist
+      unsigned int size = ((unsigned int)((((unsigned int)1) << (level + 2)) - (unsigned int)4));
       assignment = new SH_OBDD::Assignment(size);
       rootConnection.entryPointHandle->handleContents->FillSatisfyingAssignment(i, *assignment, size);
       return true;
@@ -1855,26 +1855,6 @@ MkPlusTopNode(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr f,
 {
     return ApplyAndReduce<T>(f, g, PlusFunc);
 }
-
-template class NWAOBDDTopNode<int>;
-template std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode<int> &d);
-template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr ApplyAndReduce<int>(
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n1,
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n2,
-    BoolOp op);
-
-
-template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkTimesTopNode<int>(
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
-template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkPlusTopNode<int>(
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
-    NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
-
-
-// template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr MkExorTopNode<int>(
-//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr f,
-//     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr g);
 
 
 }

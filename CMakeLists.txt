@@ -17,10 +17,17 @@ add_executable(nwaobdd.out
     return_map_impl.cpp
     traverse_state_nwa.cpp
     testing/tests_nwa.cpp
-    connection.cpp
+    # connection.cpp
     connectionT_impl.cpp
-    nwaobdd_top_node.cpp
-    # nwaobdd_top_node_impl.cpp
+    # nwaobdd_top_node.cpp
+    fourier_semiring.cpp
+
+    # matrix/matrix_complex.cpp
+    nwaobdd_top_node_impl.cpp
+
+    vector/vector_complex_top_node.cpp 
+    vector/vector_complex.cpp
+    vector/vector_node.cpp
 )
 target_compile_options(nwaobdd.out PRIVATE -w -lm -std=c++2a -O3 -I${path_to_boost})
 target_link_libraries(nwaobdd.out PRIVATE infra)

@@ -1,7 +1,7 @@
 #include "../assignment.h"
 #include "../nwaobdd.h"
 #include "../nwaobdd_int.h"
-
+#include "../vector/vector_complex.h"
 namespace NWA_OBDD {
 class NWATests
 {
@@ -39,5 +39,6 @@ class NWATests
 		static void test_Addition(); // Pass
 		static bool runTests(const char * argv, int start = 0, int size = 0);
         static void RunAllTests();
+        static void test_mk_basis_vector();
 };
 }

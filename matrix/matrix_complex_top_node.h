@@ -31,73 +31,73 @@
 #include <fstream>
 #include <complex>
 #include "matrix_complex.h"
-#include "return_map_T.h"
+#include "../return_map_T.h"
 namespace NWA_OBDD {
 	typedef ReturnMapBody<BIG_COMPLEX_FLOAT> ComplexFloatBoostReturnMapBody;
 	typedef ReturnMapHandle<BIG_COMPLEX_FLOAT> ComplexFloatBoostReturnMapHandle;
 }
-#include "connection.h"
+#include "../connection.h"
 namespace NWA_OBDD {
 	typedef ConnectionT<ComplexFloatBoostReturnMapHandle> ComplexFloatBoostConnection;
 }
 
 namespace NWA_OBDD {
 
-	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT> CFLOBDDTopNodeComplexFloatBoost;
-	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::CFLOBDDTopNodeTRefPtr CFLOBDDTopNodeComplexFloatBoostRefPtr;
-	typedef NWAOBDDTopNode<fourierSemiring>::CFLOBDDTopNodeTRefPtr CFLOBDDTopNodeFourierRefPtr;
+	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT> NWAOBDDTopNodeComplexFloatBoost;
+	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr NWAOBDDTopNodeComplexFloatBoostRefPtr;
+	typedef NWAOBDDTopNode<fourierSemiring>::NWAOBDDTopNodeTRefPtr NWAOBDDTopNodeFourierRefPtr;
 
 	namespace Matrix1234ComplexFloatBoost {
 
 		// Initialization routine
 		extern void Matrix1234InitializerTop();
 
-		extern void MatrixPrintRowMajorInterleavedTop(CFLOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
-		extern void MatrixPrintRowMajorTop(CFLOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
+		extern void MatrixPrintRowMajorInterleavedTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
+		extern void MatrixPrintRowMajorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
 
 
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkIdRelationInterleavedTop(unsigned int i); // Representation of identity relation
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkWalshInterleavedTop(unsigned int i); // Representation of Walsh matrix
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkInverseReedMullerInterleavedTop(unsigned int i); // Representation of Inverse Reed-Muller matrix
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkNegationMatrixInterleavedTop(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkPauliYMatrixInterleavedTop(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkPauliZMatrixInterleavedTop(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkSGateInterleavedTop(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkPhaseShiftGateInterleavedTop(unsigned int i, double theta);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkExchangeInterleavedTop(unsigned int i); // Representation of exchange matrix
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkIdRelationInterleavedTop(unsigned int i); // Representation of identity relation
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshInterleavedTop(unsigned int i); // Representation of Walsh matrix
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkInverseReedMullerInterleavedTop(unsigned int i); // Representation of Inverse Reed-Muller matrix
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNegationMatrixInterleavedTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliYMatrixInterleavedTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliZMatrixInterleavedTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkSGateInterleavedTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPhaseShiftGateInterleavedTop(unsigned int i, double theta);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkExchangeInterleavedTop(unsigned int i); // Representation of exchange matrix
 
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkRestrictTop(unsigned int level, std::string s);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkRestrictTop(unsigned int level, std::string s);
 
 		// Matrix-related operations (on matrices with room for two extra vocabularies) ------------
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkWalshVoc13Top(unsigned int i); // Representation of Walsh matrix with room for two additional vocabularies
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkWalshVoc12Top(unsigned int i); // Representation of Walsh matrix with room for two additional vocabularies
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVocs13To24Top(CFLOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVocs12To34Top(CFLOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVoc43Top(CFLOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVoc42Top(CFLOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkDetensorConstraintInterleavedTop(unsigned int i);
-		// extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixProjectVoc23Top(CFLOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary projection
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4TopNode(CFLOBDDTopNodeComplexFloatBoostRefPtr c1, CFLOBDDTopNodeComplexFloatBoostRefPtr c2);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4WithInfoTopNode(CFLOBDDTopNodeComplexFloatBoostRefPtr c1, CFLOBDDTopNodeComplexFloatBoostRefPtr c2);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshVoc13Top(unsigned int i); // Representation of Walsh matrix with room for two additional vocabularies
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshVoc12Top(unsigned int i); // Representation of Walsh matrix with room for two additional vocabularies
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVocs13To24Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVocs12To34Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVoc43Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVoc42Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkDetensorConstraintInterleavedTop(unsigned int i);
+		// extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixProjectVoc23Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary projection
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4TopNode(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4WithInfoTopNode(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
 
 		// Subroutines for Discrete Fourier Transform
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCFLOBDDMatrixEqVoc14Top(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkFourierDiagonalComponentTop(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr PromoteInterleavedTo12Top(CFLOBDDTopNodeComplexFloatBoostRefPtr c);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr Demote12ToInterleavedTop(CFLOBDDTopNodeComplexFloatBoostRefPtr c);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr ConvertToComplexTop(CFLOBDDTopNodeFourierRefPtr c);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCNOTInterleavedTop(unsigned int i);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCPGateTop(unsigned int level, long int i, long int j, double theta);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkSwapGateTop(unsigned int level, long int i, long int j);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkiSwapGateTop(unsigned int level, long int i, long int j);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCSwapGateTop(unsigned int level, long int c, long int i, long int j);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCNOTTopNode(unsigned int level, unsigned int n, long int controller, long int controlled);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCCNOTTopNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkMCXTopNode(unsigned int level, unsigned int n, std::vector<long int>& controllers, long int controlled);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MkCCPTopNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled, double theta);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNWAOBDDMatrixEqVoc14Top(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkFourierDiagonalComponentTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr PromoteInterleavedTo12Top(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr Demote12ToInterleavedTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr ConvertToComplexTop(NWAOBDDTopNodeFourierRefPtr c);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCNOTInterleavedTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCPGateTop(unsigned int level, long int i, long int j, double theta);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkSwapGateTop(unsigned int level, long int i, long int j);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkiSwapGateTop(unsigned int level, long int i, long int j);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCSwapGateTop(unsigned int level, long int c, long int i, long int j);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCNOTTopNode(unsigned int level, unsigned int n, long int controller, long int controlled);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCCNOTTopNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkMCXTopNode(unsigned int level, unsigned int n, std::vector<long int>& controllers, long int controlled);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCCPTopNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled, double theta);
 
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(CFLOBDDTopNodeComplexFloatBoostRefPtr c);
-		extern CFLOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(CFLOBDDTopNodeComplexFloatBoostRefPtr c);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
 
 	}
 }

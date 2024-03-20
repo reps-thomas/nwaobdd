@@ -31,10 +31,12 @@
 #include "nwaobdd.h"
 #include "nwaobdd_node.h"
 #include "nwaobdd_top_node.h"
-#include "nwaobdd_top_node_impl.cpp"
+// #include "nwaobdd_top_node_impl.cpp"
 #include "assignment.h"
 #include "bool_op.h"
 #include "nwaobdd_int.h"
+#include <boost/multiprecision/cpp_complex.hpp>
+
 
 using namespace NWA_OBDD;
 
@@ -48,8 +50,8 @@ unsigned int const NWAOBDD<T>::maxLevel = NWAOBDDMaxLevel;
 // Constructors/Destructor -------------------------------------------
 
 // Default constructor
-template <typename T>
-NWAOBDD<T>::NWAOBDD()
+template <>
+NWAOBDD<int>::NWAOBDD()
   : root(MkTrueTop())
 {
 }
@@ -99,7 +101,7 @@ void NWAOBDD<T>::PrintYieldSemantic(std::ostream & out)
   if (NWAOBDDMaxLevel == 1 || NWAOBDDMaxLevel == 2) {
     unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));
     SH_OBDD::Assignment a(size);
-    bool b;
+    T b;
     unsigned long int range = 1UL << size;
     for (unsigned long int i = 0UL; i < range; i++) {
       unsigned long int mask = 1UL;
@@ -198,49 +200,49 @@ template <typename T>
 bool NWAOBDD<T>::DependsOn(int i) const
 {
   // horrible performance!
-  if (MkRestrict(*this, i, false) == *this) {
-    assert(MkRestrict(*this, i, true) == *this); // or this algorithm is bad
-    return false;
-  }
-  assert(MkRestrict(*this, i, true) != *this);
-  return true;
+  // if (MkRestrict(*this, i, false) == *this) {
+  //   assert(MkRestrict(*this, i, true) == *this); // or this algorithm is bad
+  //   return false;
+  // }
+  // assert(MkRestrict(*this, i, true) != *this);
+  // return true;
 }
 
 template <typename T>
 bool NWAOBDD<T>::IsPositiveCube() const
 {
-  return IsPositiveCubeInt(0);
+  // return IsPositiveCubeInt(0);
 }
 
 template <typename T>
 bool NWAOBDD<T>::IsPositiveCubeInt(int least) const
 {
   // base case:
-  if (*this == MkFalse()) return false;
-  if (*this == MkTrue()) return true;
+  // if (*this == MkFalse()) return false;
+  // if (*this == MkTrue()) return true;
 
-  // recursive step:
-  unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));
-  for (int xi = least; xi < size; xi++) {
-    if (DependsOn(xi)) {
-      if (MkRestrict(*this, xi, false)
-      != MkFalse())
-    return false;
-      if (!MkRestrict(*this, xi, true).IsPositiveCubeInt(xi+1))
-    return false;
-    }
-  }
+  // // recursive step:
+  // unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));
+  // for (int xi = least; xi < size; xi++) {
+  //   if (DependsOn(xi)) {
+  //     if (MkRestrict(*this, xi, false)
+  //     != MkFalse())
+  //   return false;
+  //     if (!MkRestrict(*this, xi, true).IsPositiveCubeInt(xi+1))
+  //   return false;
+  //   }
+  // }
   return true;
 }
 
 template <typename T>
 bool NWAOBDD<T>::SupportSetIs(const apvector<int> &ss) const
 {
-  assert(&ss != NULL);
-  apvector<int> *truess = GetSupportSet();
-  bool rc = (ss == *truess);
-  delete truess;
-  return rc;
+  // assert(&ss != NULL);
+  // apvector<int> *truess = GetSupportSet();
+  // bool rc = (ss == *truess);
+  // delete truess;
+  // return rc;
 }
 
 template <typename T>
@@ -254,15 +256,15 @@ apvector<int> *NWAOBDD<T>::GetSupportSet() const
 {
   // Decent algorithm: find the index associated with each fork node on EVERY path.  kind of ugly, but better than this quickie:
 
-  apvector<int> *vec = new apvector<int>;
-  unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));
-  for (int i = 0; i < size; i++) {
-    if (DependsOn(i)) {
-      vec->AddToEnd(i);
-    }
-  }
-  assert(vec != NULL);
-  return vec;
+  // apvector<int> *vec = new apvector<int>;
+  // unsigned int size = ((unsigned int)((((unsigned int)1) << (NWAOBDDMaxLevel + 2)) - (unsigned int)4));
+  // for (int i = 0; i < size; i++) {
+  //   if (DependsOn(i)) {
+  //     vec->AddToEnd(i);
+  //   }
+  // }
+  // assert(vec != NULL);
+  // return vec;
 
   /*
   init vector
@@ -387,4 +389,12 @@ void NWAOBDD<T>::GroupCountNodesAndEdges(unsigned int &nodeCount, unsigned int &
 namespace NWA_OBDD {
 	template class NWAOBDD<int>;
 	template std::ostream& operator<< (std::ostream & out, const NWAOBDD<int> &d);
+
+
+
+namespace mp = boost::multiprecision;
+typedef mp::cpp_complex_100 BIG_COMPLEX_FLOAT;
+
+	template class NWAOBDD<BIG_COMPLEX_FLOAT>;
+	template std::ostream& operator<< (std::ostream & out, const NWAOBDD<BIG_COMPLEX_FLOAT> &d);
 };

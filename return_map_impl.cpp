@@ -38,9 +38,8 @@
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_complex.hpp>
 namespace mp = boost::multiprecision;
-typedef mp::cpp_dec_float_100 BIG_FLOAT;
 //typedef mp::number<mp::cpp_dec_float<1500> > BIG_FLOAT;
-typedef mp::cpp_complex_double BIG_COMPLEX_FLOAT;
+
 //typedef mp::number<mp::cpp_dec_float<200> > BIG_FLOAT;
 
 // Instantiation and specialization of class ReturnMapHandle<LinearMapHandle> ----------
@@ -230,43 +229,46 @@ ReturnMapHandle<double> ReturnMapHandle<double>::Complement()
 // Instantiation and specialization of class ReturnMapHandle<BIG_FLOAT> ---------------------
 // double_hash needs to be changed
 
-template<>
-unsigned int ReturnMapBody<BIG_FLOAT>::Hash(unsigned int modsize)
-{
-	unsigned int hvalue = 0;
-	std::hash<BIG_FLOAT> big_float_hash;
+// template<>
+// unsigned int ReturnMapBody<BIG_FLOAT>::Hash(unsigned int modsize)
+// {
+// 	unsigned int hvalue = 0;
+// 	std::hash<BIG_FLOAT> big_float_hash;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (997 * hvalue + big_float_hash(mapArray[i])) % modsize;
-	}
-	return hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (997 * hvalue + big_float_hash(mapArray[i])) % modsize;
+// 	}
+// 	return hvalue;
+// }
 
-template<>
-void ReturnMapBody<BIG_FLOAT>::setHashCheck()
-{
-	unsigned int hvalue = 0;
-	std::hash<BIG_FLOAT> big_float_hash;
+// template<>
+// void ReturnMapBody<BIG_FLOAT>::setHashCheck()
+// {
+// 	unsigned int hvalue = 0;
+// 	std::hash<BIG_FLOAT> big_float_hash;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (117 * (hvalue + 1) + big_float_hash(mapArray[i]));
-	}
-	hashCheck = hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (117 * (hvalue + 1) + big_float_hash(mapArray[i]));
+// 	}
+// 	hashCheck = hvalue;
+// }
 
 
-template<>
-ReturnMapHandle<BIG_FLOAT> ReturnMapHandle<BIG_FLOAT>::Complement()
-{
-	assert(false);
-	return *this;   // Should never be executed; included to supporess VS 2013 error report
-}
+// template<>
+// ReturnMapHandle<BIG_FLOAT> ReturnMapHandle<BIG_FLOAT>::Complement()
+// {
+// 	assert(false);
+// 	return *this;   // Should never be executed; included to supporess VS 2013 error report
+// }
 
 
 // Instantiation and specialization of class ReturnMapHandle<BIG_COMPLEX_FLOAT> ---------------------
 // double_hash needs to be changed
+
+namespace mp = boost::multiprecision;
+typedef mp::cpp_complex_100 BIG_COMPLEX_FLOAT;
 
 template<>
 unsigned int ReturnMapBody<BIG_COMPLEX_FLOAT>::Hash(unsigned int modsize)

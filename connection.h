@@ -47,6 +47,7 @@ namespace NWA_OBDD {
 	{
 	public:
 		ConnectionT();                                  // Default constructor
+		ConnectionT(const ConnectionT<Handle> &other);
 		ConnectionT(NWAOBDDNode *entryPoint, Handle &returnMapHandle);
 		ConnectionT(NWAOBDDNodeHandle &entryPointHandle, Handle &returnMapHandle);
 		~ConnectionT();                                 // Destructor

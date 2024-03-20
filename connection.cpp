@@ -11,6 +11,13 @@ ConnectionT<Handle>::ConnectionT()
 {
 }
 
+template <typename Handle>
+ConnectionT<Handle>::ConnectionT(const ConnectionT<Handle> &other) 
+	: entryPointHandle(other.entryPointHandle), returnMapHandle(other.returnMapHandle)
+{
+
+}
+
 // Constructor
 template <typename Handle>
 ConnectionT<Handle>::ConnectionT(NWAOBDDNodeHandle &entryPointHandle, Handle &returnMapHandle)

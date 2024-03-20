@@ -1379,32 +1379,32 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
 	  int ival = AConnection[0].returnMapHandle.Lookup(i).First(); //for each 0 return from that exit
     //For each exit of the 0 B-Connection from that current point
     for (unsigned int j = 0; j < BConnection[0][ival].entryPointHandle->handleContents->numExits; j++) {
-		unsigned int k = BConnection[0][ival].returnMapHandle.Lookup(j).First(); //Get the 0 return from that exit
+		  unsigned int k = BConnection[0][ival].returnMapHandle.Lookup(j).First(); //Get the 0 return from that exit
       if (k == exitNumber) { // Found it
-		index--;
-		assignment[index] = 0;
-        BConnection[0][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
-		index--;
-		assignment[index] = 0;
-		index--;
-		assignment[index] = 0;
-        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
-		index--;
-		assignment[index] = 0;
+        index--;
+        assignment[index] = 0;
+            BConnection[0][ival].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
+        index--;
+        assignment[index] = 0;
+        index--;
+        assignment[index] = 0;
+            AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
+        index--;
+        assignment[index] = 0;
         return;
       }
-	  k = BConnection[0][ival].returnMapHandle.Lookup(j).Second(); //else get the 1 return from that exit
+	    k = BConnection[0][ival].returnMapHandle.Lookup(j).Second(); //else get the 1 return from that exit
       if (k == exitNumber) { 
-		index--;
-		assignment[index] = 1;
-        BConnection[0][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
-		index--;
-		assignment[index] = 0;
-		index--;
-		assignment[index] = 0;
-        AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
-		index--;
-		assignment[index] = 0;
+        index--;
+        assignment[index] = 1;
+            BConnection[0][i].entryPointHandle->handleContents->FillSatisfyingAssignment(j, assignment, index);
+        index--;
+        assignment[index] = 0;
+        index--;
+        assignment[index] = 0;
+            AConnection[0].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
+        index--;
+        assignment[index] = 0;
         return;
       }
     }
@@ -1561,6 +1561,7 @@ void NWAOBDDInternalNode::FillSatisfyingAssignment(unsigned int exitNumber, SH_O
         AConnection[1].entryPointHandle->handleContents->FillSatisfyingAssignment(i, assignment, index);
 		index--;
 		assignment[index] = 1;
+      
         return;
       }
     }

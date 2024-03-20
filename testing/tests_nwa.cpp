@@ -1091,12 +1091,27 @@ bool NWATests::runTests(const char * argv, int start, int size){
 	return false;
 }
 
+void NWATests::test_mk_basis_vector() {
+  // NWAOBDD<BIG_COMPLEX_FLOAT>F0 = VectorComplex::MkBasisVector(2, "00000000");
+  // F0.DumpValueTuple();
+  // F0.DumpPathCountings();
+
+  for(unsigned i = 0; i < 65536; ++i) {
+    NWAOBDD<BIG_COMPLEX_FLOAT> f = VectorComplex::MkBasisVector(3, i);
+    // f.DumpValueTuple();
+    // f.DumpPathCountings();
+    // auto dpc = f.root->rootConnection.entryPointHandle->handleContents->numPathsToExit;
+    // if(dpc[1] != 12.0) printf("**%d\n", i);
+  }
+}
+
 void NWATests::RunAllTests() {
 
     std::cout << "Starting to Run All Tests:\n";
 
     NWAOBDDNodeHandle::InitNoDistinctionTable();
     NWAOBDDNodeHandle::InitReduceCache();
+    VectorComplex::VectorInitializer();
     InitPairProductCache();
 	  InitPathSummaryCache();
 	  InitPairProductMapCaches();
@@ -1104,7 +1119,8 @@ void NWATests::RunAllTests() {
     srand(time(0));
     // testStepFunction(); 
     // testIscas85();
-    test4();
+    // test4();
+    test_mk_basis_vector();
     // testAnd();
     // testSatisfyingAssignments();
     // test_demorgans();
@@ -1115,3 +1131,5 @@ void NWATests::RunAllTests() {
     // testMkIdRelationInterleaved();
     std::cout << "Finishing\n";
 }
+
+
