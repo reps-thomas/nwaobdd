@@ -16,7 +16,8 @@ add_executable(nwaobdd.out
     reduction_map.cpp
     return_map_impl.cpp
     traverse_state_nwa.cpp
-    testing/tests_nwa.cpp
+    testing/tests_nwa1.cpp
+    testing/tests_nwa2.cpp
     # connection.cpp
     connectionT_impl.cpp
     # nwaobdd_top_node.cpp
@@ -29,7 +30,7 @@ add_executable(nwaobdd.out
     vector/vector_complex.cpp
     vector/vector_node.cpp
 )
-target_compile_options(nwaobdd.out PRIVATE -w -lm -std=c++2a -O3 -I${path_to_boost})
+target_compile_options(nwaobdd.out PRIVATE -g -w -lm -std=c++2a -O3 -I${path_to_boost})
 target_link_libraries(nwaobdd.out PRIVATE infra)
 
 add_library(infra STATIC
@@ -43,4 +44,4 @@ add_library(infra STATIC
     infra/list_TPtr.h
     infra/ref_ptr.h
 )
-target_compile_options(infra PRIVATE -w -std=c++2a -O3)
+target_compile_options(infra PRIVATE -w -g -std=c++2a -O3)

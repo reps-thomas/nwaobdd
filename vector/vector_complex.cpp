@@ -66,7 +66,7 @@ namespace NWA_OBDD {
 		//#ifdef PATH_COUNTING_ENABLED
 		std::string Sampling(NWAOBDD_COMPLEX_BIG c, bool isTwoVoc)
 		{
-			// return SamplingTop(c.root, isTwoVoc);
+			return SamplingTop(c.root, isTwoVoc);
 		}
 
 		// std::string SamplingV2(NWAOBDD_COMPLEX_BIG c)
@@ -77,7 +77,7 @@ namespace NWA_OBDD {
 
 		NWAOBDD_COMPLEX_BIG VectorWithAmplitude(NWAOBDD_COMPLEX_BIG c)
 		{
-			// return NWAOBDD_COMPLEX_BIG(VectorWithAmplitudeTop(c.root));
+			return NWAOBDD_COMPLEX_BIG(VectorWithAmplitudeTop(c.root));
 		}
 
 		// void VectorPrintColumnMajor(NWAOBDD_COMPLEX_BIG c, std::ostream & out)
@@ -94,12 +94,12 @@ namespace NWA_OBDD {
 
 		long double getNonZeroProbability(NWAOBDD_COMPLEX_BIG n)
 		{
-			// return getNonZeroProbabilityTop(n.root);
+			return getNonZeroProbabilityTop(n.root);
 		}
 
 		unsigned long long int GetPathCount(NWAOBDD_COMPLEX_BIG n, long double p)
 		{
-			// return GetPathCountTop(n.root, p);
+			return GetPathCountTop(n.root, p);
 		}
 	}
 }

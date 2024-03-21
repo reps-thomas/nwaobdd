@@ -9,6 +9,7 @@
 #include "../return_map_T.h"
 namespace mp = boost::multiprecision;
 
+typedef boost::multiprecision::cpp_dec_float_100 BIG_FLOAT;
 namespace NWA_OBDD {
 	typedef mp::cpp_complex_100 BIG_COMPLEX_FLOAT;
 	typedef ReturnMapBody<BIG_COMPLEX_FLOAT> ComplexFloatBoostReturnMapBody;
@@ -42,7 +43,7 @@ namespace NWA_OBDD {
 		extern unsigned long long int GetPathCountTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, long double p);
 		//ifdef PATH_COUNTING_ENABLED
 		extern std::string SamplingTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, bool voctwo = false);
-		extern std::string SamplingV2Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
+		// extern std::string SamplingV2Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
 		//#endif
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr VectorWithAmplitudeTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
 		// extern void VectorPrintColumnMajorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);

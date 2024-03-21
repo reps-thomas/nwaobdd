@@ -1,4 +1,5 @@
 #include"vector_node.h"
+#include <random>
 
 namespace NWA_OBDD {
     std::vector<ReturnMapHandle<intpair>>commonly_used_return_maps;
@@ -161,5 +162,151 @@ namespace NWA_OBDD {
 #endif
         NWAOBDDNodeHandle handle(n);
         return handle;
+    }
+
+    template <typename T>
+	bool sortNumPathPairs(const std::pair<T, unsigned int>& p1, const std::pair<T, unsigned int> &p2) {
+		if (p1.first < p2.first)
+			return true;
+		else if (p1.first > p2.first)
+			return false;
+		return p1.second < p2.second;
+	}
+    // template bool sortNumPathPairs<BIG_FLOAT>(const std::pair<BIG_FLOAT, unsigned int>& p1, const std::pair<BIG_FLOAT, unsigned int> &p2);
+    // template bool sortNumPathPairs<BIG_COMPLEX_FLOAT>(const std::pair<BIG_COMPLEX_FLOAT, unsigned int>& p1, const std::pair<BIG_COMPLEX_FLOAT, unsigned int> &p2);
+
+	long double addNumPathsToExit(std::vector<long double>& logOfPaths){
+		if (logOfPaths.size() == 1)
+			return logOfPaths.back();
+		long double sum = 0.0;
+		for (int i = 0; i < logOfPaths.size() - 1; i++){
+			if (logOfPaths[i] != -1.0 * std::numeric_limits<double>::infinity())
+				sum += pow(2, logOfPaths[i] - logOfPaths.back());
+		}
+		long double logOfSum = logOfPaths.back() + log1p(sum) / ((double)log(2));
+		return logOfSum;
+	}
+
+	BIG_FLOAT addNumPathsToExit(std::vector<BIG_FLOAT>& logOfPaths){
+		if (logOfPaths.size() == 1)
+			return logOfPaths.back();
+		BIG_FLOAT sum = 0.0;
+		for (int i = 0; i < logOfPaths.size() - 1; i++){
+			if (logOfPaths[i] != -1.0 * std::numeric_limits<BIG_FLOAT>::infinity())
+				sum += boost::multiprecision::pow(2, logOfPaths[i] - logOfPaths.back());
+		}
+		BIG_FLOAT logOfSum = logOfPaths.back() + (boost::multiprecision::log1p(sum) / ((double)log(2)));
+		return logOfSum;
+	}
+
+    long double getLogSumNumPaths(std::vector<std::pair<long double, unsigned int>>& numBPaths, unsigned int size){
+		std::vector<long double> paths;
+		assert(numBPaths.size() >= size);
+		for (int i = 0; i < size; i++)
+			paths.push_back(numBPaths[i].first);
+		return addNumPathsToExit(paths);
+	}
+
+	BIG_FLOAT getLogSumNumPaths(std::vector<std::pair<BIG_FLOAT, unsigned int>>& numBPaths, unsigned int size){
+		std::vector<BIG_FLOAT> paths;
+		assert(numBPaths.size() >= size);
+		for (int i = 0; i < size; i++)
+			paths.push_back(numBPaths[i].first);
+		return addNumPathsToExit(paths);
+	}
+
+    std::pair<std::string,std::string> SamplingNode(NWAOBDDNodeHandle nh, unsigned int index, bool voctwo) {
+        NWAOBDDNode *n = nh.handleContents;
+        if(n->level == 1) {
+            std::vector<std::string>sat;
+            for(unsigned i = 0; i < 16; ++i) {
+                std::string s;
+                SH_OBDD::Assignment a(4);
+                for(unsigned j = 0; j < 4; ++j) {
+                    if(i & (1 << j)) 
+                        s.push_back('1'), a[j] = 1;
+                    else 
+                        s.push_back('0'), a[j] = 0;
+                }
+                SH_OBDD::AssignmentIterator ai(a);
+                unsigned r = n -> Traverse(ai);
+                if(r == index)
+                    sat.push_back(s);
+            }
+            assert(sat.size() > 0);
+            double random_value = ((double)rand() / (RAND_MAX));
+            std::string res;
+            for(unsigned i = 0; i < sat.size(); ++i) {
+                if(random_value * sat.size() <= 1.0 * (i + 1) + 1e-5) {
+                    res = sat[i];
+                    break;
+                }
+            }
+            return std::make_pair(res, "");
+        }
+        else {
+            // XZ Warning: 
+            // Current Implementation only work when NWAOBDDs are simulating CFLOBDDs.
+            
+            auto nh =  dynamic_cast<NWAOBDDInternalNode*>(n);
+            // auto (nh -> AConnection[0]) = nh->AConnection[0];
+            auto BConn = nh->BConnection[0];
+
+            std::vector<std::pair<long double, unsigned int>> numBPaths;
+
+    		long double numBTotalPaths = 0.0;
+            for (unsigned int i = 0; i < nh->numBConnections; i++)
+            {
+                int BIndex = BConn[i].returnMapHandle.LookupInv(intpair(index, index));
+                if(BIndex == -1) {
+                    numBPaths.push_back(std::make_pair(-1 * std::numeric_limits<long double>::infinity(), i));
+                }
+                else {
+                    numBPaths.push_back(std::make_pair(BConn[i].entryPointHandle->handleContents->numPathsToExit[BIndex] + 
+                    (nh -> AConnection[0]).entryPointHandle->handleContents->numPathsToExit[i], i));
+                }
+            }
+            
+            sort(numBPaths.begin(), numBPaths.end(), sortNumPathPairs<long double>);
+            numBTotalPaths = getLogSumNumPaths(numBPaths, numBPaths.size());
+            long double random_value = 0.0;
+            if (numBTotalPaths >= 64){
+                std::random_device rd;
+                std::default_random_engine generator(rd());
+                std::uniform_int_distribution<long long unsigned> distribution(0, 0xFFFFFFFFFFFFFFFF);
+                random_value = log2l(distribution(generator)) + numBTotalPaths - 64;
+            }
+            else{
+                random_value = log2l((((double)rand()) / RAND_MAX)*pow(2, numBTotalPaths));
+            }
+            long double val = -1 * std::numeric_limits<long double>::infinity();
+            /*cpp_int random_value = gen() % numBTotalPaths;
+            cpp_int val = 0;*/
+            /*unsigned long long int random_value = rand() % numBTotalPaths;
+            unsigned long long int val = 0;*/
+            int BConnectionIndex = -1;
+            for (unsigned int i = 0; i < numBPaths.size(); i++)
+            {
+                if (numBPaths[i].first == -1 * std::numeric_limits<long double>::infinity())
+                    continue;
+                val = getLogSumNumPaths(numBPaths, i+1);
+                if (val >= random_value)
+                {
+                    BConnectionIndex = numBPaths[i].second;
+                    break;
+                }
+            }
+            assert(BConnectionIndex != -1);
+            assert(BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)) != -1);
+            assert(BConnectionIndex < nh->numBConnections);
+            assert(BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)) < BConn[BConnectionIndex].returnMapHandle.mapContents->mapArray.size());
+            std::pair<std::string,std::string> AString = SamplingNode(*((nh -> AConnection[0]).entryPointHandle), BConnectionIndex, voctwo);
+            std::pair<std::string, std::string> BString = SamplingNode(*(BConn[BConnectionIndex].entryPointHandle), BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)), voctwo);
+            if (nh->level == 1)
+                return std::make_pair(AString.first, BString.first);
+            if (nh->level == 2 && !voctwo)
+                return std::make_pair(AString.first, BString.first);
+            return std::make_pair(AString.first + BString.first, AString.second + BString.second);
+        }
     }
 } // namespace NWA_OBDD

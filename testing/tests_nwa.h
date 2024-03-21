@@ -40,5 +40,7 @@ class NWATests
 		static bool runTests(const char * argv, int start = 0, int size = 0);
         static void RunAllTests();
         static void test_mk_basis_vector();
+        static void test_path_sampling1();
+        static void test_path_sampling2();
 };
 }

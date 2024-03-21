@@ -19,6 +19,16 @@ namespace NWA_OBDD {
 
     template class NWAOBDDTopNode<BIG_COMPLEX_FLOAT>;
     template std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode<BIG_COMPLEX_FLOAT> &d);
+
+
+    template typename NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr
+    MkTimesTopNode<BIG_COMPLEX_FLOAT>(typename NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr f,
+                        typename NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr g);
+
+    template typename NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr
+    MkPlusTopNode<BIG_COMPLEX_FLOAT>(typename NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr f,
+                    typename NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr g);
+    
     // template NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr ApplyAndReduce<int>(
     //     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n1,
     //     NWAOBDDTopNode<int>::NWAOBDDTopNodeTRefPtr n2,

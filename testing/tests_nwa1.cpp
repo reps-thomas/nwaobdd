@@ -1095,41 +1095,46 @@ void NWATests::test_mk_basis_vector() {
   // NWAOBDD<BIG_COMPLEX_FLOAT>F0 = VectorComplex::MkBasisVector(2, "00000000");
   // F0.DumpValueTuple();
   // F0.DumpPathCountings();
+  auto f = VectorComplex::MkBasisVector(3, 12);
+  auto g = VectorComplex::MkBasisVector(3, 12);
+  auto h = f + g;
+  h.DumpValueTuple();
+  h.DumpPathCountings();
 
-  for(unsigned i = 0; i < 65536; ++i) {
-    NWAOBDD<BIG_COMPLEX_FLOAT> f = VectorComplex::MkBasisVector(3, i);
-    // f.DumpValueTuple();
-    // f.DumpPathCountings();
-    // auto dpc = f.root->rootConnection.entryPointHandle->handleContents->numPathsToExit;
-    // if(dpc[1] != 12.0) printf("**%d\n", i);
+}
+
+void NWATests::test_path_sampling1() {
+  // XZ: This appears slower than what I expected.
+  auto f1 = VectorComplex::MkBasisVector(1, 7);
+  auto f2 = VectorComplex::MkBasisVector(1, 11);
+  auto f3 = VectorComplex::MkBasisVector(1, 3);
+  auto h = f1 + (f2 + f2 + f2) + (f3 + f3 + f3 + f3 + f3 + f3);
+  std::string s;
+  int occur[3] = {0, 0, 0};
+  for(unsigned i = 0; i < 10000; ++i) {
+    s = VectorComplex::Sampling(h, true);
+    if(s == "1100") occur[0]++;
+    else if(s == "1110") occur[1]++;
+    else if(s == "1101") occur[2]++;
+    else abort();
   }
+  printf("%d %d %d\n", occur[0], occur[1], occur[2]);
 }
 
-void NWATests::RunAllTests() {
-
-    std::cout << "Starting to Run All Tests:\n";
-
-    NWAOBDDNodeHandle::InitNoDistinctionTable();
-    NWAOBDDNodeHandle::InitReduceCache();
-    VectorComplex::VectorInitializer();
-    InitPairProductCache();
-	  InitPathSummaryCache();
-	  InitPairProductMapCaches();
-
-    srand(time(0));
-    // testStepFunction(); 
-    // testIscas85();
-    // test4();
-    test_mk_basis_vector();
-    // testAnd();
-    // testSatisfyingAssignments();
-    // test_demorgans();
-    // test_Addition();
-    // test1();
-    // test2();
-    // testAllAssignments();
-    // testMkIdRelationInterleaved();
-    std::cout << "Finishing\n";
+void NWATests::test_path_sampling2() {
+  // XZ: This appears slower than what I expected.
+  auto f1 = VectorComplex::MkBasisVector(3, "0000000000000000");
+  auto f2 = VectorComplex::MkBasisVector(3, "1111111111111111");
+  auto f3 = VectorComplex::MkBasisVector(3, "0101010101010101");
+  auto h = f1 + f2 + f3 + f2 + f3;
+  std::string s;
+  int occur[3] = {0, 0, 0};
+  for(unsigned i = 0; i < 10000; ++i) {
+    s = VectorComplex::Sampling(h, true);
+    if(s == "0000000000000000") occur[0]++;
+    else if(s == "1111111111111111") occur[1]++;
+    else if(s == "0101010101010101") occur[2]++;
+    else abort();
+  }
+  printf("%d %d %d\n", occur[0], occur[1], occur[2]);
 }
-
-

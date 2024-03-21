@@ -1825,7 +1825,7 @@ ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
 
   // Perform reduction on n, with respect to the common elements that returnMapHandle maps together
      ReductionMapHandle inducedReductionMapHandle;
-     ReturnMapHandle<int> inducedReturnMap;
+     ReturnMapHandle<T> inducedReturnMap;
      returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
      //     NWAOBDDNodeHandle::InitReduceCache();
      NWAOBDDNodeHandle reduced_n = n.Reduce(inducedReductionMapHandle, inducedReturnMap.Size());
