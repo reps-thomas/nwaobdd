@@ -47,7 +47,7 @@ namespace NWA_OBDD {
 	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr NWAOBDDTopNodeComplexFloatBoostRefPtr;
 	typedef NWAOBDDTopNode<fourierSemiring>::NWAOBDDTopNodeTRefPtr NWAOBDDTopNodeFourierRefPtr;
 
-	namespace Matrix1234ComplexFloatBoost {
+	namespace MatrixComplex {
 
 		// Initialization routine
 		extern void Matrix1234InitializerTop();
@@ -98,7 +98,7 @@ namespace NWA_OBDD {
 
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
-
+		void DumpMatrixTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
 	}
 }
 

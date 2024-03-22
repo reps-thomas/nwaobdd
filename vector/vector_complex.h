@@ -39,6 +39,7 @@ namespace NWA_OBDD {
 		// extern void VectorPrintColumnMajorInterleaved(NWAOBDD_COMPLEX_BIG c, std::ostream & out);
 		extern long double getNonZeroProbability(NWAOBDD_COMPLEX_BIG n);
 		extern unsigned long long int GetPathCount(NWAOBDD_COMPLEX_BIG n, long double p);
+		void DumpVector(NWAOBDD<BIG_COMPLEX_FLOAT> n);
 	}
 }
 

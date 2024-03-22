@@ -43,7 +43,7 @@ namespace NWA_OBDD {
 	typedef NWAOBDD<BIG_COMPLEX_FLOAT> NWAOBDD_COMPLEX_BIG;
 	typedef NWAOBDD<fourierSemiring> NWAOBDD_FOURIER;
 
-	namespace Matrix1234ComplexFloatBoost {
+	namespace MatrixComplex {
 		// Initialization routine
 		extern void Matrix1234Initializer();
 
@@ -70,7 +70,6 @@ namespace NWA_OBDD {
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftVocs12To34(NWAOBDD_COMPLEX_BIG c);                // Vocabulary shift in a matrix
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftVoc43(NWAOBDD_COMPLEX_BIG c);                     // Vocabulary shift in a matrix
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftVoc42(NWAOBDD_COMPLEX_BIG c);                     // Vocabulary shift in a matrix
-		extern NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);        // Kronecker product (on matrices with room for two extra vocabularies)
 		extern NWAOBDD_COMPLEX_BIG MkDetensorConstraintInterleaved(unsigned int i); // Create representation of a matrix in which vocabularies 2 and 3 are constrained to be equal: (W,X,Y,Z) s.t. X==Y with interleaved variables
 		// extern NWAOBDD_COMPLEX_BIG MatrixProjectVoc23(NWAOBDD_COMPLEX_BIG c);                   // Vocabulary projection
 		extern NWAOBDD_COMPLEX_BIG MatrixDetensor(NWAOBDD_COMPLEX_BIG k);                       // Detensor of a 4-vocabulary matrix
@@ -99,8 +98,8 @@ namespace NWA_OBDD {
 
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c);
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c);
-		extern NWAOBDD_COMPLEX_BIG KroneckerProduct2Vocs(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
-
+		extern NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
+		void DumpMatrix(NWAOBDD_COMPLEX_BIG n);
 	}
 }
 

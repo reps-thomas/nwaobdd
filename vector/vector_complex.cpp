@@ -101,6 +101,9 @@ namespace NWA_OBDD {
 		{
 			return GetPathCountTop(n.root, p);
 		}
+		void DumpVector(NWAOBDD<BIG_COMPLEX_FLOAT> n) {
+			DumpVectorTop(n.root);
+		}
 	}
 }
 

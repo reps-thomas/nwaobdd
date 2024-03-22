@@ -1,0 +1,158 @@
+[
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -w -g -std=c++2a -O3 -o CMakeFiles/infra.dir/infra/conscell.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/infra/conscell.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/infra/conscell.cpp",
+  "output": "CMakeFiles/infra.dir/infra/conscell.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -w -g -std=c++2a -O3 -o CMakeFiles/infra.dir/infra/hash.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/infra/hash.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/infra/hash.cpp",
+  "output": "CMakeFiles/infra.dir/infra/hash.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -w -g -std=c++2a -O3 -o CMakeFiles/infra.dir/infra/hashset.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/infra/hashset.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/infra/hashset.cpp",
+  "output": "CMakeFiles/infra.dir/infra/hashset.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -w -g -std=c++2a -O3 -o CMakeFiles/infra.dir/infra/intpair.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/infra/intpair.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/infra/intpair.cpp",
+  "output": "CMakeFiles/infra.dir/infra/intpair.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -w -g -std=c++2a -O3 -o CMakeFiles/infra.dir/infra/inttriple.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/infra/inttriple.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/infra/inttriple.cpp",
+  "output": "CMakeFiles/infra.dir/infra/inttriple.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/assignment.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/assignment.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/assignment.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/assignment.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/bool_op.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/bool_op.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/bool_op.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/bool_op.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/cross_product_nwa.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/cross_product_nwa.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/cross_product_nwa.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/cross_product_nwa.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/main.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/main.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/main.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/main.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/nwaobdd.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/nwaobdd.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/nwaobdd_int.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd_int.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd_int.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/nwaobdd_int.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/nwaobdd_node.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd_node.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd_node.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/nwaobdd_node.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/reduction_map.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/reduction_map.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/reduction_map.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/reduction_map.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/return_map_impl.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/return_map_impl.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/return_map_impl.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/return_map_impl.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/traverse_state_nwa.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/traverse_state_nwa.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/traverse_state_nwa.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/traverse_state_nwa.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/testing/tests_nwa1.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/testing/tests_nwa1.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/testing/tests_nwa1.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/testing/tests_nwa1.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/testing/tests_nwa2.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/testing/tests_nwa2.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/testing/tests_nwa2.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/testing/tests_nwa2.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/connectionT_impl.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/connectionT_impl.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/connectionT_impl.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/connectionT_impl.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/fourier_semiring.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/fourier_semiring.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/fourier_semiring.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/fourier_semiring.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/nwaobdd_top_node_impl.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd_top_node_impl.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/nwaobdd_top_node_impl.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/nwaobdd_top_node_impl.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/vector/vector_complex_top_node.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/vector/vector_complex_top_node.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/vector/vector_complex_top_node.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/vector/vector_complex_top_node.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/vector/vector_complex.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/vector/vector_complex.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/vector/vector_complex.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/vector/vector_complex.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/vector/vector_node.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/vector/vector_node.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/vector/vector_node.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/vector/vector_node.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/matrix/matrix_complex.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/matrix/matrix_complex.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/matrix/matrix_complex.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/matrix/matrix_complex.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/matrix/matrix_complex_top_node.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/matrix/matrix_complex_top_node.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/matrix/matrix_complex_top_node.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/matrix/matrix_complex_top_node.cpp.o"
+},
+{
+  "directory": "/home/xusheng_zhi/Desktop/NWAOBDD/build",
+  "command": "/usr/bin/g++   -g -g -w -lm -std=c++2a -O3 -I/home/xusheng_zhi/Desktop/boost -o CMakeFiles/nwaobdd.out.dir/matrix/matrix_complex_node.cpp.o -c /home/xusheng_zhi/Desktop/NWAOBDD/matrix/matrix_complex_node.cpp",
+  "file": "/home/xusheng_zhi/Desktop/NWAOBDD/matrix/matrix_complex_node.cpp",
+  "output": "CMakeFiles/nwaobdd.out.dir/matrix/matrix_complex_node.cpp.o"
+}
+]

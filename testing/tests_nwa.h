@@ -39,8 +39,12 @@ class NWATests
 		static void test_Addition(); // Pass
 		static bool runTests(const char * argv, int start = 0, int size = 0);
         static void RunAllTests();
+
         static void test_mk_basis_vector();
         static void test_path_sampling1();
         static void test_path_sampling2();
+
+        static void test_mkID_matrix1();
+        static void test_mkID_matrix2();
 };
 }

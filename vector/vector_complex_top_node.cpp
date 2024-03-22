@@ -7,7 +7,7 @@
 #include <chrono>
 #include <random>
 
-
+using namespace SH_OBDD;
 namespace NWA_OBDD {
 
 
@@ -145,5 +145,45 @@ namespace NWA_OBDD {
 			std::pair<std::string, std::string> stringPair = SamplingNode(*(n->rootConnection.entryPointHandle), index, VocTwo);
 			return stringPair.first + stringPair.second;
 		}
+		void pad_string(AssignmentIterator &ai, std::string s, unsigned level) {
+			assert(level > 0);
+			if(level == 1) {
+				assert(s.length() == 4);
+				ai.Current() = (s[0] == '1'), ai.Next();
+				ai.Current() = (s[1] == '1'), ai.Next();
+				ai.Current() = (s[2] == '1'), ai.Next();
+				ai.Current() = (s[3] == '1'), ai.Next();
+			}
+			else {
+				ai.Current() = 0, ai.Next();
+				pad_string(ai,s.substr(0, s.length() / 2), level - 1);
+				ai.Current() = 0, ai.Next();
+				ai.Current() = 0, ai.Next();
+				pad_string(ai,s.substr(s.length() / 2), level - 1);
+				ai.Current() = 0, ai.Next();
+			}
+		}
+		Assignment index2assignment(std::string s, unsigned level) {
+			Assignment a( (1 << (level + 2)) - 4 );
+			AssignmentIterator ai(a);
+			pad_string(ai, s, level);
+			return a;
+		}
+		void DumpVectorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
+			unsigned level = n -> level;
+			unsigned vars = 1 << (level + 1);
+			std::cout << '(';
+			for(unsigned index = 0; index < (1 << vars); ++index) {
+				std::string s;
+				for(unsigned j = 0; j < vars; ++j)
+					if(index & (1 << j)) s.push_back('1');
+					else s.push_back('0');
+				Assignment a = index2assignment(s, level);
+				auto r = n->Evaluate(a);
+				std::cout << r << ", ";
+			}
+			std::cout << ")\n";
+		}
     }
+
 }

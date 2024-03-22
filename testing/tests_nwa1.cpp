@@ -1127,6 +1127,7 @@ void NWATests::test_path_sampling2() {
   auto f2 = VectorComplex::MkBasisVector(3, "1111111111111111");
   auto f3 = VectorComplex::MkBasisVector(3, "0101010101010101");
   auto h = f1 + f2 + f3 + f2 + f3;
+  VectorComplex::DumpVector(h);
   std::string s;
   int occur[3] = {0, 0, 0};
   for(unsigned i = 0; i < 10000; ++i) {
