@@ -51,22 +51,6 @@ namespace NWA_OBDD {
 			return;
 		}
 
-
-        NWAOBDDTopNodeComplexFloatBoostRefPtr MkIdRelationInterleavedTop(unsigned int i)
-		{
-			NWAOBDDNodeHandle tempHandle;
-			tempHandle = MkIdRelationInterleavedNode(i);
-
-            ReturnMapHandle<BIG_COMPLEX_FLOAT> m10;
-			m10.AddToEnd(1);
-			m10.AddToEnd(0);
-			m10.Canonicalize();
-
-            NWAOBDDTopNodeComplexFloatBoostRefPtr v;
-			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m10);
-			return v;
-		}
-
 		void pad_string(AssignmentIterator &ai, std::string s, unsigned level) {
 			assert(level > 0);
 			if(level == 1) {
@@ -99,6 +83,23 @@ namespace NWA_OBDD {
 			return s;
 		}
 		void DumpMatrixTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
+
+			if(GetLevelTop(n) == 0) {
+				Assignment asgn0 = index2assignment("0000", 1);
+				auto a00 = n -> Evaluate(asgn0);
+				Assignment asgn1 = index2assignment("0100", 1);
+				auto a01 = n -> Evaluate(asgn1);
+				Assignment asgn2 = index2assignment("1000", 1);
+				auto a10 = n -> Evaluate(asgn2);
+				Assignment asgn3 = index2assignment("1100", 1);
+				auto a11 = n -> Evaluate(asgn3);
+				std::cout << "[\n ";
+				std::cout << "[" << a00 << ", " << a01 << "]\n ";
+				std::cout << "[" << a10 << ", " << a11 << "]\n ";
+				std::cout << "]\n";
+				return;	
+			}
+
 			unsigned level = n -> level;
 			unsigned vars = 1 << (level + 1);
 			std::cout << "[\n ";
@@ -122,9 +123,25 @@ namespace NWA_OBDD {
 			}
 			std::cout << "]\n";
 		}
+		unsigned GetLevelTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
+			unsigned l = n -> level;
+			if(l > 1) return l;
+			NWAOBDDNode* nh = n -> rootConnection.entryPointHandle->handleContents;
+			NWAOBDDInternalNode *internal = dynamic_cast<NWAOBDDInternalNode*>(nh);
+			assert(internal);
+			for(unsigned i = 0; i < internal -> numBConnections; ++i) {
+				ReturnMapHandle<intpair> rmh;
+				rmh.AddToEnd(intpair(i, i));
+				rmh.Canonicalize();
+				if(internal -> BConnection[0][i].returnMapHandle != rmh)
+					return 1u;
+				if(internal -> BConnection[1][i].returnMapHandle != rmh)
+					return 1u;
+			}
+			return 0u;
+		}
 
-		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c)
-		{
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c) {
 			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
 			NWAOBDDNodeHandle tempHandle;
 
@@ -133,8 +150,7 @@ namespace NWA_OBDD {
 			return v;
 		}
 
-		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c)
-		{
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c) {
 			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
 			NWAOBDDNodeHandle tempHandle;
 
@@ -142,6 +158,94 @@ namespace NWA_OBDD {
 			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, c->rootConnection.returnMapHandle);
 			return v;
 		}
+
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftLevel0Top(NWAOBDDTopNodeComplexFloatBoostRefPtr c) {
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			NWAOBDDNodeHandle tempHandle;
+
+			tempHandle = MatrixShiftLevel0Node(*(c->rootConnection.entryPointHandle));
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, c->rootConnection.returnMapHandle);
+			return v;
+		}
+
+	}
+
+	namespace MatrixComplex {
+        NWAOBDDTopNodeComplexFloatBoostRefPtr MkIdTop(unsigned int i) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkIdNode(i);
+
+            ReturnMapHandle<BIG_COMPLEX_FLOAT> m10;
+			m10.AddToEnd(1);
+			m10.AddToEnd(0);
+			m10.Canonicalize();
+
+            NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m10);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshTop(unsigned int i) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkWalshNode(i);
+
+            ReturnMapHandle<BIG_COMPLEX_FLOAT> m10;
+			auto val = boost::multiprecision::pow(sqrt(2), boost::multiprecision::pow(BIG_COMPLEX_FLOAT(2), i));
+			
+			m10.AddToEnd(1 / val);
+			m10.AddToEnd(-1 / val);
+			m10.Canonicalize();
+
+            NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m10);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkNegationTop(unsigned int i) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkNegationNode(i);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m01;
+			m01.AddToEnd(0);
+			m01.AddToEnd(1);
+			m01.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m01);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliYTop(unsigned int i) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkPauliYNode(i);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			BIG_COMPLEX_FLOAT img_i(0, 1);
+			m.AddToEnd(0);
+			m.AddToEnd(- 1.0 * img_i );
+			m.AddToEnd(1.0 * img_i);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliZTop(unsigned int i) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkPauliZNode(i);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			BIG_COMPLEX_FLOAT img_i(0, 1);
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.AddToEnd(-1);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+
+		
+
+
 	}
 }
 

@@ -56,12 +56,12 @@ namespace NWA_OBDD {
 		extern void MatrixPrintRowMajorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
 
 
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkIdRelationInterleavedTop(unsigned int i); // Representation of identity relation
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshInterleavedTop(unsigned int i); // Representation of Walsh matrix
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkInverseReedMullerInterleavedTop(unsigned int i); // Representation of Inverse Reed-Muller matrix
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNegationMatrixInterleavedTop(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliYMatrixInterleavedTop(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliZMatrixInterleavedTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkIdTop(unsigned int i); // Representation of identity relation
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshTop(unsigned int i); // Representation of Walsh matrix
+		// extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkInverseReedMullerInterleavedTop(unsigned int i); // Representation of Inverse Reed-Muller matrix
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNegationTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliYTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliZTop(unsigned int i);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkSGateInterleavedTop(unsigned int i);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPhaseShiftGateInterleavedTop(unsigned int i, double theta);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkExchangeInterleavedTop(unsigned int i); // Representation of exchange matrix
@@ -98,7 +98,9 @@ namespace NWA_OBDD {
 
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftLevel0Top(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
 		void DumpMatrixTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
+		unsigned GetLevelTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
 	}
 }
 

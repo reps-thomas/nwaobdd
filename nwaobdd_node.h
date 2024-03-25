@@ -124,7 +124,7 @@ class NWAReduceKey;
 
 // Note: If NWAOBDDMaxLevel >= 27, allocating an Assignment will cause
 //       virtual memory to be exceeded (on velveeta).
-static unsigned int NWAOBDDMaxLevel = 3;
+static unsigned int NWAOBDDMaxLevel = 25;
 void setMaxLevel(unsigned int level);
 
 //********************************************************************

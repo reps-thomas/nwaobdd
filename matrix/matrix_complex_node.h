@@ -39,12 +39,12 @@ namespace NWA_OBDD {
 	extern int cacheNodeNum;
 	extern int notL1NodeNum;
 	extern void clearMultMap();
-	extern NWAOBDDNodeHandle MkIdRelationInterleavedNode(unsigned int level);
-	// extern NWAOBDDNodeHandle MkWalshInterleavedNode(unsigned int i);
+	extern NWAOBDDNodeHandle MkIdNode(unsigned int level);
+	extern NWAOBDDNodeHandle MkWalshNode(unsigned int i);
+	extern NWAOBDDNodeHandle MkNegationNode(unsigned int i);
+	extern NWAOBDDNodeHandle MkPauliYNode(unsigned int i);
+	extern NWAOBDDNodeHandle MkPauliZNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkInverseReedMullerInterleavedNode(unsigned int i);
-	// extern NWAOBDDNodeHandle MkNegationMatrixInterleavedNode(unsigned int i);
-	// extern NWAOBDDNodeHandle MkPauliYInterleavedNode(unsigned int i);
-	// extern NWAOBDDNodeHandle MkPauliZInterleavedNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkSGateInterleavedNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkCNOTInterleavedNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkExchangeInterleavedNode(unsigned int i);
@@ -80,6 +80,7 @@ namespace NWA_OBDD {
 
 	extern NWAOBDDNodeHandle MatrixShiftToAConnectionNode(NWAOBDDNodeHandle c);
 	extern NWAOBDDNodeHandle MatrixShiftToBConnectionNode(NWAOBDDNodeHandle c);
+	extern NWAOBDDNodeHandle MatrixShiftLevel0Node(NWAOBDDNodeHandle c);
 
 	// Subroutines for Discrete Fourier Transform
 	// extern NWAOBDDNodeHandle MkNWAOBDDMatrixEqVoc14Node(unsigned int i);

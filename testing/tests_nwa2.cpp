@@ -14,43 +14,79 @@
 using namespace NWA_OBDD;
 using namespace SH_OBDD;
 
-void NWATests::test_mkID_matrix1() {
-    auto f = MatrixComplex::MkIdRelationInterleaved(1);
-    MatrixComplex::DumpMatrix(f);
+static void test_kronecker_product1() {
+    auto f = MatrixComplex::MkId(0);
+    auto g = MatrixComplex::MkNegation(0);
+    auto fg = MatrixComplex::KroneckerProduct(f, g);
+    MatrixComplex::DumpMatrix(fg);
+    auto gf = MatrixComplex::KroneckerProduct(g, f);
+    MatrixComplex::DumpMatrix(gf);
 
-    auto g = MatrixComplex::MkIdRelationInterleaved(2);
-    MatrixComplex::DumpMatrix(g);
-
-    auto h = MatrixComplex::MkIdRelationInterleaved(3);
-    MatrixComplex::DumpMatrix(h);
+    auto f1 = MatrixComplex::MkId(1);
+    auto g1 = MatrixComplex::MkNegation(1);
+    auto fg1 = MatrixComplex::KroneckerProduct(f1, g1);
+    MatrixComplex::DumpMatrix(fg1);
+    auto gf1 = MatrixComplex::KroneckerProduct(g1, f1);
+    MatrixComplex::DumpMatrix(gf1);
 }
 
-NWAOBDD_COMPLEX_BIG make_all_c_matrix(unsigned level, BIG_COMPLEX_FLOAT c) {
-    assert(level >= 1);
-    NWAOBDDNodeHandle root = NWAOBDDNodeHandle::NoDistinctionNode[level];
-    ReturnMapHandle<BIG_COMPLEX_FLOAT> r;
-    r.AddToEnd(c);
-    auto root_conn = new NWAOBDDTopNode<BIG_COMPLEX_FLOAT>(root, r);
-    return NWAOBDD_COMPLEX_BIG(root_conn);
+static void test_kronecker_product2() {
+    auto f = MatrixComplex::MkPauliY(0);
+    auto g = MatrixComplex::MkPauliZ(0);
+    auto fg = MatrixComplex::KroneckerProduct(f, g);
+    MatrixComplex::DumpMatrix(fg);
+    auto gf = MatrixComplex::KroneckerProduct(g, f);
+    MatrixComplex::DumpMatrix(gf);
 }
 
-void NWATests::test_mkID_matrix2() {
-    auto f = make_all_c_matrix(1, 2);
-    auto g = MatrixComplex::MkIdRelationInterleaved(1);
-    auto h = MatrixComplex::KroneckerProduct(g, f);
-    MatrixComplex::DumpMatrix(h);
+static void test_id() {
+    auto f0 = MatrixComplex::MkId(0);
+    printf("*** %d\n", MatrixComplex::GetLevel(f0));
+    MatrixComplex::DumpMatrix(f0);
+    auto f1 = MatrixComplex::MkId(1);
+    printf("*** %d\n", MatrixComplex::GetLevel(f1));
+    MatrixComplex::DumpMatrix(f1);
+    auto f2 = MatrixComplex::MkId(2);
+    printf("*** %d\n", MatrixComplex::GetLevel(f2));
+    MatrixComplex::DumpMatrix(f2);
 }
 
-void test_dump_vector() {
-    auto acc = VectorComplex::MkBasisVector(2, "00000000");
-    for(unsigned i = 1; i < 256; ++i) {
-        auto f = VectorComplex::MkBasisVector(2, i);
-        for(unsigned j = 0; j <= i; ++j) {
-            acc = acc + f;
-        }
-    }
-    VectorComplex::DumpVector(acc);
+static void test_negation() {
+    auto f0 = MatrixComplex::MkNegation(0);
+    printf("*** %d\n", MatrixComplex::GetLevel(f0));
+    MatrixComplex::DumpMatrix(f0);
+    auto f1 = MatrixComplex::MkNegation(1);
+    printf("*** %d\n", MatrixComplex::GetLevel(f1));
+    MatrixComplex::DumpMatrix(f1);
+    auto f2 = MatrixComplex::MkNegation(2);
+    printf("*** %d\n", MatrixComplex::GetLevel(f2));
+    MatrixComplex::DumpMatrix(f2);
 }
+
+static void test_walsh() {
+    auto f0 = MatrixComplex::MkWalsh(0);
+    printf("*** %d\n", MatrixComplex::GetLevel(f0));
+    MatrixComplex::DumpMatrix(f0);
+    auto f1 = MatrixComplex::MkWalsh(1);
+    printf("*** %d\n", MatrixComplex::GetLevel(f1));
+}
+
+static void test_pauliy() {
+    auto f0 = MatrixComplex::MkPauliY(0);
+    printf("*** %d\n", MatrixComplex::GetLevel(f0));
+    MatrixComplex::DumpMatrix(f0);
+    auto f1 = MatrixComplex::MkPauliY(1);
+    printf("*** %d\n", MatrixComplex::GetLevel(f1));
+}
+
+static void test_pauliz() {
+    auto f0 = MatrixComplex::MkPauliZ(0);
+    printf("*** %d\n", MatrixComplex::GetLevel(f0));
+    MatrixComplex::DumpMatrix(f0);
+    auto f1 = MatrixComplex::MkPauliZ(1);
+    printf("*** %d\n", MatrixComplex::GetLevel(f1));
+}
+
 void NWATests::RunAllTests() {
 
     std::cout << "Starting to Run All Tests:\n";
@@ -59,13 +95,13 @@ void NWATests::RunAllTests() {
     NWAOBDDNodeHandle::InitReduceCache();
     VectorComplex::VectorInitializer();
     InitPairProductCache();
-	  InitPathSummaryCache();
-	  InitPairProductMapCaches();
+	InitPathSummaryCache();
+	InitPairProductMapCaches();
 
     srand(time(0));
     
-    test_mkID_matrix2();
-    // test_dump_vector();
+    // test_kronecker_product1();
+    test_kronecker_product2();
 
     std::cout << "Finishing\n";
 }

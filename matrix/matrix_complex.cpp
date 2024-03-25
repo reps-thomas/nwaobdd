@@ -38,216 +38,63 @@
 namespace NWA_OBDD {
 
 	namespace MatrixComplex {
-
-		void Matrix1234Initializer()
-		{
+		void Matrix1234Initializer() {
 			Matrix1234InitializerTop();
 		}
-
-		// Create representation of identity relation
-		NWAOBDD_COMPLEX_BIG MkIdRelationInterleaved(unsigned int i)
-		{
-			return NWAOBDD_COMPLEX_BIG(MkIdRelationInterleavedTop(i));
-		}
-
-		NWAOBDD_COMPLEX_BIG MkFourierMatrixInterleavedV4(unsigned int i)
-		{
-			// if (i >= 5){
-			// 	DisposeOfPairProductCache();
-			// 	InitPairProductCache();
-			// }
-			// assert(1 <= i && i < (NWAOBDD_COMPLEX_BIG::maxLevel - 1));  // Need two extra levels: +1 for Kronecker Product; +1 for matrix multiplication
-
-			// if (i == 1) {
-			// 	return MkWalshInterleaved(1);                                                          // Level 1, interleaved
-			// }
-			// else {  // Need to promote all matrices to vocs 1,2 to allow final matrix multiplication
-
-
-			// 	NWAOBDD_COMPLEX_BIG FourierIMinusOne = PromoteInterleavedTo12(MkFourierMatrixInterleavedV4(i - 1));  // Level i, Vocs 1,2
-
-			// 	std::cout << "---FourierIMinusOne------------------------------------------------------------" << std::endl;
-			// 	//std::cout << FourierIMinusOne << std::endl;
-			// 	//FourierIMinusOne.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	std::cout << "---Level i: " << i << " ------------------------------------------------------------" << std::endl;
-
-
-			// 	NWAOBDD_COMPLEX_BIG Id = PromoteInterleavedTo12(MkIdRelationInterleaved(i - 1));                   // Level i-1, Vocs 1
-
-			// 	std::cout << "---Id------------------------------------------------------------" << std::endl;
-			// 	//std::cout << Id << std::endl;
-			// 	//Id.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-
-			// 	NWAOBDD_COMPLEX_BIG term1 = KroneckerProduct(FourierIMinusOne, Id);        // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term1------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term1 << std::endl;
-			// 	//term1.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG term2 = MkFourierDiagonalComponent(i);                 // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term2------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term2 << std::endl;
-			// 	//term2.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG term3 = KroneckerProduct(Id, FourierIMinusOne);        // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term3------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term3 << std::endl;
-			// 	//term3.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG term4 = MkNWAOBDDMatrixEqVoc14(i) * MkDetensorConstraintInterleaved(i);                     // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term4------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term4 << std::endl;
-			// 	//term4.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-			// 	//printMemory();
-
-			// 	NWAOBDD_COMPLEX_BIG temp12 = MatrixMultiplyV4(term1, term2);                                          // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---temp12------------------------------------------------------------" << std::endl;
-			// 	//std::cout << temp12 << std::endl;
-			// 	//temp12.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG temp34 = MatrixMultiplyV4(term3, term4);                                          // Level i+1, Vocs 1,2
-				
-			// 	std::cout << "---temp34------------------------------------------------------------" << std::endl;
-			// 	//std::cout << temp34 << std::endl;
-			// 	//temp34.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-
-			// 	NWAOBDD_COMPLEX_BIG temp1234 = MatrixMultiplyV4(temp12, temp34);                                          // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---temp1234------------------------------------------------------------" << std::endl;
-			// 	//std::cout << temp1234 << std::endl;
-			// 	//temp1234.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	return temp1234;
-			// }
-		}
-
-		NWAOBDD_COMPLEX_BIG MkFourierMatrixInterleavedV4WithInfo(unsigned int i)
-		{
-			// if (i >= 5){
-			// 	DisposeOfPairProductCache();
-			// 	InitPairProductCache();
-			// }
-			// assert(1 <= i && i < (NWAOBDD_COMPLEX_BIG::maxLevel - 1));  // Need two extra levels: +1 for Kronecker Product; +1 for matrix multiplication
-
-			// if (i == 1) {
-			// 	return MkWalshInterleaved(1);                                                          // Level 1, interleaved
-			// }
-			// else {  // Need to promote all matrices to vocs 1,2 to allow final matrix multiplication
-
-
-			// 	NWAOBDD_COMPLEX_BIG FourierIMinusOne = PromoteInterleavedTo12(MkFourierMatrixInterleavedV4(i - 1));  // Level i, Vocs 1,2
-
-			// 	std::cout << "---FourierIMinusOne------------------------------------------------------------" << std::endl;
-			// 	//std::cout << FourierIMinusOne << std::endl;
-			// 	//FourierIMinusOne.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	std::cout << "---Level i: " << i << " ------------------------------------------------------------" << std::endl;
-
-
-			// 	NWAOBDD_COMPLEX_BIG Id = PromoteInterleavedTo12(MkIdRelationInterleaved(i - 1));                   // Level i-1, Vocs 1
-
-			// 	std::cout << "---Id------------------------------------------------------------" << std::endl;
-			// 	//std::cout << Id << std::endl;
-			// 	//Id.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-
-			// 	NWAOBDD_COMPLEX_BIG term1 = KroneckerProduct(FourierIMinusOne, Id);        // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term1------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term1 << std::endl;
-			// 	//term1.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG term2 = MkFourierDiagonalComponent(i);                 // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term2------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term2 << std::endl;
-			// 	//term2.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG term3 = KroneckerProduct(Id, FourierIMinusOne);        // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term3------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term3 << std::endl;
-			// 	//term3.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG term4 = MkNWAOBDDMatrixEqVoc14(i) * MkDetensorConstraintInterleaved(i);                     // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---term4------------------------------------------------------------" << std::endl;
-			// 	//std::cout << term4 << std::endl;
-			// 	//term4.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-			// 	//printMemory();
-
-			// 	NWAOBDD_COMPLEX_BIG temp12 = MatrixMultiplyV4WithInfo(term1, term2);                                          // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---temp12------------------------------------------------------------" << std::endl;
-			// 	//std::cout << temp12 << std::endl;
-			// 	//temp12.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	NWAOBDD_COMPLEX_BIG temp34 = MatrixMultiplyV4WithInfo(term3, term4);                                          // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---temp34------------------------------------------------------------" << std::endl;
-			// 	//std::cout << temp34 << std::endl;
-			// 	//temp34.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-
-
-			// 	NWAOBDD_COMPLEX_BIG temp1234 = MatrixMultiplyV4WithInfo(temp12, temp34);                                          // Level i+1, Vocs 1,2
-
-			// 	std::cout << "---temp1234------------------------------------------------------------" << std::endl;
-			// 	//std::cout << temp1234 << std::endl;
-			// 	//temp1234.PrintYield(&std::cout);
-			// 	//std::cout << "----------------------------------------------------------------" << std::endl;
-
-			// 	return temp1234;
-			// }
-		}
-
 		void DumpMatrix(NWAOBDD_COMPLEX_BIG n) {
 			DumpMatrixTop(n.root);
 		}
-
-		NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c)
-		{
+		NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c) {
 			return NWAOBDD_COMPLEX_BIG(MatrixShiftToAConnectionTop(c.root));
 		}
-
-		NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c)
-		{
+		NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c) {
 			return NWAOBDD_COMPLEX_BIG(MatrixShiftToBConnectionTop(c.root));
 		}
-
+		NWAOBDD_COMPLEX_BIG MatrixShiftLevel0(NWAOBDD_COMPLEX_BIG c) {
+			return NWAOBDD_COMPLEX_BIG(MatrixShiftLevel0Top(c.root));
+		}
 		NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2) { 
 			// XZ: this corresponds to "KroneckerProduct2Vocs in NWAOBDD code"
-			assert(m1.root->level == m2.root->level);
-			NWAOBDD_COMPLEX_BIG m1_A = MatrixShiftToAConnection(m1);
-			NWAOBDD_COMPLEX_BIG m2_B = MatrixShiftToBConnection(m2);
-			NWAOBDD_COMPLEX_BIG c = m1_A * m2_B;
-			return c;
+			assert(GetLevel(m1) == GetLevel(m2));
+			if(GetLevel(m1) == 0) {
+				NWAOBDD_COMPLEX_BIG m2_B = MatrixShiftLevel0(m2);
+				NWAOBDD_COMPLEX_BIG c = m1 * m2_B;
+				return c;
+			}
+			else {
+				NWAOBDD_COMPLEX_BIG m1_A = MatrixShiftToAConnection(m1);
+				NWAOBDD_COMPLEX_BIG m2_B = MatrixShiftToBConnection(m2);
+				NWAOBDD_COMPLEX_BIG c = m1_A * m2_B;
+				return c;
+			}
 		}
+		unsigned GetLevel(NWAOBDD_COMPLEX_BIG n) {
+			return GetLevelTop(n.root);
+		}
+	}
+	
+	namespace MatrixComplex {
+		NWAOBDD_COMPLEX_BIG MkId(unsigned int i) {
+			return NWAOBDD_COMPLEX_BIG(MkIdTop(i));
+		}
+		NWAOBDD_COMPLEX_BIG MkNegation(unsigned int i) {
+			return NWAOBDD_COMPLEX_BIG(MkNegationTop(i));
+		}
+		NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int i) {
+			return NWAOBDD_COMPLEX_BIG(MkWalshTop(i));
+		}
+		NWAOBDD_COMPLEX_BIG MkPauliY(unsigned int i) {
+			return NWAOBDD_COMPLEX_BIG(MkPauliYTop(i));
+		}
+		NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int i) {
+			return NWAOBDD_COMPLEX_BIG(MkPauliZTop(i));
+		}
+	
 
+
+
+		
+		
 	}
 }
 

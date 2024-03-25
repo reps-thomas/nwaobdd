@@ -51,13 +51,14 @@ namespace NWA_OBDD {
 		extern void MatrixPrintRowMajor(NWAOBDD_COMPLEX_BIG c, std::ostream & out);
 
 
-		extern NWAOBDD_COMPLEX_BIG MkIdRelationInterleaved(unsigned int i); // Representation of identity relation
-		extern NWAOBDD_COMPLEX_BIG MkWalshInterleaved(unsigned int i);              // Representation of Walsh matrix
-		extern NWAOBDD_COMPLEX_BIG MkInverseReedMullerInterleaved(unsigned int i);  // Representation of Inverse Reed-Muller matrix
-		extern NWAOBDD_COMPLEX_BIG MkExchangeInterleaved(unsigned int i); // Representation of exchange matrix
-		extern NWAOBDD_COMPLEX_BIG MkNegationMatrixInterleaved(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkPauliYMatrixInterleaved(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkPauliZMatrixInterleaved(unsigned int i);
+		extern NWAOBDD_COMPLEX_BIG MkId(unsigned int i); // Representation of identity relation
+		extern NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int i);              // Representation of Walsh matrix
+		extern NWAOBDD_COMPLEX_BIG MkNegation(unsigned int i);
+		extern NWAOBDD_COMPLEX_BIG MkPauliY(unsigned int i);
+		extern NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int i);
+		// extern NWAOBDD_COMPLEX_BIG MkInverseReedMullerInterleaved(unsigned int i);  // Representation of Inverse Reed-Muller matrix
+		// extern NWAOBDD_COMPLEX_BIG MkExchangeInterleaved(unsigned int i); // Representation of exchange matrix
+
 		extern NWAOBDD_COMPLEX_BIG MkSGateInterleaved(unsigned int i);
 		extern NWAOBDD_COMPLEX_BIG MkPhaseShiftGateInterleaved(unsigned int i, double theta);
 
@@ -98,8 +99,11 @@ namespace NWA_OBDD {
 
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c);
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c);
+		NWAOBDD_COMPLEX_BIG MatrixShiftLevel0(NWAOBDD_COMPLEX_BIG c);
 		extern NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
+		
 		void DumpMatrix(NWAOBDD_COMPLEX_BIG n);
+		unsigned GetLevel(NWAOBDD_COMPLEX_BIG n);
 	}
 }
 

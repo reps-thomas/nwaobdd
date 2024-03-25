@@ -70,7 +70,6 @@ NWAOBDDNodeHandle NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
 void NWAOBDDNodeHandle::InitNoDistinctionTable()
 {
   NoDistinctionNode = new NWAOBDDNodeHandle [NWAOBDDMaxLevel+1];
-
   for (unsigned int i = 0; i <= NWAOBDDMaxLevel; i++) {
     if (i == 0) {
       NoDistinctionNode[0] = NWAOBDDNodeHandle(new NWAOBDDEpsilonNode());
