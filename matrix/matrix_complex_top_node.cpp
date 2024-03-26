@@ -242,8 +242,38 @@ namespace NWA_OBDD {
 			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
 			return v;
 		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkSTop(unsigned int i) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkSNode(i);
 
-		
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.AddToEnd(BIG_COMPLEX_FLOAT(0, 1));
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkPhaseShiftTop(unsigned int i, double theta) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkSNode(i);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+
+			auto cos_v = boost::math::cos_pi(theta);
+			auto sin_v = boost::math::sin_pi(theta);
+			std::cout << cos_v << " " << sin_v << "\n";
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.AddToEnd(BIG_COMPLEX_FLOAT(cos_v, sin_v));
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
 
 
 	}

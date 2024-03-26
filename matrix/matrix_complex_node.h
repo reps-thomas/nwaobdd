@@ -1,5 +1,5 @@
-#ifndef MATRIX1234_NODE_GUARD
-#define MATRIX1234_NODE_GUARD
+#ifndef MATRIX_COMPLEX_NWA_NODE
+#define MATRIX_COMPLEX_NWA_NODE
 
 //
 //    Copyright (c) 2017, 2018 Thomas W. Reps
@@ -40,12 +40,12 @@ namespace NWA_OBDD {
 	extern int notL1NodeNum;
 	extern void clearMultMap();
 	extern NWAOBDDNodeHandle MkIdNode(unsigned int level);
-	extern NWAOBDDNodeHandle MkWalshNode(unsigned int i);
 	extern NWAOBDDNodeHandle MkNegationNode(unsigned int i);
+	extern NWAOBDDNodeHandle MkWalshNode(unsigned int i);
 	extern NWAOBDDNodeHandle MkPauliYNode(unsigned int i);
 	extern NWAOBDDNodeHandle MkPauliZNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkInverseReedMullerInterleavedNode(unsigned int i);
-	// extern NWAOBDDNodeHandle MkSGateInterleavedNode(unsigned int i);
+	extern NWAOBDDNodeHandle MkSNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkCNOTInterleavedNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkExchangeInterleavedNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkCNOTNode(unsigned int level, unsigned int n, long int controller, long int controlled);

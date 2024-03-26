@@ -1,5 +1,5 @@
-#ifndef VECTOR_COMPLEX_FLOAT_BOOST_TOP_NODE_GUARD
-#define VECTOR_COMPLEX_FLOAT_BOOST_TOP_NODE_GUARD
+#ifndef VECTOR_COMPLEX_NWA_TOP
+#define VECTOR_COMPLEX_NWA_TOP
 
 #include <iostream>
 #include <string>

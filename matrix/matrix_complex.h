@@ -1,5 +1,5 @@
-#ifndef MATRIX1234_COMPLEX_FLOAT_BOOST_GUARD
-#define MATRIX1234_COMPLEX_FLOAT_BOOST_GUARD
+#ifndef MATRIX_COMPLEX_NWA
+#define MATRIX_COMPLEX_NWA
 
 //
 //    Copyright (c) 2017, 2018 Thomas W. Reps
@@ -59,8 +59,8 @@ namespace NWA_OBDD {
 		// extern NWAOBDD_COMPLEX_BIG MkInverseReedMullerInterleaved(unsigned int i);  // Representation of Inverse Reed-Muller matrix
 		// extern NWAOBDD_COMPLEX_BIG MkExchangeInterleaved(unsigned int i); // Representation of exchange matrix
 
-		extern NWAOBDD_COMPLEX_BIG MkSGateInterleaved(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkPhaseShiftGateInterleaved(unsigned int i, double theta);
+		extern NWAOBDD_COMPLEX_BIG MkS(unsigned int i);
+		extern NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int i, double theta);
 
 		extern NWAOBDD_COMPLEX_BIG MkRestrictMatrix(unsigned int level, std::string s); 
 

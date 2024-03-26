@@ -1,5 +1,5 @@
-#ifndef MATRIX1234_COMPLEX_FLOAT_BOOST_TOP_NODE_GUARD
-#define MATRIX1234_COMPLEX_FLOAT_BOOST_TOP_NODE_GUARD
+#ifndef MATRIX_COMPLEX_NWA_TOP
+#define MATRIX_COMPLEX_NWA_TOP
 
 //
 //    Copyright (c) 2017, 2018 Thomas W. Reps
@@ -62,8 +62,9 @@ namespace NWA_OBDD {
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNegationTop(unsigned int i);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliYTop(unsigned int i);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPauliZTop(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkSGateInterleavedTop(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPhaseShiftGateInterleavedTop(unsigned int i, double theta);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkSTop(unsigned int i);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkPhaseShiftTop(unsigned int i, double theta);
+		
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkExchangeInterleavedTop(unsigned int i); // Representation of exchange matrix
 
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkRestrictTop(unsigned int level, std::string s);

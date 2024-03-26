@@ -1,5 +1,5 @@
-#ifndef VECTOR_NODE_GUARD
-#define VECTOR_NODE_GUARD
+#ifndef VECTOR_COMPLEX_NWA_NODE
+#define VECTOR_COMPLEX_NWA_NODE
 
 #include <string.h>
 #include "../nwaobdd_node.h"

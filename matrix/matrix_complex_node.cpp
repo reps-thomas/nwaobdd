@@ -272,5 +272,37 @@ namespace NWA_OBDD {
         n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
+    NWAOBDDNodeHandle MkSNode(unsigned int level) {
+        NWAOBDDInternalNode *n;
+        n = new NWAOBDDInternalNode(level ? level : 1);
+        n -> numBConnections = n -> numExits =  3;
+        n -> BConnection[0] = new Connection [3];
+        n -> BConnection[1] = new Connection [3];
+        if(level == 0) {
+            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
+            
+            ReturnMapHandle<intpair> r12;
+            r12.AddToEnd(intpair(1, 2)); r12.Canonicalize();
+
+            ReturnMapHandle<intpair> r22;
+            r22.AddToEnd(intpair(2, 2)); r22.Canonicalize();
+
+            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
+            n -> AConnection[1] = Connection(eps, r12);
+
+            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
+            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
+            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
+            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
+            n -> BConnection[0][2] = Connection(eps, r22); // 22
+            n -> BConnection[1][2] = Connection(eps, r22); // 22
+        }
+        else {
+            printf("Should not build PauliY for level > 1\n");
+            abort();
+        }
+        n -> InstallPathCounts();
+        return NWAOBDDNodeHandle(n);
+    }
 
 }  // namespace NWA_OBDD

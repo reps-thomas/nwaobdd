@@ -87,6 +87,13 @@ static void test_pauliz() {
     printf("*** %d\n", MatrixComplex::GetLevel(f1));
 }
 
+static void test_s() {
+    auto f = MatrixComplex::MkS(0);
+    MatrixComplex::DumpMatrix(f);
+    auto g = MatrixComplex::MkPhaseShift(0, 0.5);
+    MatrixComplex::DumpMatrix(g);
+}
+
 void NWATests::RunAllTests() {
 
     std::cout << "Starting to Run All Tests:\n";
@@ -101,7 +108,7 @@ void NWATests::RunAllTests() {
     srand(time(0));
     
     // test_kronecker_product1();
-    test_kronecker_product2();
+    test_s();
 
     std::cout << "Finishing\n";
 }

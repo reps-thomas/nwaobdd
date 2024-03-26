@@ -89,7 +89,12 @@ namespace NWA_OBDD {
 		NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int i) {
 			return NWAOBDD_COMPLEX_BIG(MkPauliZTop(i));
 		}
-	
+		NWAOBDD_COMPLEX_BIG MkS(unsigned int i) {
+			return NWAOBDD_COMPLEX_BIG(MkSTop(i));
+		}
+		NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int i, double theta) {
+			return NWAOBDD_COMPLEX_BIG(MkPhaseShiftTop(i, theta));
+		}
 
 
 
