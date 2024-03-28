@@ -51,14 +51,14 @@ namespace NWA_OBDD {
 			return;
 		}
 
-		void pad_string(AssignmentIterator &ai, std::string s, unsigned level) {
+		static void pad_string(AssignmentIterator &ai, std::string s, unsigned level) {
 			assert(level > 0);
 			if(level == 1) {
-				assert(s.length() == 4);
+				assert(s.length() == 2);
 				ai.Current() = (s[0] == '1'), ai.Next();
+				ai.Current() = 0, ai.Next();
 				ai.Current() = (s[1] == '1'), ai.Next();
-				ai.Current() = (s[2] == '1'), ai.Next();
-				ai.Current() = (s[3] == '1'), ai.Next();
+				ai.Current() = 0, ai.Next();
 			}
 			else {
 				ai.Current() = 0, ai.Next();
@@ -69,7 +69,7 @@ namespace NWA_OBDD {
 				ai.Current() = 0, ai.Next();
 			}
 		}
-		Assignment index2assignment(std::string s, unsigned level) {
+		static Assignment index2assignment(std::string s, unsigned level) {
 			Assignment a( (1 << (level + 2)) - 4 );
 			AssignmentIterator ai(a);
 			pad_string(ai, s, level);
@@ -83,15 +83,16 @@ namespace NWA_OBDD {
 			return s;
 		}
 		void DumpMatrixTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
-
-			if(GetLevelTop(n) == 0) {
-				Assignment asgn0 = index2assignment("0000", 1);
+			unsigned l = n -> level;
+			assert(l > 0);
+			if(l == 1) {
+				Assignment asgn0 = index2assignment("00", 1);
 				auto a00 = n -> Evaluate(asgn0);
-				Assignment asgn1 = index2assignment("0100", 1);
+				Assignment asgn1 = index2assignment("01", 1);
 				auto a01 = n -> Evaluate(asgn1);
-				Assignment asgn2 = index2assignment("1000", 1);
+				Assignment asgn2 = index2assignment("10", 1);
 				auto a10 = n -> Evaluate(asgn2);
-				Assignment asgn3 = index2assignment("1100", 1);
+				Assignment asgn3 = index2assignment("11", 1);
 				auto a11 = n -> Evaluate(asgn3);
 				std::cout << "[\n ";
 				std::cout << "[" << a00 << ", " << a01 << "]\n ";
@@ -99,29 +100,29 @@ namespace NWA_OBDD {
 				std::cout << "]\n";
 				return;	
 			}
-
-			unsigned level = n -> level;
-			unsigned vars = 1 << (level + 1);
-			std::cout << "[\n ";
-			for(unsigned x = 0; x < (1 << (vars / 2)); ++x) {
-				std::cout << "[";
-				std::string s1;
-				for(unsigned j = 0; j < vars / 2; ++j)
-					if(x & (1 << j)) s1.push_back('1');
-					else s1.push_back('0');
-				for(unsigned y = 0; y < (1 << (vars / 2)); ++y) {
-					std::string s2;
+			else {
+				unsigned vars = 1 << l;
+				std::cout << "[\n ";
+				for(unsigned x = 0; x < (1 << (vars / 2)); ++x) {
+					std::cout << "[";
+					std::string s1;
 					for(unsigned j = 0; j < vars / 2; ++j)
-						if(y & (1 << j)) s2.push_back('1');
-						else s2.push_back('0');
-					std::string s = make_interleave(s1, s2);
-					Assignment a = index2assignment(s, level);
-					auto r = n->Evaluate(a);
-					std::cout << r << ", ";
+						if(x & (1 << j)) s1.push_back('1');
+						else s1.push_back('0');
+					for(unsigned y = 0; y < (1 << (vars / 2)); ++y) {
+						std::string s2;
+						for(unsigned j = 0; j < vars / 2; ++j)
+							if(y & (1 << j)) s2.push_back('1');
+							else s2.push_back('0');
+						std::string s = make_interleave(s1, s2);
+						Assignment a = index2assignment(s, l);
+						auto r = n->Evaluate(a);
+						std::cout << r << ", ";
+					}
+					std::cout << "]\n ";
 				}
-				std::cout << "]\n ";
-			}
-			std::cout << "]\n";
+				std::cout << "]\n";
+			}		
 		}
 		unsigned GetLevelTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
 			unsigned l = n -> level;
@@ -276,6 +277,56 @@ namespace NWA_OBDD {
 		}
 
 
+	}
+	namespace MatrixComplex {
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2) {
+			if (c1->level >= 5)
+				clearMultMap();
+			std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash> hashMap;
+			int c1_zero_index = -1, c2_zero_index = -1;
+			c1_zero_index = c1->rootConnection.returnMapHandle.LookupInv(0);
+			c2_zero_index = c2->rootConnection.returnMapHandle.LookupInv(0);
+			NWAOBDDTopNodeMatMultMapRefPtr c = MatrixMultiplyNode
+				(hashMap, *(c1->rootConnection.entryPointHandle), *(c2->rootConnection.entryPointHandle),
+				c1_zero_index, c2_zero_index);
+			ComplexFloatBoostReturnMapHandle v;
+			boost::unordered_map<BIG_COMPLEX_FLOAT, unsigned int> reductionMap;
+			ReductionMapHandle reductionMapHandle;
+			for (unsigned int i = 0; i < c->rootConnection.returnMapHandle.Size(); i++){
+				MatMultMapHandle r = c->rootConnection.returnMapHandle[i];
+				BIG_COMPLEX_FLOAT val = 0;
+				for (auto &j : r.mapContents->map){
+					unsigned int index1 = j.first.first;
+					unsigned int index2 = j.first.second;
+					if (index1 != -1 && index2 != -1){
+						auto factor = BIG_COMPLEX_FLOAT(j.second, 0);
+						// auto factor = j.second.convert_to<BIG_COMPLEX_FLOAT>();
+						val = val + (factor * (c1->rootConnection.returnMapHandle[index1] * c2->rootConnection.returnMapHandle[index2]));
+					}
+				}
+				if (reductionMap.find(val) == reductionMap.end()){
+					v.AddToEnd(val);
+					reductionMap.insert(std::make_pair(val, v.Size() - 1));
+					reductionMapHandle.AddToEnd(v.Size() - 1);
+				}
+				else{
+					reductionMapHandle.AddToEnd(reductionMap[val]);
+				}
+			}
+
+			v.Canonicalize();
+			reductionMapHandle.Canonicalize();
+			NWAOBDDNodeHandle tempHandle = *(c->rootConnection.entryPointHandle);
+			// Perform reduction on tempHandle, with respect to the common elements that rmh maps together
+			/*ReductionMapHandle inducedReductionMapHandle;
+			FloatBoostReturnMapHandle inducedReturnMap;
+			v.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
+			NWAOBDDNodeHandle reduced_tempHandle = tempHandle.Reduce(inducedReductionMapHandle, inducedReturnMap.Size());*/
+			NWAOBDDNodeHandle reduced_tempHandle = tempHandle.Reduce(reductionMapHandle, v.Size(), true);
+			// Create and return NWAOBDDTopNode
+			//return(new NWAOBDDTopNodeFloatBoost(reduced_tempHandle, inducedReturnMap));
+			return(new NWAOBDDTopNodeComplexFloatBoost(reduced_tempHandle, v));
+		}
 	}
 }
 

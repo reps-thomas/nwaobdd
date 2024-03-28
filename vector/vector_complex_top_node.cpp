@@ -142,17 +142,16 @@ namespace NWA_OBDD {
 					break;
 				}
 			}
-			std::pair<std::string, std::string> stringPair = SamplingNode(*(n->rootConnection.entryPointHandle), index, VocTwo);
-			return stringPair.first + stringPair.second;
+			return SamplingNode(*(n->rootConnection.entryPointHandle), index, VocTwo);
 		}
 		void pad_string(AssignmentIterator &ai, std::string s, unsigned level) {
 			assert(level > 0);
 			if(level == 1) {
-				assert(s.length() == 4);
+				assert(s.length() == 2);
 				ai.Current() = (s[0] == '1'), ai.Next();
+				ai.Current() = 0, ai.Next();
 				ai.Current() = (s[1] == '1'), ai.Next();
-				ai.Current() = (s[2] == '1'), ai.Next();
-				ai.Current() = (s[3] == '1'), ai.Next();
+				ai.Current() = 0, ai.Next();
 			}
 			else {
 				ai.Current() = 0, ai.Next();
@@ -171,7 +170,7 @@ namespace NWA_OBDD {
 		}
 		void DumpVectorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
 			unsigned level = n -> level;
-			unsigned vars = 1 << (level + 1);
+			unsigned vars = 1 << level;
 			std::cout << '(';
 			for(unsigned index = 0; index < (1 << vars); ++index) {
 				std::string s;

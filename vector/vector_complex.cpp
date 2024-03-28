@@ -63,7 +63,6 @@ namespace NWA_OBDD {
 		// }
 
 
-		//#ifdef PATH_COUNTING_ENABLED
 		std::string Sampling(NWAOBDD_COMPLEX_BIG c, bool isTwoVoc)
 		{
 			return SamplingTop(c.root, isTwoVoc);
@@ -73,7 +72,6 @@ namespace NWA_OBDD {
 		// {
 		// 	return SamplingV2Top(c.root);
 		// }
-		//#endif
 
 		NWAOBDD_COMPLEX_BIG VectorWithAmplitude(NWAOBDD_COMPLEX_BIG c)
 		{

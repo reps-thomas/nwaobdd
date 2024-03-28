@@ -30,7 +30,7 @@
 #include <cstdarg>
 #include "../nwaobdd_node.h"
 #include "../nwaobdd_top_node.h"
-// #include "cflobdd_top_node_int.h"
+// #include "NWAobdd_top_node_int.h"
 // #include "matrix1234_node.h"
 #include "matrix_complex_top_node.h"
 #include "matrix_complex.h"
@@ -55,25 +55,26 @@ namespace NWA_OBDD {
 		}
 		NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2) { 
 			// XZ: this corresponds to "KroneckerProduct2Vocs in NWAOBDD code"
-			assert(GetLevel(m1) == GetLevel(m2));
-			if(GetLevel(m1) == 0) {
-				NWAOBDD_COMPLEX_BIG m2_B = MatrixShiftLevel0(m2);
-				NWAOBDD_COMPLEX_BIG c = m1 * m2_B;
-				return c;
-			}
-			else {
-				NWAOBDD_COMPLEX_BIG m1_A = MatrixShiftToAConnection(m1);
-				NWAOBDD_COMPLEX_BIG m2_B = MatrixShiftToBConnection(m2);
-				NWAOBDD_COMPLEX_BIG c = m1_A * m2_B;
-				return c;
-			}
+			NWAOBDD_COMPLEX_BIG m1_A = MatrixShiftToAConnection(m1);
+			NWAOBDD_COMPLEX_BIG m2_B = MatrixShiftToBConnection(m2);
+			NWAOBDD_COMPLEX_BIG c = m1_A * m2_B;
+			return c;
 		}
 		unsigned GetLevel(NWAOBDD_COMPLEX_BIG n) {
 			return GetLevelTop(n.root);
 		}
 	}
+
+	namespace MatrixComplex { // the matrix-multiplication
+		NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2) {
+			// XZ: this corresponds to MatrixMultiplyV4WIthInfo
+			assert(GetLevel(m1) == GetLevel(m2));
+			assert(GetLevel(m1) >= 1);
+			return NWAOBDD_COMPLEX_BIG(MatrixMultiplyTop(m1.root, m2.root));
+		}
+	}
 	
-	namespace MatrixComplex {
+	namespace MatrixComplex { // the creation of matrices
 		NWAOBDD_COMPLEX_BIG MkId(unsigned int i) {
 			return NWAOBDD_COMPLEX_BIG(MkIdTop(i));
 		}

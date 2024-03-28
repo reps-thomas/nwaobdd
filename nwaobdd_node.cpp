@@ -183,14 +183,14 @@ NWAOBDDNodeHandle & NWAOBDDNodeHandle::operator= (const NWAOBDDNodeHandle &c)
 static Hashtable<NWAReduceKey, NWAOBDDNodeHandle> *reduceCache = NULL;
 
 
-NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits)
+NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce)
 {
-  if (replacementNumExits == 1) {
+  if (replacementNumExits == 1 && !forceReduce) {
     if(handleContents -> Level() == 3) abort();
     return NWAOBDDNodeHandle::NoDistinctionNode[handleContents->Level()];
   }
 
-  if (redMapHandle.mapContents->isIdentityMap) {
+  if (redMapHandle.mapContents->isIdentityMap && !forceReduce) {
     return *this;
   }
 

@@ -1,4 +1,5 @@
 #include "matrix_complex_node.h"
+#include "../pseudoCFLOBDD.h"
 
 namespace NWA_OBDD {
     extern std::vector<ReturnMapHandle<intpair>>commonly_used_return_maps;
@@ -33,6 +34,7 @@ namespace NWA_OBDD {
         n -> AConnection[1] = n -> AConnection[0];
 
         int num_mid = c.handleContents->numExits;
+        n -> numBConnections = num_mid;
         n -> BConnection[0] = new Connection[num_mid];
         n -> BConnection[1] = new Connection[num_mid];
 
@@ -90,46 +92,29 @@ namespace NWA_OBDD {
 namespace NWA_OBDD {
     NWAOBDDNodeHandle MkIdNode(unsigned int level) {
         NWAOBDDInternalNode *n;
-        n = new NWAOBDDInternalNode(level ? level : 1);
-        n -> numBConnections = n -> numExits = 2;
-        n -> BConnection[0] = new Connection[2];
-        n -> BConnection[1] = new Connection[2];
-        if(level == 0) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, commonly_used_return_maps[2]); // 10
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-        }
-        else if(level == 1) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, commonly_used_return_maps[2]); // 10
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[2]); // 10
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
+        assert(level > 0);
+        if(level == 1) {
+            pseudoCFLOBDDBase c;
+            c.numBConnections = c.numExits = 2;
+            c.bconn[0] = intpair(0, 1);
+            c.bconn[1] = intpair(1, 0);
+            n = c.toNWA();
         }
         else {
             NWAOBDDNodeHandle rec = MkIdNode(level - 1);
             NWAOBDDNodeHandle no_dist = NWAOBDDNodeHandle::NoDistinctionNode[level - 1];
 
-            ReturnMapHandle<intpair> r0011;
-            r0011.AddToEnd(intpair(0, 0));
-            r0011.AddToEnd(intpair(1, 1));
-            r0011.Canonicalize();
+            auto r01 = cfl_return_map(0, 1);
+            auto r1 = cfl_return_map(1);
 
-            n -> AConnection[0] = Connection(rec, r0011);
-            n -> AConnection[1] = n -> AConnection[0];
-
-            n -> BConnection[0][0] = Connection(rec, r0011); // 0011
-            n -> BConnection[1][0] = n -> BConnection[0][0];
-            n -> BConnection[0][1] = Connection(no_dist, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = n -> BConnection[0][1];
+            pseudoCFLOBDDInternal c(level);
+            c.numBConnections = c.numExits = 2;
+            c.BConnection = new CFLConnection [2];
+            
+            c.AConnection = CFLConnection(rec, r01);
+            c.BConnection[0] = CFLConnection(rec, r01);
+            c.BConnection[1] = CFLConnection(no_dist, r1);
+            n = c.toNWA();
         }
 
 #ifdef PATH_COUNTING_ENABLED
@@ -139,170 +124,111 @@ namespace NWA_OBDD {
         return handle;
     }
 
-    NWAOBDDNodeHandle MkWalshNode(unsigned int level) {
-        NWAOBDDInternalNode *n;
-        n = new NWAOBDDInternalNode(level ? level : 1);
-        n -> numBConnections = n -> numExits =  2;
-        n -> BConnection[0] = new Connection [2];
-        n -> BConnection[1] = new Connection [2];
-        if(level == 0) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> AConnection[1] = Connection(eps, commonly_used_return_maps[1]); // 01
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-        }
-        else {
-            printf("Should not build Walsh for level > 1\n");
-            abort();
-        }
-        n -> InstallPathCounts();
-        return NWAOBDDNodeHandle(n);
-    }
     NWAOBDDNodeHandle MkNegationNode(unsigned int level) {
         NWAOBDDInternalNode *n;
-        n = new NWAOBDDInternalNode(level ? level : 1);
-        n -> numBConnections = n -> numExits = 2;
-        n -> BConnection[0] = new Connection [2];
-        n -> BConnection[1] = new Connection [2];
-        if(level == 0) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, commonly_used_return_maps[2]); // 10
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-        }
-        else if(level == 1) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, commonly_used_return_maps[2]); // 10
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[2]); // 10
+        assert(level > 0);
+        if(level == 1) {
+            pseudoCFLOBDDBase c;
+            c.numBConnections = c.numExits = 2;
+            c.bconn[0] = intpair(0, 1);
+            c.bconn[1] = intpair(1, 0);
+            n = c.toNWA();
         }
         else {
             NWAOBDDNodeHandle rec = MkNegationNode(level - 1);
             NWAOBDDNodeHandle no_dist = NWAOBDDNodeHandle::NoDistinctionNode[level - 1];
 
-            ReturnMapHandle<intpair> r0011;
-            r0011.AddToEnd(intpair(0, 0));
-            r0011.AddToEnd(intpair(1, 1));
-            r0011.Canonicalize();
+            auto r01 = cfl_return_map(0, 1);
+            auto r0 = cfl_return_map(0);
 
-            n -> AConnection[0] = Connection(rec, r0011);
-            n -> AConnection[1] = n -> AConnection[0];
+            pseudoCFLOBDDInternal c(level);
+            c.numBConnections = c.numExits = 2;
+            c.BConnection = new CFLConnection [2];
 
-            n -> BConnection[0][0] = Connection(no_dist, commonly_used_return_maps[0]); //00
-            n -> BConnection[1][0] = n -> BConnection[0][0];
-            n -> BConnection[0][1] = Connection(rec, r0011);
-            n -> BConnection[1][1] = Connection(rec, r0011);
+            c.AConnection = CFLConnection(rec, r01);
+            c.BConnection[0] = CFLConnection(no_dist, r0);
+            c.BConnection[1] = CFLConnection(rec, r01);
+            n = c.toNWA();
         }
+        
+        n -> InstallPathCounts();
+        return NWAOBDDNodeHandle(n);
+    }
+    NWAOBDDNodeHandle MkWalshNode(unsigned int level) {
+        NWAOBDDInternalNode *n;
+        assert(level == 1);
+        pseudoCFLOBDDBase c;
+        c.numBConnections = 2;
+        c.numExits = 2;
+        c.bconn[0] = intpair(0, 0);
+        c.bconn[1] = intpair(0, 1);
+        n = c.toNWA();
+
         n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkPauliYNode(unsigned int level) {
         NWAOBDDInternalNode *n;
-        n = new NWAOBDDInternalNode(level ? level : 1);
-        n -> numBConnections = n -> numExits =  3;
-        n -> BConnection[0] = new Connection [3];
-        n -> BConnection[1] = new Connection [3];
-        if(level == 0) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            
-            ReturnMapHandle<intpair> r20;
-            r20.AddToEnd(intpair(2, 0)); r20.Canonicalize();
+        assert(level == 1);
+        pseudoCFLOBDDBase c;
+        c.numBConnections = 2;
+        c.numExits = 3;
+        c.bconn[0] = intpair(0, 1);
+        c.bconn[1] = intpair(2, 0);
+        n = c.toNWA();
 
-            ReturnMapHandle<intpair> r22;
-            r22.AddToEnd(intpair(2, 2)); r22.Canonicalize();
-
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, r20);
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[0][2] = Connection(eps, r22); // 22
-            n -> BConnection[1][2] = Connection(eps, r22); // 22
-        }
-        else {
-            printf("Should not build PauliZ for level > 1\n");
-            abort();
-        }
         n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkPauliZNode(unsigned int level) {
         NWAOBDDInternalNode *n;
-        n = new NWAOBDDInternalNode(level ? level : 1);
-        n -> numBConnections = n -> numExits =  3;
-        n -> BConnection[0] = new Connection [3];
-        n -> BConnection[1] = new Connection [3];
-        if(level == 0) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            
-            ReturnMapHandle<intpair> r12;
-            r12.AddToEnd(intpair(1, 2)); r12.Canonicalize();
+        assert(level == 1);
+        pseudoCFLOBDDBase c;
+        c.numBConnections = 2;
+        c.numExits = 3;
+        c.bconn[0] = intpair(0, 1);
+        c.bconn[1] = intpair(1, 2);
+        n = c.toNWA();
 
-            ReturnMapHandle<intpair> r22;
-            r22.AddToEnd(intpair(2, 2)); r22.Canonicalize();
-
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, r12);
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[0][2] = Connection(eps, r22); // 22
-            n -> BConnection[1][2] = Connection(eps, r22); // 22
-        }
-        else {
-            printf("Should not build PauliY for level > 1\n");
-            abort();
-        }
         n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkSNode(unsigned int level) {
         NWAOBDDInternalNode *n;
-        n = new NWAOBDDInternalNode(level ? level : 1);
-        n -> numBConnections = n -> numExits =  3;
-        n -> BConnection[0] = new Connection [3];
-        n -> BConnection[1] = new Connection [3];
-        if(level == 0) {
-            NWAOBDDNodeHandle eps = NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
-            
-            ReturnMapHandle<intpair> r12;
-            r12.AddToEnd(intpair(1, 2)); r12.Canonicalize();
+        assert(level == 1);
 
-            ReturnMapHandle<intpair> r22;
-            r22.AddToEnd(intpair(2, 2)); r22.Canonicalize();
-
-            n -> AConnection[0] = Connection(eps, commonly_used_return_maps[1]); // 01
-            n -> AConnection[1] = Connection(eps, r12);
-
-            n -> BConnection[0][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[1][0] = Connection(eps, commonly_used_return_maps[0]); // 00
-            n -> BConnection[0][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[1][1] = Connection(eps, commonly_used_return_maps[3]); // 11
-            n -> BConnection[0][2] = Connection(eps, r22); // 22
-            n -> BConnection[1][2] = Connection(eps, r22); // 22
-        }
-        else {
-            printf("Should not build PauliY for level > 1\n");
-            abort();
-        }
+        pseudoCFLOBDDBase c;
+        c.numBConnections = 2;
+        c.numExits = 3;
+        c.bconn[0] = intpair(0, 1);
+        c.bconn[1] = intpair(1, 2);
+        n = c.toNWA();
         n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
 
 }  // namespace NWA_OBDD
+
+namespace NWA_OBDD {
+
+    std::unordered_map<MatMultPair, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPair::MatMultPairHash> matmult_hashMap;
+	std::unordered_map<MatMultPairWithInfo, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPairWithInfo::MatMultPairWithInfoHash> matmult_hashMap_info;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> cnot_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> cp_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> ccp_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> cswap_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> swap_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> iswap_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> ccnot_hashMap;
+
+    NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyNode(
+    std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash>& hashMap,
+    NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2, int c1_zero_index, int c2_zero_index) {
+
+    }
+
+    void clearMultMap(){
+    // std::cout << "mapSize: " << matmult_hashMap.size() << std::endl;
+    matmult_hashMap.clear();
+	}
+} 

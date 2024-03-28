@@ -79,7 +79,7 @@ namespace NWA_OBDD {
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkDetensorConstraintInterleavedTop(unsigned int i);
 		// extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixProjectVoc23Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary projection
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4TopNode(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4WithInfoTopNode(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
+		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
 
 		// Subroutines for Discrete Fourier Transform
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNWAOBDDMatrixEqVoc14Top(unsigned int i);

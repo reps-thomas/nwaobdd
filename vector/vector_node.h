@@ -24,7 +24,7 @@ namespace NWA_OBDD {
 	// extern NWAOBDDNodeHandle MkVectorWithVoc12Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
 	// extern NWAOBDDNodeHandle VectorShiftVocs1To2Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
 //#ifdef PATH_COUNTING_ENABLED
-	extern std::pair<std::string,std::string> SamplingNode(NWAOBDDNodeHandle nh, unsigned int index, bool voctwo = false);
+	extern std::string SamplingNode(NWAOBDDNodeHandle nh, unsigned int index, bool remove_column_index = false);
 //#endif
 	// needs to be removed and linked to the one in cflobdd_node.cpp
 	extern long double addNumPathsToExit(long double path1, long double path2);

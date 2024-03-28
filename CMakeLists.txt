@@ -16,25 +16,29 @@ target_link_libraries(nwaobdd.out PRIVATE infra lib_nwaobdd)
 add_library(lib_nwaobdd STATIC
     assignment.cpp
     bool_op.cpp
-    cross_product_nwa.cpp
-    nwaobdd.cpp
-    nwaobdd_int.cpp
-    nwaobdd_node.cpp
+    fourier_semiring.cpp
+    connectionT_impl.cpp
     reduction_map.cpp
     return_map_impl.cpp
-    traverse_state_nwa.cpp
-    # connection.cpp
-    connectionT_impl.cpp
-    # nwaobdd_top_node.cpp
-    fourier_semiring.cpp
-    # matrix/matrix_complex.cpp
+    nwaobdd_node.cpp
     nwaobdd_top_node_impl.cpp
+    traverse_state_nwa.cpp
+    nwaobdd.cpp
+    nwaobdd_int.cpp
+    cross_product_nwa.cpp
+
+    pseudoCFLOBDD.cpp
+    
     vector/vector_complex_top_node.cpp 
     vector/vector_complex.cpp
     vector/vector_node.cpp
+    
     matrix/matrix_complex.cpp
     matrix/matrix_complex_top_node.cpp 
     matrix/matrix_complex_node.cpp
+    matrix/matmult_map.cpp 
+    matrix/nwaobdd_top_node_matmult_map.cpp
+    matrix/zero_indices_map.cpp
 )
 target_compile_options(lib_nwaobdd PRIVATE -g -w -lm -std=c++2a -O3 -I${path_to_boost} -fPIC)
 target_link_libraries(lib_nwaobdd PRIVATE infra)

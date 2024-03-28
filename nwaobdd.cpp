@@ -50,10 +50,10 @@ unsigned int const NWAOBDD<T>::maxLevel = NWAOBDDMaxLevel;
 // Constructors/Destructor -------------------------------------------
 
 // Default constructor
-template <>
-NWAOBDD<int>::NWAOBDD()
-  : root(MkTrueTop())
+template <typename T>
+NWAOBDD<T>::NWAOBDD()
 {
+  
 }
 
 template <typename T>

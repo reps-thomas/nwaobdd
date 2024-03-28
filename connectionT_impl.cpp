@@ -1,6 +1,7 @@
 #include "connection.cpp"
 #include "infra/intpair.h"
 #include "vector/vector_complex.h"
+#include "matrix/matmult_map.h"
 // #include "matrix1234_float_boost.h"
 // #include "fourier_semiring.h"
 // #include "matrix1234_complex_float_boost.h"
@@ -13,8 +14,8 @@ namespace NWA_OBDD {
     template class  ConnectionT<ReturnMapHandle<intpair>>;
 	template std::ostream& operator<< (std::ostream & out, const ConnectionT<ReturnMapHandle<intpair>> &c);
 
-    // template class  ConnectionT<ReturnMapHandle<MatMultMapHandle>>;
-	// template std::ostream& operator<< (std::ostream & out, const ConnectionT<ReturnMapHandle<MatMultMapHandle>> &c);
+    template class ConnectionT<ReturnMapHandle<MatMultMapHandle>>;
+	template std::ostream& operator<< (std::ostream & out, const ConnectionT<ReturnMapHandle<MatMultMapHandle>> &c);
 
     template class ConnectionT<ReturnMapHandle<BIG_COMPLEX_FLOAT>>;
     template std::ostream& operator<< (std::ostream & out, const ConnectionT<ReturnMapHandle<BIG_COMPLEX_FLOAT>> &c);

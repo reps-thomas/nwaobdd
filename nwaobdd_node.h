@@ -93,7 +93,7 @@ class NWAOBDDNodeHandle {
 
  // Reduce and its associated cache ---------------
     public:
-     NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits);
+     NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);
 	 static NWAOBDDTopNodeRefPtr SchemaAdjust(NWAOBDDNodeHandle n, int exit, int s[4], int offset);
    // added to pass compilation
    static NWAOBDDTopNodeRefPtr SchemaAdjust(NWAOBDDNodeHandle *n, int exit, int s[4], int offset);

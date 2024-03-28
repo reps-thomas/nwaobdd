@@ -1,5 +1,6 @@
 #include"vector_node.h"
 #include <random>
+#include"../pseudoCFLOBDD.h"
 
 namespace NWA_OBDD {
     std::vector<ReturnMapHandle<intpair>>commonly_used_return_maps;
@@ -28,7 +29,7 @@ namespace NWA_OBDD {
     NWAOBDDNodeHandle MkBasisVectorNode(unsigned int level, unsigned int index) {
         assert(level <= 29);
         std::string s;
-        for(unsigned i = 0; i < (1 << (level + 1)); ++i) {
+        for(unsigned i = 0; i < (1 << level); ++i) {
             if(index & (1 << i))
                 s.push_back('1');
             else 
@@ -38,88 +39,30 @@ namespace NWA_OBDD {
     }
 
     NWAOBDDNodeHandle MkBasisVectorNode(unsigned int level, std::string s) {
-
         assert(level > 0);
-        Connection c00(NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle, commonly_used_return_maps[0]);
-        Connection c01(NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle, commonly_used_return_maps[1]);
-        Connection c10(NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle, commonly_used_return_maps[2]);
-        Connection c11(NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle, commonly_used_return_maps[3]);
-
-        ReturnMapHandle<intpair> r0011;
-        r0011.AddToEnd(intpair(0, 0));
-        r0011.AddToEnd(intpair(1, 1));
-        r0011.Canonicalize();
-
-        ReturnMapHandle<intpair> r1100;
-        r1100.AddToEnd(intpair(1, 1));
-        r1100.AddToEnd(intpair(0, 0));
-        r1100.Canonicalize();
-
-        NWAOBDDInternalNode *n = new NWAOBDDInternalNode(level);
-        n -> numBConnections = n -> numExits = 2;
-        n -> BConnection[0] = new Connection[2];
-        n -> BConnection[1] = new Connection[2];
-
+        NWAOBDDInternalNode *n;
         if(level == 1) {
-            assert(s.length() == 4);
-            if(s[0] == '0' && s[1] == '0') {
-                n -> AConnection[0] = c01;
-                n -> AConnection[1] = c11;
-                if(s[2] == '0' && s[3] == '0') {
-                    n -> BConnection[0][0] = c01;
-                    n -> BConnection[0][1] = c11;
-                    n -> BConnection[1][0] = c11;
-                    n -> BConnection[1][1] = c11;
+            assert(s.length() == 2);
+            pseudoCFLOBDDBase c;
+            c.numBConnections = c.numExits = 2;
+            if(s[0] == '0') {
+                if(s[1] == '0') {
+                    c.bconn[0] = intpair(0, 1);
+                    c.bconn[1] = intpair(1, 1);
                 }
                 else {
-                    if(s[2] == '0') { // case 01 only
-                        n -> BConnection[0][0] = c01;
-                        n -> BConnection[0][1] = c00;
-                        n -> BConnection[1][0] = c00;
-                        n -> BConnection[1][1] = c00;
-                    }
-                    else { // case 10 and case 11
-                        n -> BConnection[0][0] = c00;
-                        n -> BConnection[0][1] = c00;
-                        n -> BConnection[1][1] = c00;
-                        if(s[3] == '1') // case 11
-                            n -> BConnection[1][0] = c01;
-                        else  // case 10
-                            n -> BConnection[1][0] = c10;
-                    }
+                    c.bconn[0] = intpair(0, 1);
+                    c.bconn[1] = intpair(0, 0);
                 }
             }
             else {
-                // ------ A-Connection Part ------
-                if(s[0] == '0') { // case 01 only
-                    n -> AConnection[0] = c01;
-                    n -> AConnection[1] = c00;
-                }
-                else { // case 10 and 11
-                    n -> AConnection[0] = c00;
-                    if(s[1] == '0') // case 10
-                        n -> AConnection[1] = c10;
-                    else // case 11
-                        n -> AConnection[1] = c01;
-                }
-                // ------ B-Connection Part ------
-                n -> BConnection[0][0] = c00;
-                n -> BConnection[1][0] = c00;
-
-                Connection r_alive;
-                if(s[3] == '1')
-                    r_alive = c01;
+                c.bconn[0] = intpair(0, 0);
+                if(s[1] == '0') 
+                    c.bconn[1] = intpair(1, 0);
                 else 
-                    r_alive = c10;
-                if(s[2] == '0') {
-                    n -> BConnection[0][1] = r_alive;
-                    n -> BConnection[1][1] = c00;
-                }
-                else {
-                    n -> BConnection[0][1] = c00;
-                    n -> BConnection[1][1] = r_alive;
-                }
+                    c.bconn[1] = intpair(0, 1);
             }
+            n = c.toNWA();
         }
         else {
             std::string first_half = s.substr(0, s.length() / 2);
@@ -128,35 +71,33 @@ namespace NWA_OBDD {
             auto ACallee = MkBasisVectorNode(level - 1, first_half);
             auto BCallee = MkBasisVectorNode(level - 1, second_half);
             auto NoDist = NWAOBDDNodeHandle::NoDistinctionNode[level - 1];
-            n -> AConnection[0] = Connection(ACallee, r0011);
-            n -> AConnection[1] = n -> AConnection[0];
+            pseudoCFLOBDDInternal c(level);
+            c.numBConnections = c.numExits = 2;
+            c.BConnection = new CFLConnection[2];
+            
+            auto m0 = cfl_return_map(0);
+            auto m1 = cfl_return_map(1);
+            auto m01 = cfl_return_map(0, 1);
+            auto m10 = cfl_return_map(1, 0);
+
+            c.AConnection = CFLConnection(ACallee, m01);
 
 			if (first_half.find('1') == std::string::npos) {
-                n -> BConnection[0][0] = Connection(BCallee, r0011);
-                n -> BConnection[1][0] = n -> BConnection[0][0];
-				if (second_half.find('1') == std::string::npos) {
-                   n -> BConnection[0][1] = Connection(NoDist, commonly_used_return_maps[3]);
-                   n -> BConnection[1][1] = n -> BConnection[0][1];
-                }
-				else {
-                    n -> BConnection[0][1] = Connection(NoDist, commonly_used_return_maps[0]);
-                    n -> BConnection[1][1] = n -> BConnection[0][1];
-                }	
+                c.BConnection[0] = CFLConnection(BCallee, m01); // 0, 1
+				if (second_half.find('1') == std::string::npos) 
+					c.BConnection[1] = CFLConnection(NoDist, m1); // 1
+				else
+                    c.BConnection[1] = CFLConnection(NoDist, m0); // 0
 			}
 			else {
-                n -> BConnection[0][0] = Connection(NoDist, commonly_used_return_maps[0]);
-                n -> BConnection[1][0] = n -> BConnection[0][0];
-				if(second_half.find('1') == std::string::npos) {
-                    n -> BConnection[0][1] = Connection(BCallee, r1100);
-                    n -> BConnection[1][1] = n -> BConnection[0][1];
-                }
-                else {
-                    n -> BConnection[0][1] = Connection(BCallee, r0011);
-                    n -> BConnection[1][1] = n -> BConnection[0][1];
-                }
+				c.BConnection[0] = CFLConnection(NoDist, m0); // 0
+				if (second_half.find('1') == std::string::npos)
+					c.BConnection[1] = CFLConnection(BCallee, m10); // 1, 0
+				else
+					c.BConnection[1] = CFLConnection(BCallee, m01); // 0, 1
 			}
+            n = c.toNWA();
         }
-
 #ifdef PATH_COUNTING_ENABLED
 		n->InstallPathCounts();
 #endif
@@ -215,23 +156,25 @@ namespace NWA_OBDD {
 		return addNumPathsToExit(paths);
 	}
 
-    std::pair<std::string,std::string> SamplingNode(NWAOBDDNodeHandle nh, unsigned int index, bool voctwo) {
+
+    std::string SamplingNode(NWAOBDDNodeHandle nh, unsigned int index, bool remove_column_index) {
         NWAOBDDNode *n = nh.handleContents;
         if(n->level == 1) {
             std::vector<std::string>sat;
-            for(unsigned i = 0; i < 16; ++i) {
-                std::string s;
+            for(unsigned id = 0; id < 4; ++id) {
                 SH_OBDD::Assignment a(4);
-                for(unsigned j = 0; j < 4; ++j) {
-                    if(i & (1 << j)) 
-                        s.push_back('1'), a[j] = 1;
-                    else 
-                        s.push_back('0'), a[j] = 0;
-                }
+                a[0] = (id & 1);
+                a[2] = (id & 2) ? 1 : 0;
+                a[1] = a[3] = 0;
                 SH_OBDD::AssignmentIterator ai(a);
                 unsigned r = n -> Traverse(ai);
-                if(r == index)
+                if(r == index) {
+                    std::string s;
+                    s.push_back((id & 1) ? '1' : '0');
+                    if(!remove_column_index)
+                        s.push_back((id & 2) ? '1' : '0');
                     sat.push_back(s);
+                }
             }
             assert(sat.size() > 0);
             double random_value = ((double)rand() / (RAND_MAX));
@@ -242,12 +185,11 @@ namespace NWA_OBDD {
                     break;
                 }
             }
-            return std::make_pair(res, "");
+            return res;
         }
         else {
             // XZ Warning: 
             // Current Implementation only work when NWAOBDDs are simulating CFLOBDDs.
-            
             auto nh =  dynamic_cast<NWAOBDDInternalNode*>(n);
             // auto (nh -> AConnection[0]) = nh->AConnection[0];
             auto BConn = nh->BConnection[0];
@@ -276,7 +218,7 @@ namespace NWA_OBDD {
                 std::uniform_int_distribution<long long unsigned> distribution(0, 0xFFFFFFFFFFFFFFFF);
                 random_value = log2l(distribution(generator)) + numBTotalPaths - 64;
             }
-            else{
+            else {
                 random_value = log2l((((double)rand()) / RAND_MAX)*pow(2, numBTotalPaths));
             }
             long double val = -1 * std::numeric_limits<long double>::infinity();
@@ -300,13 +242,9 @@ namespace NWA_OBDD {
             assert(BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)) != -1);
             assert(BConnectionIndex < nh->numBConnections);
             assert(BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)) < BConn[BConnectionIndex].returnMapHandle.mapContents->mapArray.size());
-            std::pair<std::string,std::string> AString = SamplingNode(*((nh -> AConnection[0]).entryPointHandle), BConnectionIndex, voctwo);
-            std::pair<std::string, std::string> BString = SamplingNode(*(BConn[BConnectionIndex].entryPointHandle), BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)), voctwo);
-            if (nh->level == 1)
-                return std::make_pair(AString.first, BString.first);
-            if (nh->level == 2 && !voctwo)
-                return std::make_pair(AString.first, BString.first);
-            return std::make_pair(AString.first + BString.first, AString.second + BString.second);
+            std::string AString = SamplingNode(*((nh -> AConnection[0]).entryPointHandle), BConnectionIndex, remove_column_index);
+            std::string BString = SamplingNode(*(BConn[BConnectionIndex].entryPointHandle), BConn[BConnectionIndex].returnMapHandle.LookupInv(intpair(index, index)), remove_column_index);
+            return AString + BString;
         }
     }
 } // namespace NWA_OBDD

@@ -32,7 +32,7 @@
 #include "infra/intpair.h"
 #include "nwaobdd_node.h"
 // #include "linear_map.h"
-// #include "matmult_map.h"
+#include "matrix/matmult_map.h"
 // #include "fourier_semiring.h"
 
 #include <boost/multiprecision/cpp_dec_float.hpp>
@@ -56,32 +56,32 @@ namespace mp = boost::multiprecision;
 // 	return hvalue;
 // }
 
-// template<>
-// void ReturnMapBody<MatMultMapHandle>::setHashCheck()
-// {
-// 	unsigned int hvalue = 0;
+template<>
+void ReturnMapBody<MatMultMapHandle>::setHashCheck()
+{
+	unsigned int hvalue = 0;
 
-// 	for (unsigned i = 0; i < mapArray.size(); i++)
-// 	{
-// 		if (mapArray[i].mapContents->hashCheck == NULL) {
-// 			mapArray[i].mapContents->setHashCheck();
-// 		}
-// 		hvalue = (117 * (hvalue + 1) + mapArray[i].mapContents->hashCheck);
-// 	}
-// 	hashCheck = hvalue;
-// }
+	for (unsigned i = 0; i < mapArray.size(); i++)
+	{
+		if (mapArray[i].mapContents->hashCheck == NULL) {
+			mapArray[i].mapContents->setHashCheck();
+		}
+		hvalue = (117 * (hvalue + 1) + mapArray[i].mapContents->hashCheck);
+	}
+	hashCheck = hvalue;
+}
 
-// template<>
-// unsigned int ReturnMapBody<MatMultMapHandle>::Hash(unsigned int modsize)
-// {
-// 	unsigned int hvalue = 0;
+template<>
+unsigned int ReturnMapBody<MatMultMapHandle>::Hash(unsigned int modsize)
+{
+	unsigned int hvalue = 0;
 
-// 	for (unsigned i = 0; i < mapArray.size(); i++)
-// 	{
-// 		hvalue = (997 * hvalue + mapArray[i].Hash(modsize)) % modsize;
-// 	}
-// 	return hvalue;
-// }
+	for (unsigned i = 0; i < mapArray.size(); i++)
+	{
+		hvalue = (997 * hvalue + mapArray[i].Hash(modsize)) % modsize;
+	}
+	return hvalue;
+}
 
 
 // template<>

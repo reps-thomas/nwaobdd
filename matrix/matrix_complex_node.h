@@ -28,8 +28,11 @@
 //
 
 #include "../nwaobdd_node.h"
+#include "nwaobdd_top_node_matmult_map.h"
+#include "zero_indices_map.h"
 #include <map>
 #include <unordered_map>
+#include <boost/unordered_map.hpp>
 
 namespace NWA_OBDD {
 
@@ -104,9 +107,9 @@ namespace NWA_OBDD {
 	// extern NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyV4Node(
 	// 	std::unordered_map<MatMultPair, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPair::MatMultPairHash>& hashMap,
 	// 	NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2);
-	// extern NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyV4WithInfoNode(
-	// 	std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash>& hashMap,
-	// 	NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2, int c1_zero_index, int c2_zero_index);
+	extern NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyNode(
+		std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash>& hashMap,
+		NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2, int c1_zero_index, int c2_zero_index);
  }
 
 #endif
