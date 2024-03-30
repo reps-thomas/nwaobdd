@@ -13,7 +13,7 @@ ConnectionT<Handle>::ConnectionT()
 
 template <typename Handle>
 ConnectionT<Handle>::ConnectionT(const ConnectionT<Handle> &other) 
-	: entryPointHandle(other.entryPointHandle), returnMapHandle(other.returnMapHandle)
+	: entryPointHandle(new NWAOBDDNodeHandle(*(other.entryPointHandle))), returnMapHandle(other.returnMapHandle)
 {
 
 }

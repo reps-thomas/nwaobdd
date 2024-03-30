@@ -32,4 +32,7 @@ namespace NWA_OBDD {
 
     template class NWAOBDDTopNode<MatMultMapHandle>;
     template std::ostream& operator<< (std::ostream & out, const NWAOBDDTopNode<MatMultMapHandle> &d);
+    template typename NWAOBDDTopNode<MatMultMapHandle>::NWAOBDDTopNodeTRefPtr
+    MkPlusTopNode<MatMultMapHandle>(typename NWAOBDDTopNode<MatMultMapHandle>::NWAOBDDTopNodeTRefPtr f,
+                    typename NWAOBDDTopNode<MatMultMapHandle>::NWAOBDDTopNodeTRefPtr g);
 }

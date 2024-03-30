@@ -49,11 +49,13 @@ namespace NWA_OBDD {
 	extern NWAOBDDNodeHandle MkPauliZNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkInverseReedMullerInterleavedNode(unsigned int i);
 	extern NWAOBDDNodeHandle MkSNode(unsigned int i);
+
+	extern NWAOBDDNodeHandle MkCNotNode(unsigned int level, unsigned int n, long int controller, long int controlled);
+	extern NWAOBDDNodeHandle MkCNot2Node(unsigned int level, unsigned int n, long int controller, long int controlled);
+	extern NWAOBDDNodeHandle MkCCNotNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
 	// extern NWAOBDDNodeHandle MkCNOTInterleavedNode(unsigned int i);
 	// extern NWAOBDDNodeHandle MkExchangeInterleavedNode(unsigned int i);
-	// extern NWAOBDDNodeHandle MkCNOTNode(unsigned int level, unsigned int n, long int controller, long int controlled);
-	// extern NWAOBDDNodeHandle MkCNOT2Node(unsigned int level, unsigned int n, long int controller, long int controlled);
-	// extern NWAOBDDNodeHandle MkCCNOTNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
+	
 	// extern NWAOBDDNodeHandle MkMCXNode(unsigned int level, unsigned int n, std::vector<long int>& controllers, long int controlled);
 	// extern NWAOBDDNodeHandle MkCPGateNode(unsigned int level, long int controller, long int controlled);
 	// extern NWAOBDDNodeHandle MkSwapGateNode(unsigned int level, long int controller, long int controlled, int case_num);
@@ -83,7 +85,6 @@ namespace NWA_OBDD {
 
 	extern NWAOBDDNodeHandle MatrixShiftToAConnectionNode(NWAOBDDNodeHandle c);
 	extern NWAOBDDNodeHandle MatrixShiftToBConnectionNode(NWAOBDDNodeHandle c);
-	extern NWAOBDDNodeHandle MatrixShiftLevel0Node(NWAOBDDNodeHandle c);
 
 	// Subroutines for Discrete Fourier Transform
 	// extern NWAOBDDNodeHandle MkNWAOBDDMatrixEqVoc14Node(unsigned int i);

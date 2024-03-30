@@ -50,9 +50,6 @@ namespace NWA_OBDD {
 		NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c) {
 			return NWAOBDD_COMPLEX_BIG(MatrixShiftToBConnectionTop(c.root));
 		}
-		NWAOBDD_COMPLEX_BIG MatrixShiftLevel0(NWAOBDD_COMPLEX_BIG c) {
-			return NWAOBDD_COMPLEX_BIG(MatrixShiftLevel0Top(c.root));
-		}
 		NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2) { 
 			// XZ: this corresponds to "KroneckerProduct2Vocs in NWAOBDD code"
 			NWAOBDD_COMPLEX_BIG m1_A = MatrixShiftToAConnection(m1);
@@ -60,44 +57,46 @@ namespace NWA_OBDD {
 			NWAOBDD_COMPLEX_BIG c = m1_A * m2_B;
 			return c;
 		}
-		unsigned GetLevel(NWAOBDD_COMPLEX_BIG n) {
-			return GetLevelTop(n.root);
-		}
 	}
 
 	namespace MatrixComplex { // the matrix-multiplication
 		NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2) {
 			// XZ: this corresponds to MatrixMultiplyV4WIthInfo
-			assert(GetLevel(m1) == GetLevel(m2));
-			assert(GetLevel(m1) >= 1);
+			assert(m1.root -> level == m2.root -> level);
+			// assert(m1.root -> level >= 2); 
+			// XZ: why this
 			return NWAOBDD_COMPLEX_BIG(MatrixMultiplyTop(m1.root, m2.root));
 		}
 	}
 	
 	namespace MatrixComplex { // the creation of matrices
-		NWAOBDD_COMPLEX_BIG MkId(unsigned int i) {
-			return NWAOBDD_COMPLEX_BIG(MkIdTop(i));
+		NWAOBDD_COMPLEX_BIG MkId(unsigned int level) {
+			return NWAOBDD_COMPLEX_BIG(MkIdTop(level));
 		}
-		NWAOBDD_COMPLEX_BIG MkNegation(unsigned int i) {
-			return NWAOBDD_COMPLEX_BIG(MkNegationTop(i));
+		NWAOBDD_COMPLEX_BIG MkNegation(unsigned int level) {
+			return NWAOBDD_COMPLEX_BIG(MkNegationTop(level));
 		}
-		NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int i) {
-			return NWAOBDD_COMPLEX_BIG(MkWalshTop(i));
+		NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int level) {
+			return NWAOBDD_COMPLEX_BIG(MkWalshTop(level));
 		}
-		NWAOBDD_COMPLEX_BIG MkPauliY(unsigned int i) {
-			return NWAOBDD_COMPLEX_BIG(MkPauliYTop(i));
+		NWAOBDD_COMPLEX_BIG MkPauliY(unsigned int level) {
+			return NWAOBDD_COMPLEX_BIG(MkPauliYTop(level));
 		}
-		NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int i) {
-			return NWAOBDD_COMPLEX_BIG(MkPauliZTop(i));
+		NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int level) {
+			return NWAOBDD_COMPLEX_BIG(MkPauliZTop(level));
 		}
-		NWAOBDD_COMPLEX_BIG MkS(unsigned int i) {
-			return NWAOBDD_COMPLEX_BIG(MkSTop(i));
+		NWAOBDD_COMPLEX_BIG MkS(unsigned int level) {
+			return NWAOBDD_COMPLEX_BIG(MkSTop(level));
 		}
-		NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int i, double theta) {
-			return NWAOBDD_COMPLEX_BIG(MkPhaseShiftTop(i, theta));
+		NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int level, double theta) {
+			return NWAOBDD_COMPLEX_BIG(MkPhaseShiftTop(level, theta));
 		}
-
-
+		NWAOBDD_COMPLEX_BIG MkCNot(unsigned int level, unsigned int n, long int controller, long int controlled) {
+			return NWAOBDD_COMPLEX_BIG(MkCNotTop(level, n, controller, controlled));
+		}
+		NWAOBDD_COMPLEX_BIG MkCCNot(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled) {
+			return NWAOBDD_COMPLEX_BIG(MkCCNotTop(level, n, controller1, controller2, controlled));
+		}
 
 		
 		

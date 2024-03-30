@@ -62,6 +62,9 @@ namespace NWA_OBDD {
 		extern NWAOBDD_COMPLEX_BIG MkS(unsigned int i);
 		extern NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int i, double theta);
 
+		NWAOBDD_COMPLEX_BIG MkCNot(unsigned int level, unsigned int n, long int controller, long int controlled);
+		NWAOBDD_COMPLEX_BIG MkCCNot(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
+
 		extern NWAOBDD_COMPLEX_BIG MkRestrictMatrix(unsigned int level, std::string s); 
 
 		// Matrix-related operations (on matrices with room for two extra vocabularies) ------------
@@ -75,7 +78,7 @@ namespace NWA_OBDD {
 		// extern NWAOBDD_COMPLEX_BIG MatrixProjectVoc23(NWAOBDD_COMPLEX_BIG c);                   // Vocabulary projection
 		extern NWAOBDD_COMPLEX_BIG MatrixDetensor(NWAOBDD_COMPLEX_BIG k);                       // Detensor of a 4-vocabulary matrix
 		// extern NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
-		extern NWAOBDD_COMPLEX_BIG MatrixMultiplyV4(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
+		extern NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
 		extern NWAOBDD_COMPLEX_BIG MatrixMultiplyV4WithInfo(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
 
 		// Discrete Fourier Transform, and subroutines
@@ -99,9 +102,7 @@ namespace NWA_OBDD {
 
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c);
 		extern NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c);
-		NWAOBDD_COMPLEX_BIG MatrixShiftLevel0(NWAOBDD_COMPLEX_BIG c);
 		extern NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
-		
 		void DumpMatrix(NWAOBDD_COMPLEX_BIG n);
 		unsigned GetLevel(NWAOBDD_COMPLEX_BIG n);
 	}

@@ -208,6 +208,7 @@ class NWAOBDDNode {
   virtual void IncrRef() = 0;
   virtual void DecrRef() = 0;
   const unsigned int Level() const { return level; }
+  unsigned int GetRefCount(){ return refCount; }
  public:
 	 virtual std::ostream& print(std::ostream & out = std::cout) const = 0;
   const unsigned int level;

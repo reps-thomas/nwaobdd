@@ -9,6 +9,7 @@ add_executable(nwaobdd.out
     main.cpp
     testing/tests_nwa1.cpp
     testing/tests_nwa2.cpp
+    testing/tests_nwa3.cpp
 )
 target_compile_options(nwaobdd.out PRIVATE -g -w -lm -std=c++2a -O3 -I${path_to_boost})
 target_link_libraries(nwaobdd.out PRIVATE infra lib_nwaobdd)

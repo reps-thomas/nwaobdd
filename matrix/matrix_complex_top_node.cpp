@@ -124,23 +124,7 @@ namespace NWA_OBDD {
 				std::cout << "]\n";
 			}		
 		}
-		unsigned GetLevelTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
-			unsigned l = n -> level;
-			if(l > 1) return l;
-			NWAOBDDNode* nh = n -> rootConnection.entryPointHandle->handleContents;
-			NWAOBDDInternalNode *internal = dynamic_cast<NWAOBDDInternalNode*>(nh);
-			assert(internal);
-			for(unsigned i = 0; i < internal -> numBConnections; ++i) {
-				ReturnMapHandle<intpair> rmh;
-				rmh.AddToEnd(intpair(i, i));
-				rmh.Canonicalize();
-				if(internal -> BConnection[0][i].returnMapHandle != rmh)
-					return 1u;
-				if(internal -> BConnection[1][i].returnMapHandle != rmh)
-					return 1u;
-			}
-			return 0u;
-		}
+
 
 		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c) {
 			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
@@ -160,14 +144,6 @@ namespace NWA_OBDD {
 			return v;
 		}
 
-		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftLevel0Top(NWAOBDDTopNodeComplexFloatBoostRefPtr c) {
-			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
-			NWAOBDDNodeHandle tempHandle;
-
-			tempHandle = MatrixShiftLevel0Node(*(c->rootConnection.entryPointHandle));
-			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, c->rootConnection.returnMapHandle);
-			return v;
-		}
 
 	}
 
@@ -265,7 +241,6 @@ namespace NWA_OBDD {
 
 			auto cos_v = boost::math::cos_pi(theta);
 			auto sin_v = boost::math::sin_pi(theta);
-			std::cout << cos_v << " " << sin_v << "\n";
 			m.AddToEnd(1);
 			m.AddToEnd(0);
 			m.AddToEnd(BIG_COMPLEX_FLOAT(cos_v, sin_v));
@@ -275,7 +250,32 @@ namespace NWA_OBDD {
 			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
 			return v;
 		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCNotTop(unsigned int level, unsigned int n, long int controller, long int controlled) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkCNotNode(level, n, controller, controlled);
 
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCCNotTop(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkCCNotNode(level, n, controller1, controller2, controlled);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
 
 	}
 	namespace MatrixComplex {
