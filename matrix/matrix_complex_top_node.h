@@ -67,43 +67,20 @@ namespace NWA_OBDD {
 
 		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCNotTop(unsigned int level, unsigned int n, long int controller, long int controlled);
 		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCCNotTop(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkSwapTop(unsigned int level, long int i, long int j);
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkiSwapTop(unsigned int level, long int i, long int j);
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCSwapTop(unsigned int level, long int c, long int i, long int j);
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCPTop(unsigned int level, long int i, long int j, double theta);
 		
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkExchangeInterleavedTop(unsigned int i); // Representation of exchange matrix
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkRestrictTop(unsigned int level, std::string s);
 
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkRestrictTop(unsigned int level, std::string s);
-
-		// Matrix-related operations (on matrices with room for two extra vocabularies) ------------
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshVoc13Top(unsigned int i); // Representation of Walsh matrix with room for two additional vocabularies
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkWalshVoc12Top(unsigned int i); // Representation of Walsh matrix with room for two additional vocabularies
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVocs13To24Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVocs12To34Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVoc43Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftVoc42Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary shift
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkDetensorConstraintInterleavedTop(unsigned int i);
-		// extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixProjectVoc23Top(NWAOBDDTopNodeComplexFloatBoostRefPtr n); // Vocabulary projection
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyV4TopNode(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
+		
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2);
-
-		// Subroutines for Discrete Fourier Transform
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkNWAOBDDMatrixEqVoc14Top(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkFourierDiagonalComponentTop(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr PromoteInterleavedTo12Top(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr Demote12ToInterleavedTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr ConvertToComplexTop(NWAOBDDTopNodeFourierRefPtr c);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCNOTInterleavedTop(unsigned int i);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCPGateTop(unsigned int level, long int i, long int j, double theta);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkSwapGateTop(unsigned int level, long int i, long int j);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkiSwapGateTop(unsigned int level, long int i, long int j);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCSwapGateTop(unsigned int level, long int c, long int i, long int j);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkMCXTopNode(unsigned int level, unsigned int n, std::vector<long int>& controllers, long int controlled);
-		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MkCCPTopNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled, double theta);
-
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToAConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
 		extern NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixShiftToBConnectionTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c);
-
 		
 		void DumpMatrixTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
-		unsigned GetLevelTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
+
 	}
 }
 

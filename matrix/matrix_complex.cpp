@@ -76,6 +76,7 @@ namespace NWA_OBDD {
 		NWAOBDD_COMPLEX_BIG MkNegation(unsigned int level) {
 			return NWAOBDD_COMPLEX_BIG(MkNegationTop(level));
 		}
+
 		NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int level) {
 			return NWAOBDD_COMPLEX_BIG(MkWalshTop(level));
 		}
@@ -91,14 +92,29 @@ namespace NWA_OBDD {
 		NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int level, double theta) {
 			return NWAOBDD_COMPLEX_BIG(MkPhaseShiftTop(level, theta));
 		}
+
 		NWAOBDD_COMPLEX_BIG MkCNot(unsigned int level, unsigned int n, long int controller, long int controlled) {
 			return NWAOBDD_COMPLEX_BIG(MkCNotTop(level, n, controller, controlled));
 		}
 		NWAOBDD_COMPLEX_BIG MkCCNot(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled) {
 			return NWAOBDD_COMPLEX_BIG(MkCCNotTop(level, n, controller1, controller2, controlled));
 		}
+		NWAOBDD_COMPLEX_BIG MkSwap(unsigned int level, long c1, long c2) {
+			return NWAOBDD_COMPLEX_BIG(MkSwapTop(level, c1, c2));
+		}
+		NWAOBDD_COMPLEX_BIG MkiSwap(unsigned int level, long c1, long c2) {
+			return NWAOBDD_COMPLEX_BIG(MkiSwapTop(level, c1, c2));
+		}
+		NWAOBDD_COMPLEX_BIG MkCSwap(unsigned int level, long int c1, long int x1, long int x2) {
+			return NWAOBDD_COMPLEX_BIG(MkCSwapTop(level, c1, x2, x2));
+		}
+		NWAOBDD_COMPLEX_BIG MkCP(unsigned int level, long c1, long c2, double theta) {
+			return NWAOBDD_COMPLEX_BIG(MkCPTop(level, c1, c2, theta));
+		}
 
-		
+		NWAOBDD_COMPLEX_BIG MkRestrict(unsigned int level, std::string s) {
+			// return NWAOBDD_COMPLEX_BIG(MkRestrictTop(level, s));
+		}
 		
 	}
 }

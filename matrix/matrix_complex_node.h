@@ -50,64 +50,22 @@ namespace NWA_OBDD {
 	// extern NWAOBDDNodeHandle MkInverseReedMullerInterleavedNode(unsigned int i);
 	extern NWAOBDDNodeHandle MkSNode(unsigned int i);
 
-	extern NWAOBDDNodeHandle MkCNotNode(unsigned int level, unsigned int n, long int controller, long int controlled);
 	extern NWAOBDDNodeHandle MkCNot2Node(unsigned int level, unsigned int n, long int controller, long int controlled);
 	extern NWAOBDDNodeHandle MkCCNotNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
-	// extern NWAOBDDNodeHandle MkCNOTInterleavedNode(unsigned int i);
-	// extern NWAOBDDNodeHandle MkExchangeInterleavedNode(unsigned int i);
-	
-	// extern NWAOBDDNodeHandle MkMCXNode(unsigned int level, unsigned int n, std::vector<long int>& controllers, long int controlled);
-	// extern NWAOBDDNodeHandle MkCPGateNode(unsigned int level, long int controller, long int controlled);
-	// extern NWAOBDDNodeHandle MkSwapGateNode(unsigned int level, long int controller, long int controlled, int case_num);
-	// extern NWAOBDDNodeHandle MkiSwapGateNode(unsigned int level, long int controller, long int controlled, int case_num);
-	// extern NWAOBDDNodeHandle MkCSwapGateNode(unsigned int level, long int controller, long int i, long int j, int case_num);
-	// extern NWAOBDDNodeHandle MkCSwapGate2Node(unsigned int level, long int controller, long int i, long int j, int case_num);
-	// extern NWAOBDDNodeHandle MkCCPNode(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
-	// extern std::pair<NWAOBDDNodeHandle, int> MkRestrictNode(unsigned int level, std::string s);
-	
-	// Initialization routine that needs to be called before any call to MatrixProjectVoc23Node
+	extern NWAOBDDNodeHandle MkSwapNode(unsigned int level, long int controller, long int controlled, int case_num);
+	extern NWAOBDDNodeHandle MkiSwapNode(unsigned int level, long int controller, long int controlled, int case_num);
+	extern NWAOBDDNodeHandle MkCSwap2Node(unsigned int level, long int controller, long int i, long int j, int case_num);
+	extern NWAOBDDNodeHandle MkCPNode(unsigned int level, long int controller, long int controlled);
+
+	extern std::pair<NWAOBDDNodeHandle, int> MkRestrictNode(unsigned int level, std::string s);
+
 	extern void Matrix1234InitializerNode();  // Empty for now
 
-	// Matrix-related operations (on matrices with room for two extra vocabularies) ------------
-	// extern NWAOBDDNodeHandle MkWalshVoc13Node(unsigned int i);
-	// extern NWAOBDDNodeHandle MkWalshVoc12Node(unsigned int i);
-	// extern NWAOBDDNodeHandle MatrixShiftVoc43Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-	// extern NWAOBDDNodeHandle MatrixShiftVoc42Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-	// extern NWAOBDDNodeHandle MatrixShiftVocs13To24Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-	// extern NWAOBDDNodeHandle MatrixShiftVocs12To34Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-	// extern NWAOBDDNodeHandle MkDetensorConstraintInterleavedNode(unsigned int i);
-	// extern NWAOBDDTopNodeLinearMapRefPtr MatrixProjectVoc23Node(NWAOBDDLinearMapMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh, VisitPosition position); // Vocabulary projection
-	// extern NWAOBDDNodeHandle ReverseColumnsNode(NWAOBDDNodeHandle nh);
-	// extern std::pair<NWAOBDDNodeHandle, NWAOBDDReturnMapHandle>
-	// 	MatrixTransposeNode(std::unordered_map<NWAOBDDNodeHandle, std::pair<NWAOBDDNodeHandle, NWAOBDDReturnMapHandle>, 
-	// 	NWAOBDDNodeHandle::NWAOBDDNodeHandle_Hash>& hashMap,
-	// 	NWAOBDDNodeHandle nh);
 
 	extern NWAOBDDNodeHandle MatrixShiftToAConnectionNode(NWAOBDDNodeHandle c);
 	extern NWAOBDDNodeHandle MatrixShiftToBConnectionNode(NWAOBDDNodeHandle c);
 
 	// Subroutines for Discrete Fourier Transform
-	// extern NWAOBDDNodeHandle MkNWAOBDDMatrixEqVoc14Node(unsigned int i);
-	// extern NWAOBDDNodeHandle MkFourierDiagonalComponentNode(unsigned int i);
-	// extern NWAOBDDNodeHandle PromoteInterleavedTo12Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-	// extern NWAOBDDNodeHandle Demote12ToInterleavedNode(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-	// extern NWAOBDDNodeHandle PromoteInterleavedTo13Node(NWAOBDDNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nh);
-
-	// extern NWAOBDDNodeHandle SMatrixNode(std::string s);
-	// extern NWAOBDDNodeHandle MkDistinctionTwoVarsNode(int x, int y, unsigned int var_level, unsigned int matrix_level);
-
-	// // extern NWAOBDD_GENERAL AddMatrixRowsNode(NWAOBDDGeneralMapNodeMemoTableRefPtr memoTable, NWAOBDDNodeHandle nhHandle);
-	// extern std::pair<NWAOBDDNodeHandle, std::vector<std::vector<std::pair<int, int>>>> MultiplyOperationNode(NWAOBDDNodeHandle c);
-	// std::pair<NWAOBDDNodeHandle, std::vector<std::vector<std::pair<int, int>>>> MultiplyOperationNodeInternal(NWAOBDDNodeHandle c, char position, unsigned int maxLevel, NWAOBDDReturnMapHandle cReturnMapHandle);
-	// std::vector<std::vector<std::pair<int, int>>> multiplyGeneralMap(int multiple, std::vector<std::vector<std::pair<int, int>>> &tmpReturnMap);
-	// std::pair<NWAOBDDNodeHandle, std::vector<std::vector<std::pair<int, int>>>> addNodes(NWAOBDDNodeHandle n1, NWAOBDDNodeHandle n2, std::vector<std::vector<std::pair<int, int>>> n1GeneralMap, std::vector<std::vector<std::pair<int, int>>> n2GeneralMap);
-	// extern NWAOBDDNodeHandle MkMatrixMultiplyConstraintNode(unsigned int level);
-	// NWAOBDDNodeHandle MkMatrixMultiplyConstraintNodeInternal(unsigned int level);
-	// NWAOBDDNodeHandle MkRowWithOne(unsigned int bits, unsigned int rowNo, std::map<std::pair<int, int>, NWAOBDDNodeHandle>&  memoTable);
-	// void changeGeneralMap(std::vector<std::vector<std::pair<int, int>>> &generalMap, NWAOBDDReturnMapHandle returnMapHandle);
-	// extern NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyV4Node(
-	// 	std::unordered_map<MatMultPair, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPair::MatMultPairHash>& hashMap,
-	// 	NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2);
 	extern NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyNode(
 		std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash>& hashMap,
 		NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2, int c1_zero_index, int c2_zero_index);

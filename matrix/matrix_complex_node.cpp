@@ -581,3 +581,5 @@ namespace NWA_OBDD {
     matmult_hashMap.clear();
 	}
 } 
+
+#include"matrix_complex_node_ext.cpp"

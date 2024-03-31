@@ -47,64 +47,31 @@ namespace NWA_OBDD {
 		// Initialization routine
 		extern void Matrix1234Initializer();
 
-		extern void MatrixPrintRowMajorInterleaved(NWAOBDD_COMPLEX_BIG c, std::ostream & out);
-		extern void MatrixPrintRowMajor(NWAOBDD_COMPLEX_BIG c, std::ostream & out);
+		NWAOBDD_COMPLEX_BIG MkId(unsigned int i);
+		NWAOBDD_COMPLEX_BIG MkNegation(unsigned int i);
 
-
-		extern NWAOBDD_COMPLEX_BIG MkId(unsigned int i); // Representation of identity relation
-		extern NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int i);              // Representation of Walsh matrix
-		extern NWAOBDD_COMPLEX_BIG MkNegation(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkPauliY(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int i);
-		// extern NWAOBDD_COMPLEX_BIG MkInverseReedMullerInterleaved(unsigned int i);  // Representation of Inverse Reed-Muller matrix
-		// extern NWAOBDD_COMPLEX_BIG MkExchangeInterleaved(unsigned int i); // Representation of exchange matrix
-
-		extern NWAOBDD_COMPLEX_BIG MkS(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int i, double theta);
+		NWAOBDD_COMPLEX_BIG MkWalsh(unsigned int i);
+		NWAOBDD_COMPLEX_BIG MkPauliY(unsigned int i);
+		NWAOBDD_COMPLEX_BIG MkPauliZ(unsigned int i);
+		NWAOBDD_COMPLEX_BIG MkS(unsigned int i);
+		NWAOBDD_COMPLEX_BIG MkPhaseShift(unsigned int i, double theta);
 
 		NWAOBDD_COMPLEX_BIG MkCNot(unsigned int level, unsigned int n, long int controller, long int controlled);
 		NWAOBDD_COMPLEX_BIG MkCCNot(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
+		NWAOBDD_COMPLEX_BIG MkSwap(unsigned level, long int c1, long int c2);
+		NWAOBDD_COMPLEX_BIG MkiSwap(unsigned level, long int c1, long int c2);
+		NWAOBDD_COMPLEX_BIG MkCSwap(unsigned level, long int c1, long int x1, long int x2);
+		NWAOBDD_COMPLEX_BIG MkCP(unsigned int level, long int c1, long int c2);
 
-		extern NWAOBDD_COMPLEX_BIG MkRestrictMatrix(unsigned int level, std::string s); 
+		NWAOBDD_COMPLEX_BIG MkRestrict(unsigned int level, std::string s); 
 
-		// Matrix-related operations (on matrices with room for two extra vocabularies) ------------
-		extern NWAOBDD_COMPLEX_BIG MkWalshVoc13(unsigned int i);                    // Create representation of Walsh matrix with room for two extra vocabularies
-		extern NWAOBDD_COMPLEX_BIG MkWalshVoc12(unsigned int i);                    // Create representation of Walsh matrix with room for two extra vocabularies
-		extern NWAOBDD_COMPLEX_BIG MatrixShiftVocs13To24(NWAOBDD_COMPLEX_BIG c);                // Vocabulary shift in a matrix
-		extern NWAOBDD_COMPLEX_BIG MatrixShiftVocs12To34(NWAOBDD_COMPLEX_BIG c);                // Vocabulary shift in a matrix
-		extern NWAOBDD_COMPLEX_BIG MatrixShiftVoc43(NWAOBDD_COMPLEX_BIG c);                     // Vocabulary shift in a matrix
-		extern NWAOBDD_COMPLEX_BIG MatrixShiftVoc42(NWAOBDD_COMPLEX_BIG c);                     // Vocabulary shift in a matrix
-		extern NWAOBDD_COMPLEX_BIG MkDetensorConstraintInterleaved(unsigned int i); // Create representation of a matrix in which vocabularies 2 and 3 are constrained to be equal: (W,X,Y,Z) s.t. X==Y with interleaved variables
-		// extern NWAOBDD_COMPLEX_BIG MatrixProjectVoc23(NWAOBDD_COMPLEX_BIG c);                   // Vocabulary projection
-		extern NWAOBDD_COMPLEX_BIG MatrixDetensor(NWAOBDD_COMPLEX_BIG k);                       // Detensor of a 4-vocabulary matrix
-		// extern NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
-		extern NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
-		extern NWAOBDD_COMPLEX_BIG MatrixMultiplyV4WithInfo(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);          // Matrix multiplication
+		NWAOBDD_COMPLEX_BIG MatrixMultiply(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
+		
+		NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c);
+		NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c);
+		NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
 
-		// Discrete Fourier Transform, and subroutines
-		extern NWAOBDD_COMPLEX_BIG MkFourierMatrixInterleaved(unsigned int i);      // Create representation of the DFT matrix
-		extern NWAOBDD_COMPLEX_BIG MkFourierMatrixInterleavedV4(unsigned int i);      // Create representation of the DFT matrix
-		extern NWAOBDD_COMPLEX_BIG MkFourierMatrixInterleavedV4WithInfo(unsigned int i);      // Create representation of the DFT matrix
-		extern NWAOBDD_COMPLEX_BIG MkNWAOBDDMatrixEqVoc14(unsigned int i);          // Create representation of a matrix in which vocabularies 1 and 4 are constrained to be equal: (W,X,Y,Z) s.t. W==Z with interleaved variables
-		extern NWAOBDD_COMPLEX_BIG MkFourierDiagonalComponent(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG PromoteInterleavedTo12(NWAOBDD_COMPLEX_BIG c);
-		extern NWAOBDD_COMPLEX_BIG Demote12ToInterleaved(NWAOBDD_COMPLEX_BIG c);
-		extern NWAOBDD_COMPLEX_BIG ConvertToComplex(NWAOBDD_FOURIER c);
-		extern NWAOBDD_COMPLEX_BIG MkCNOTInterleaved(unsigned int i);
-		extern NWAOBDD_COMPLEX_BIG MkCPGate(unsigned int i, long int c1, long int c2, double theta);
-		extern NWAOBDD_COMPLEX_BIG MkSwapGate(unsigned int i, long int c1, long int c2);
-		extern NWAOBDD_COMPLEX_BIG MkiSwapGate(unsigned int i, long int c1, long int c2);
-		extern NWAOBDD_COMPLEX_BIG MkCSwapGate(unsigned int i, long int c1, long int x1, long int x2);
-		extern NWAOBDD_COMPLEX_BIG MkCNOT(unsigned int level, unsigned int n, long int controller, long int controlled); // Representation of CNOT matrix with index1 as controller and index2 as controlled bits
-		extern NWAOBDD_COMPLEX_BIG MkCCNOT(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled);
-		extern NWAOBDD_COMPLEX_BIG MkMCX(unsigned int level, unsigned int n, std::vector<long int>& controllers, long int controlled);
-		extern NWAOBDD_COMPLEX_BIG MkCCP(unsigned int level, unsigned int n, long int controller1, long int controller2, long int controlled, double theta);
-
-		extern NWAOBDD_COMPLEX_BIG MatrixShiftToAConnection(NWAOBDD_COMPLEX_BIG c);
-		extern NWAOBDD_COMPLEX_BIG MatrixShiftToBConnection(NWAOBDD_COMPLEX_BIG c);
-		extern NWAOBDD_COMPLEX_BIG KroneckerProduct(NWAOBDD_COMPLEX_BIG m1, NWAOBDD_COMPLEX_BIG m2);
 		void DumpMatrix(NWAOBDD_COMPLEX_BIG n);
-		unsigned GetLevel(NWAOBDD_COMPLEX_BIG n);
 	}
 }
 

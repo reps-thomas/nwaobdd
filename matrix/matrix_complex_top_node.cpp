@@ -252,7 +252,7 @@ namespace NWA_OBDD {
 		}
 		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCNotTop(unsigned int level, unsigned int n, long int controller, long int controlled) {
 			NWAOBDDNodeHandle tempHandle;
-			tempHandle = MkCNotNode(level, n, controller, controlled);
+			tempHandle = MkCNot2Node(level, n, controller, controlled);
 
 			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
 			m.AddToEnd(1);
@@ -276,7 +276,63 @@ namespace NWA_OBDD {
 			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
 			return v;
 		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkSwapTop(unsigned int level, long int c1, long int c2) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkSwapNode(level, c1, c2, -1);
 
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkiSwapTop(unsigned int level, long int c1, long int c2) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkiSwapNode(level, c1, c2, -1);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.AddToEnd(BIG_COMPLEX_FLOAT(0, 1));
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCSwapTop(unsigned int level, long int c, long int i, long int j) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkCSwap2Node(level, c, i, j, -1);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
+		NWAOBDDTopNodeComplexFloatBoostRefPtr MkCPTop(unsigned int level, long int c1, long int c2, double theta) {
+			NWAOBDDNodeHandle tempHandle;
+			tempHandle = MkCPNode(level, c1, c2);
+
+			ReturnMapHandle<BIG_COMPLEX_FLOAT> m;
+			double cos_v = boost::math::cos_pi(theta);
+			double sin_v = boost::math::sin_pi(theta);
+			BIG_COMPLEX_FLOAT val(cos_v, sin_v);
+			m.AddToEnd(1);
+			m.AddToEnd(0);
+			m.AddToEnd(val);
+			m.Canonicalize();
+
+			NWAOBDDTopNodeComplexFloatBoostRefPtr v;
+			v = new NWAOBDDTopNodeComplexFloatBoost(tempHandle, m);
+			return v;
+		}
 	}
 	namespace MatrixComplex {
 		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2) {

@@ -102,39 +102,3 @@ static void test_multiply() {
     printf("-------result-------\n");
     r.dump(); DumpMatrix(h);
 }
-void NWATests::RunAllTests() {
-
-    std::cout << "Starting to Run All Tests:\n";
-
-    NWAOBDDNodeHandle::InitNoDistinctionTable();
-    NWAOBDDNodeHandle::InitReduceCache();
-    VectorComplex::VectorInitializer();
-    InitPairProductCache();
-	InitPathSummaryCache();
-	InitPairProductMapCaches();
-
-    srand(time(0));
-    
-    // Matrix<4>m1;
-    // for(unsigned i = 0; i < 16; ++i)
-    //     m1.a[i / 4][i % 4] = i + 1;
-
-    // Matrix<4>m2;
-    // for(unsigned i = 0; i < 16; ++i)
-    //     m2.a[i / 4][i % 4] = 20 - i;
-    // auto f = mk44matrix(m1);
-    // auto g = mk44matrix(m2);
-
-    // DumpMatrix(f);
-    // DumpMatrix(g);
-    
-    // auto mr = mult(m1, m2);
-    // auto h= MatrixMultiply(f, g);
-    // mr.dump();
-    // DumpMatrix(h);
-
-    while(1) {
-        // getchar();
-        test_multiply();
-    }
-}
