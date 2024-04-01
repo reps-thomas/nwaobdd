@@ -29,6 +29,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <unordered_map>
 #include "nwaobdd_node.h"
 #include "infra/list_T.h"
 #include "infra/list_TPtr.h"
@@ -38,7 +39,6 @@
 //#include "hash_functions.h"
 
 using namespace NWA_OBDD;
-
 // ********************************************************************
 // 2-Way Cross Product
 // ********************************************************************
@@ -48,51 +48,97 @@ using namespace NWA_OBDD;
 //***************************************************************
 
 // Initializations of static members ---------------------------------
-Hashset<PairProductMapBody> *PairProductMapBody::canonicalPairProductMapBodySet = new Hashset < PairProductMapBody > ;
+Hashset<PairProductMapBody> *PairProductMapBody::canonicalPairProductMapBodySet = new Hashset<PairProductMapBody>(HASHSET_NUM_BUCKETS);
 
 // Constructor
 PairProductMapBody::PairProductMapBody()
-	: refCount(0), isCanonical(false)
+  : refCount(0), isCanonical(false)
 {
 }
 
 void PairProductMapBody::IncrRef()
 {
-	refCount++;    // Warning: Saturation not checked
+  refCount++;    // Warning: Saturation not checked
 }
 
 void PairProductMapBody::DecrRef()
 {
-	if (--refCount == 0) {    // Warning: Saturation not checked
-		if (isCanonical) {
-			PairProductMapBody::canonicalPairProductMapBodySet->DeleteEq(this);
-		}
-		delete this;
-	}
+  if (--refCount == 0) {    // Warning: Saturation not checked
+    if (isCanonical) {
+      PairProductMapBody::canonicalPairProductMapBodySet->DeleteEq(this);
+    }
+    delete this;
+  }
 }
 
 unsigned int PairProductMapBody::Hash(unsigned int modsize)
 {
-	unsigned int hvalue = 0;
-	PairProductMapBodyIterator mi(*this);
+  unsigned int hvalue = 0;
 
-	mi.Reset();
-	while (!mi.AtEnd()) {
-		hvalue = (hvalue + (unsigned int)mi.Current().First()
-			+ (unsigned int)mi.Current().Second()) % modsize;
-		mi.Next();
-	}
-	return hvalue;
+  /*
+  PairProductMapBodyIterator mi(*this);
+
+  mi.Reset();
+  while (!mi.AtEnd()) {
+    hvalue = (997 * (997 * hvalue + (unsigned int)mi.Current().First())
+                                  + (unsigned int)mi.Current().Second() ) % modsize;
+    mi.Next();
+  }
+  */
+
+  for (unsigned int i = 0; i < mapArray.size(); i++){
+	  hvalue = (997*hvalue + (unsigned int)97*mapArray[i].First() + (unsigned int)mapArray[i].Second()) % modsize;
+  }
+
+  return hvalue;
 }
+
+void PairProductMapBody::setHashCheck()
+{
+	unsigned int hvalue = 0;
+
+	for (auto &i : mapArray) {
+		hvalue = (117 * (hvalue + 1) + (int)(97 * i.First()) + i.Second());
+	}
+	hashCheck = hvalue;
+}
+
+void PairProductMapBody::AddToEnd(const intpair& y)
+{
+	mapArray.push_back(y);
+}
+
+bool PairProductMapBody::operator==(const PairProductMapBody &o) const
+{
+	if (mapArray.size() != o.mapArray.size())
+		return false;
+
+	for (unsigned int i = 0; i < mapArray.size(); i++){
+		if (mapArray[i] != o.mapArray[i])
+			return false;
+	}
+	return true;
+}
+intpair& PairProductMapBody::operator[](unsigned int i){                       // Overloaded []
+	return mapArray[i];
+}
+
+unsigned int PairProductMapBody::Size(){
+	return (unsigned int)mapArray.size();
+}
+
 
 namespace NWA_OBDD {
-	std::ostream& operator<< (std::ostream & out, const PairProductMapBody &r)
+std::ostream& operator<< (std::ostream & out, const PairProductMapBody &r)
+{
+  //out << (List<int>&)r;
+	for (unsigned int i = 0; i < r.mapArray.size(); i++)
 	{
-		out << (List<intpair>&)r;
-		return(out);
+		out << r.mapArray[i] << " ";
 	}
+  return(out);
 }
-
+}
 //***************************************************************
 // PairProductMapHandle
 //***************************************************************
@@ -100,131 +146,156 @@ namespace NWA_OBDD {
 
 // Default constructor
 PairProductMapHandle::PairProductMapHandle()
-	: mapContents(new PairProductMapBody)
+  :  mapContents(new PairProductMapBody)
 {
-	mapContents->IncrRef();
+  mapContents->IncrRef();
 }
 
 // Destructor
 PairProductMapHandle::~PairProductMapHandle()
 {
-	mapContents->DecrRef();
+  mapContents->DecrRef();
 }
 
 // Copy constructor
 PairProductMapHandle::PairProductMapHandle(const PairProductMapHandle &r)
-	: mapContents(r.mapContents)
+  :  mapContents(r.mapContents)
 {
-	mapContents->IncrRef();
+  mapContents->IncrRef();
 }
 
 // Overloaded assignment
 PairProductMapHandle& PairProductMapHandle::operator= (const PairProductMapHandle &r)
 {
-	if (this != &r)      // don't assign to self!
-	{
-		PairProductMapBody *temp = mapContents;
-		mapContents = r.mapContents;
-		mapContents->IncrRef();
-		temp->DecrRef();
-	}
-	return *this;
+  if (this != &r)      // don't assign to self!
+  {
+    PairProductMapBody *temp = mapContents;
+    mapContents = r.mapContents;
+    mapContents->IncrRef();
+    temp->DecrRef();
+  }
+  return *this;        
 }
 
 // Overloaded !=
 bool PairProductMapHandle::operator!=(const PairProductMapHandle &r)
 {
-	return (mapContents != r.mapContents);
+  return (mapContents != r.mapContents);
 }
 
 // Overloaded ==
 bool PairProductMapHandle::operator==(const PairProductMapHandle &r)
 {
-	return (mapContents == r.mapContents);
+  return (mapContents == r.mapContents);
 }
 
 std::ostream& operator<< (std::ostream & out, const PairProductMapHandle &r)
 {
-	out << "[" << *r.mapContents << "]";
-	return(out);
+  out << "[" << *r.mapContents << "]";
+  return(out);
 }
 
 unsigned int PairProductMapHandle::Hash(unsigned int modsize)
 {
-	return ((unsigned int) reinterpret_cast<uintptr_t>(mapContents) >> 2) % modsize;
+  return ((unsigned int) reinterpret_cast<uintptr_t>(mapContents) >> 2) % modsize;
 }
 
 unsigned int PairProductMapHandle::Size()
 {
-	return mapContents->Length();
+  return mapContents->Size();
 }
 
-void PairProductMapHandle::AddToEnd(intpair p)
+intpair& PairProductMapHandle::operator[](unsigned int i)
 {
-	assert(mapContents->refCount <= 1);
-	mapContents->AddToEnd(p);
+	return mapContents->mapArray[i];
 }
 
-bool PairProductMapHandle::Member(intpair p)
+void PairProductMapHandle::AddToEnd(const intpair& p)
 {
-	PairProductMapBodyIterator mi(*mapContents);
+  assert(mapContents->refCount <= 1);
+  mapContents->AddToEnd(p);
+}
 
-	mi.Reset();
-	while (!mi.AtEnd()) {
-		if (mi.Current() == p) {
+bool PairProductMapHandle::Member(intpair& p)
+{
+	/*
+  PairProductMapBodyIterator mi(*mapContents);
+
+  mi.Reset();
+  while (!mi.AtEnd()) {
+    if (mi.Current() == p) {
+      return true;
+    }
+    mi.Next();
+  }
+  return false;
+  */
+	for (auto& i : mapContents->mapArray){
+		if (i == p)
 			return true;
-		}
-		mi.Next();
 	}
 	return false;
 }
 
-int PairProductMapHandle::Lookup(intpair p)
+int PairProductMapHandle::Lookup(intpair& p)
 {
+	/*  
 	int index = 0;
-	PairProductMapBodyIterator mi(*mapContents);
+  PairProductMapBodyIterator mi(*mapContents);
 
-	mi.Reset();
-	while (!mi.AtEnd()) {
-		if (mi.Current() == p) {
-			return index;
-		}
-		mi.Next();
-		index++;
+  mi.Reset();
+  while (!mi.AtEnd()) {
+    if (mi.Current() == p) {
+      return index;
+    }
+    mi.Next();
+    index++;
+  }
+  //std::cerr << "Failure in PairProductMapHandle::Lookup: " << p << " not found" << std::endl;
+  std::cout << "Failure in PairProductMapHandle::Lookup: " << p << " not found" << std::endl;
+  */
+	for (unsigned int i = 0; i < mapContents->mapArray.size(); i++){
+		if (mapContents->mapArray[i] == p)
+			return i;
 	}
-	std::cerr << "Failure in PairProductMapHandle::Lookup: " << p << " not found" << std::endl;
-	return -1;
+  return -1;
 }
 
 void PairProductMapHandle::Canonicalize()
 {
-	PairProductMapBody *answerContents;
-
-	answerContents = PairProductMapBody::canonicalPairProductMapBodySet->Lookup(mapContents);
-	if (answerContents == NULL) {
-		PairProductMapBody::canonicalPairProductMapBodySet->Insert(mapContents);
-		mapContents->isCanonical = true;
-	}
-	else {
-		answerContents->IncrRef();
-		mapContents->DecrRef();
-		mapContents = answerContents;
-	}
+  PairProductMapBody *answerContents;
+  unsigned int hash = PairProductMapBody::canonicalPairProductMapBodySet->GetHash(mapContents);
+  answerContents = PairProductMapBody::canonicalPairProductMapBodySet->Lookup(mapContents, hash);
+  if (answerContents == NULL) {
+    PairProductMapBody::canonicalPairProductMapBodySet->Insert(mapContents, hash);
+    mapContents->isCanonical = true;
+  }
+  else {
+    answerContents->IncrRef();
+    mapContents->DecrRef();
+    mapContents = answerContents;
+  }
 }
 
 // Create map with reversed entries
 PairProductMapHandle PairProductMapHandle::Flip()
 {
-	PairProductMapBodyIterator mi(*mapContents);
-	PairProductMapHandle answer;
-	intpair p;
+  //PairProductMapBodyIterator mi(*mapContents);
+  PairProductMapHandle answer;
+  /*intpair p;
 
-	mi.Reset();
-	while (!mi.AtEnd()) {
-		answer.AddToEnd(intpair(mi.Current().Second(), mi.Current().First()));
-		mi.Next();
-	}
-	return answer;
+  mi.Reset();
+  while (!mi.AtEnd()) {
+    answer.AddToEnd(intpair(mi.Current().Second(), mi.Current().First()));
+    mi.Next();
+  }
+  */
+
+  for (auto& i : mapContents->mapArray){
+	  intpair p(i.Second(), i.First());
+	  answer.AddToEnd(p);
+  }
+  return answer;
 }
 
 //***************************************************************
@@ -396,12 +467,8 @@ bool PairProductMemo::operator==(const PairProductMemo& p)
 
 static Hashtable<PairProductKey, PairProductMemo> *pairProductCache = NULL;
 
-static Hashtable<PairProductMapKey, PairProductMapHandle> *pairProductMapCache = NULL;
-static Hashtable<PairProductMapKey, ReturnMapHandle<intpair>> *pairProductRetMapCache1 = NULL;
-static Hashtable<PairProductMapKey, ReturnMapHandle<intpair>> *pairProductRetMapCache2 = NULL;
-
 namespace NWA_OBDD {
-
+	/*
 	void PopulateReturnMaps(NWAOBDDInternalNode * n1, NWAOBDDInternalNode * n2, PairProductMapHandle m1, PairProductMapHandle m2, ReturnMapHandle<intpair> & r1, ReturnMapHandle<intpair> & r2, PairProductMapHandle & PPMap, int & curANode, bool A, int b1, int b2)
 	{
 		PairProductMapHandle cachedPPHandle;
@@ -522,6 +589,8 @@ namespace NWA_OBDD {
 		}
 	}
 
+	*/
+
 	//ETTODO - fix returnmap stuff
 	NWAOBDDNodeHandle PairProduct(NWAOBDDInternalNode *n1,
 		NWAOBDDInternalNode *n2,
@@ -551,98 +620,178 @@ namespace NWA_OBDD {
 				pairProductMapHandle.Canonicalize();
 				return NWAOBDDNodeHandle(n1);
 			}
-			else {                                                                        // XX, XX
-				PairProductMapHandle AMap;
-				PairProductMapHandle AMap1;
-				PairProductMapHandle AMap2;
+			else {                                                                   // XX, XX
+				
 				NWAOBDDInternalNode *n;
-				int curANode = 0;
-				int curExit;
-				unsigned int j;
-				int b1, b2;
-
 				n = new NWAOBDDInternalNode(n1->level);
 
 				// Perform the pair product of the 0-AConnections and the 1-AConnections and put the resulting
-				// pair product return maps into AMap1 and AMap2
-				auto A0_entry = PairProduct(
+				// pair product return maps into ARet0 and ARet1
+				PairProductMapHandle ARet0;
+				NWAOBDDNodeHandle A0_entry = PairProduct(
 					*(n1->AConnection[0].entryPointHandle),
 					*(n2->AConnection[0].entryPointHandle),
-					AMap1
-					);
-				// n->AConnection[0].entryPointHandle = PairProduct(
-				// 	*(n1->AConnection[0].entryPointHandle),
-				// 	*(n2->AConnection[0].entryPointHandle),
-				// 	AMap1
-				// 	);
-				auto A1_entry = PairProduct(
+					ARet0 );
+				PairProductMapHandle ARet1;
+				NWAOBDDNodeHandle A1_entry = PairProduct(
 					*(n1->AConnection[1].entryPointHandle),
 					*(n2->AConnection[1].entryPointHandle),
-					AMap2
-					);
-				// n->AConnection[1].entryPointHandle = PairProduct(
-				// 	*(n1->AConnection[1].entryPointHandle),
-				// 	*(n2->AConnection[1].entryPointHandle),
-				// 	AMap2
-				// 	);
+					ARet1 );
 
 				ReturnMapHandle<intpair> A0ReturnMap, A1ReturnMap;
+				PairProductMapHandle AMap;
 				// Fill in n->AConnection.returnMapHandle
-				// For each element in AMap1, populate AMap with the intpair for the zero return then the one return
-				// Then, for each element in AMap2, populate AMap with the intpair for the zero return then the one return
-				PopulateReturnMaps(n1, n2, AMap1, AMap2, A0ReturnMap, A1ReturnMap, AMap, curANode, true, 0, 0);
+				// For each element in ARet0, populate AMap with the intpair for the zero return then the one return
+				// Then, for each element in ARet1, populate AMap with the intpair for the zero return then the one return
+
+				// PopulateReturnMaps(n1, n2, ARet0, ARet1, A0ReturnMap, A1ReturnMap, AMap, curANode, true, 0, 0);
+				std::unordered_map<intpair, unsigned, intpair::intpair_hash> pair_to_index_a;
+				std::vector<intpair> middle_merge; // how we should merge the BConnection part
+				unsigned cur_index_a = 0;
+				
+				// work with AConnection[0] of the result
+				for(unsigned i = 0; i < ARet0.Size(); ++i) {
+					unsigned fst = ARet0[i].First();
+					unsigned snd = ARet0[i].Second();
+					unsigned fst_ans, snd_ans;
+
+					unsigned fst0 = n1->AConnection[0].returnMapHandle[fst].First();
+					unsigned snd0 = n2->AConnection[0].returnMapHandle[snd].First();
+					if(pair_to_index_a.find(intpair(fst0, snd0)) == pair_to_index_a.end()) {
+						pair_to_index_a[intpair(fst0, snd0)] = cur_index_a;
+						middle_merge.push_back(intpair(fst0, snd0));
+						fst_ans = cur_index_a++;
+					}
+					else fst_ans = pair_to_index_a[intpair(fst0, snd0)];
+
+					unsigned fst1 = n1->AConnection[0].returnMapHandle[fst].Second();
+					unsigned snd1 = n2->AConnection[0].returnMapHandle[snd].Second();
+					if(pair_to_index_a.find(intpair(fst1, snd1)) == pair_to_index_a.end()) {
+						pair_to_index_a[intpair(fst1, snd1)] = cur_index_a;
+						middle_merge.push_back(intpair(fst1, snd1));
+						snd_ans = cur_index_a++;
+					}
+					else snd_ans = pair_to_index_a[intpair(fst1, snd1)];
+
+					A0ReturnMap.AddToEnd(intpair(fst_ans, snd_ans));
+				}
+				// work with AConnection[1] of the result
+				for(unsigned i = 0; i < ARet1.Size(); ++i) {
+					unsigned fst = ARet1[i].First();
+					unsigned snd = ARet1[i].Second();
+					unsigned fst_ans, snd_ans;
+
+					unsigned fst0 = n1->AConnection[1].returnMapHandle[fst].First();
+					unsigned snd0 = n2->AConnection[1].returnMapHandle[snd].First();
+					if(pair_to_index_a.find(intpair(fst0, snd0)) == pair_to_index_a.end()) {
+						pair_to_index_a[intpair(fst0, snd0)] = cur_index_a;
+						middle_merge.push_back(intpair(fst0, snd0));
+						fst_ans = cur_index_a++;
+					}
+					else fst_ans = pair_to_index_a[intpair(fst0, snd0)];
+
+					unsigned fst1 = n1->AConnection[1].returnMapHandle[fst].Second();
+					unsigned snd1 = n2->AConnection[1].returnMapHandle[snd].Second();
+					if(pair_to_index_a.find(intpair(fst1, snd1)) == pair_to_index_a.end()) {
+						pair_to_index_a[intpair(fst1, snd1)] = cur_index_a;
+						middle_merge.push_back(intpair(fst1, snd1));
+						snd_ans = cur_index_a++;
+					}
+					else snd_ans = pair_to_index_a[intpair(fst1, snd1)];
+
+					A1ReturnMap.AddToEnd(intpair(fst_ans, snd_ans));
+				}
 
 				//Canonicalize the return maps.
+				A0ReturnMap.Canonicalize();
+				A1ReturnMap.Canonicalize();
 				n->AConnection[0] = Connection(A0_entry, A0ReturnMap);
 				n->AConnection[1] = Connection(A1_entry, A1ReturnMap);
 
-				// Perform the appropriate cross products of the BConnections
-				j = 0;
-				curExit = 0;
-				//There's 2 B-Connections for each point in AMap
-				n->numBConnections = AMap.Size();
+				n -> numBConnections = cur_index_a;
 				n->BConnection[0] = new Connection[n->numBConnections];
 				n->BConnection[1] = new Connection[n->numBConnections];
-				PairProductMapBodyIterator AMapIterator(*AMap.mapContents);
-				AMapIterator.Reset();
-				//For each point in the AMap
-				while (!AMapIterator.AtEnd()) {
-					PairProductMapHandle BMap, BMap2;
-					//Get the seperate midpoints for n1 and n2
-					b1 = AMapIterator.Current().First();
-					b2 = AMapIterator.Current().Second();
-					//Perform a pair product on the 0th B-Connections that come from b1 and b2 in n1 and n2
-					
-					auto B0_entry = PairProduct(
-						*(n1->BConnection[0][b1].entryPointHandle),
-						*(n2->BConnection[0][b2].entryPointHandle),
-						BMap
-						);
-					// n->BConnection[0][j].entryPointHandle = PairProduct(
-					// 	*(n1->BConnection[0][b1].entryPointHandle),
-					// 	*(n2->BConnection[0][b2].entryPointHandle),
-					// 	BMap
-					// 	);
-					auto B1_entry = PairProduct(
-						*(n1->BConnection[1][b1].entryPointHandle),
-						*(n2->BConnection[1][b2].entryPointHandle),
-						BMap2
-						);
-					// n->BConnection[1][j].entryPointHandle = PairProduct(
-					// 	*(n1->BConnection[1][b1].entryPointHandle),
-					// 	*(n2->BConnection[1][b2].entryPointHandle),
-					// 	BMap2
-					// 	);
+
+				std::unordered_map<intpair, unsigned, intpair::intpair_hash> pair_to_index_b;
+				unsigned cur_index_b = 0;
+				for(unsigned id = 0; id < middle_merge.size(); ++id) {
+					intpair ip = middle_merge[id];
+					PairProductMapHandle BRet0;
+					NWAOBDDNodeHandle B0_entry = PairProduct(
+						*(n1->BConnection[0][ip.First()].entryPointHandle),
+						*(n2->BConnection[0][ip.Second()].entryPointHandle),
+						BRet0 );
+				
+					PairProductMapHandle BRet1;
+					NWAOBDDNodeHandle B1_entry = PairProduct(
+						*(n1->BConnection[1][ip.First()].entryPointHandle),
+						*(n2->BConnection[1][ip.Second()].entryPointHandle),
+						BRet1 );
 
 					ReturnMapHandle<intpair> B0ReturnMap, B1ReturnMap;
-					PopulateReturnMaps(n1, n2, BMap, BMap2, B0ReturnMap, B1ReturnMap, pairProductMapHandle, curExit, false, b1, b2);
+					// work with BConnection[0]["ip"] of the result
+					for(unsigned i = 0; i < BRet0.Size(); ++i) {
+						unsigned fst = BRet0[i].First();
+						unsigned snd = BRet0[i].Second();
+						unsigned fst_ans, snd_ans;
 
-					n->BConnection[0][j] = Connection(B0_entry, B0ReturnMap);
-					n->BConnection[1][j] = Connection(B1_entry, B1ReturnMap);
-					AMapIterator.Next();
-					j++;
+						unsigned fst0 = n1->BConnection[0][ip.First()].returnMapHandle[fst].First();
+						unsigned snd0 = n2->BConnection[0][ip.Second()].returnMapHandle[snd].First();
+						if(pair_to_index_b.find(intpair(fst0, snd0)) == pair_to_index_b.end()) {
+							pair_to_index_b[intpair(fst0, snd0)] = cur_index_b;
+							pairProductMapHandle.AddToEnd(intpair(fst0, snd0));
+							fst_ans = cur_index_b++;
+						}
+						else fst_ans = pair_to_index_b[intpair(fst0, snd0)];
+
+						unsigned fst1 = n1->BConnection[0][ip.First()].returnMapHandle[fst].Second();
+						unsigned snd1 = n2->BConnection[0][ip.Second()].returnMapHandle[snd].Second();
+						if(pair_to_index_b.find(intpair(fst1, snd1)) == pair_to_index_b.end()) {
+							pair_to_index_b[intpair(fst1, snd1)] = cur_index_b;
+							pairProductMapHandle.AddToEnd(intpair(fst1, snd1));
+							snd_ans = cur_index_b++;
+						}
+						else snd_ans = pair_to_index_b[intpair(fst1, snd1)];
+
+						B0ReturnMap.AddToEnd(intpair(fst_ans, snd_ans));
+					}
+					// work with BConnection[1]["ip"] of the result
+					for(unsigned i = 0; i < BRet1.Size(); ++i) {
+						unsigned fst = BRet1[i].First();
+						unsigned snd = BRet1[i].Second();
+						unsigned fst_ans, snd_ans;
+
+						unsigned fst0 = n1->BConnection[1][ip.First()].returnMapHandle[fst].First();
+						unsigned snd0 = n2->BConnection[1][ip.Second()].returnMapHandle[snd].First();
+						if(pair_to_index_b.find(intpair(fst0, snd0)) == pair_to_index_b.end()) {
+							pair_to_index_b[intpair(fst0, snd0)] = cur_index_b;
+							pairProductMapHandle.AddToEnd(intpair(fst0, snd0));
+							fst_ans = cur_index_b++;
+						}
+						else fst_ans = pair_to_index_b[intpair(fst0, snd0)];
+
+						unsigned fst1 = n1->BConnection[1][ip.First()].returnMapHandle[fst].Second();
+						unsigned snd1 = n2->BConnection[1][ip.Second()].returnMapHandle[snd].Second();
+						if(pair_to_index_b.find(intpair(fst1, snd1)) == pair_to_index_b.end()) {
+							pair_to_index_b[intpair(fst1, snd1)] = cur_index_b;
+							pairProductMapHandle.AddToEnd(intpair(fst1, snd1));
+							snd_ans = cur_index_b++;
+						}
+						else snd_ans = pair_to_index_b[intpair(fst1, snd1)];
+
+						B1ReturnMap.AddToEnd(intpair(fst_ans, snd_ans));
+					}
+
+					//Canonicalize the return maps.
+
+					B0ReturnMap.Canonicalize();
+					B1ReturnMap.Canonicalize();
+
+					n->BConnection[0][id] = Connection(B0_entry, B0ReturnMap);
+					n->BConnection[1][id] = Connection(B1_entry, B1ReturnMap);
 				}
-				n->numExits = curExit;
+				
+				n->numExits = cur_index_b;
 #ifdef PATH_COUNTING_ENABLED
 				n->InstallPathCounts();
 #endif
@@ -668,49 +817,35 @@ namespace NWA_OBDD {
 		return cachedPairProductMemo.nodeHandle;
 		}
 		else {
-		NWAOBDDNodeHandle answer;
-
-		if (n1.handleContents->NodeKind() == NWAOBDD_INTERNAL) {
-			answer = PairProduct((NWAOBDDInternalNode *)n1.handleContents,
-				(NWAOBDDInternalNode *)n2.handleContents,
-				pairProductMapHandle
-				);
-		}
-		else { /* n1.handleContents->NodeKind() == NWAOBDD_EPSILON  n2.handleContents->NodeKind() == NWAOBDD_EPSILON */
-			// NWAOBDD_EPSILON, NWAOBDD_EPSILON
-			pairProductMapHandle.AddToEnd(intpair(0, 0));
-			pairProductMapHandle.Canonicalize();
-			answer = n1;
-		}
-		pairProductCache->Insert(PairProductKey(n1,n2),
-		 PairProductMemo(answer,pairProductMapHandle));
-		answer.Canonicalize();
-		return answer;
+			NWAOBDDNodeHandle answer;
+			if (n1.handleContents->NodeKind() == NWAOBDD_INTERNAL) {
+				// Internal, Internal
+				answer = PairProduct((NWAOBDDInternalNode *)n1.handleContents,
+					(NWAOBDDInternalNode *)n2.handleContents,
+					pairProductMapHandle
+					);
+			}
+			else {
+				// Epsilon, Epsilon
+				pairProductMapHandle.AddToEnd(intpair(0, 0));
+				pairProductMapHandle.Canonicalize();
+				answer = n1;
+			}
+			pairProductCache->Insert(PairProductKey(n1,n2), PairProductMemo(answer,pairProductMapHandle));
+			// answer.Canonicalize();
+			return answer;
 		}
 	}
 
 	void InitPairProductCache()
 	{
-		std::cout << "Initializing Cache\n";
+		// std::cout << "Initializing Cache\n";
 		pairProductCache = new Hashtable<PairProductKey, PairProductMemo>(40000);
 	}
 
 	void DisposeOfPairProductCache()
 	{
+		delete pairProductCache;
 		pairProductCache = NULL;
-	}
-
-	void InitPairProductMapCaches()
-	{
-		pairProductMapCache = new Hashtable<PairProductMapKey, PairProductMapHandle>(40000);
-		pairProductRetMapCache1 = new Hashtable<PairProductMapKey, ReturnMapHandle<intpair>>(40000);
-		pairProductRetMapCache2 = new Hashtable<PairProductMapKey, ReturnMapHandle<intpair>>(40000);
-	}
-
-	void DisposeOfPairProductMapCaches()
-	{
-		pairProductMapCache = NULL;
-		pairProductRetMapCache1 = NULL;
-		pairProductRetMapCache2 = NULL;
 	}
 }

@@ -1761,32 +1761,45 @@ ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
   // Create returnMapHandle from MapHandle: Fold the pairs in MapHandle by applying
   // [n1->rootConnection.returnMapHandle, n2->rootConnection.returnMapHandle]
   // (component-wise) to each pair.
-     ReturnMapHandle<T> returnMapHandle;
-     PairProductMapBodyIterator MapIterator(*MapHandle.mapContents);
-     MapIterator.Reset();
-     while (!MapIterator.AtEnd()) {
-       T c1, c2;
-       int first, second;
-       first = MapIterator.Current().First();
-       second = MapIterator.Current().Second();
-       c1 = n1->rootConnection.returnMapHandle.Lookup(first);
-       c2 = n2->rootConnection.returnMapHandle.Lookup(second);
-	     T r = op[c1][c2];
-       returnMapHandle.AddToEnd(r);
-       MapIterator.Next();
-     }
-     returnMapHandle.Canonicalize();
+     ReturnMapHandle<int> returnMapHandle;
+    boost::unordered_map<int, unsigned int> reductionMap;
+    ReductionMapHandle reductionMapHandle;
+    unsigned int iterator = 0;
+    //while (!MapIterator.AtEnd()) {
+    while (iterator < MapHandle.Size()){
+        int c1, c2;
+        int first, second;
+        //first = MapIterator.Current().First();
+        //second = MapIterator.Current().Second();
+        first = MapHandle[iterator].First();
+        second = MapHandle[iterator].Second();
+        c1 = n1->rootConnection.returnMapHandle.Lookup(first);
+        c2 = n2->rootConnection.returnMapHandle.Lookup(second);
+        int val = op[c1][c2];
+        unsigned int k = returnMapHandle.Size();
+        for ( k = 0; k < returnMapHandle.Size(); k++)
+        {
+            if (returnMapHandle[k] == val)
+            {
+                break;
+            }
+        }
+        if (k < returnMapHandle.Size())
+        {
+            reductionMapHandle.AddToEnd(k);
+        }
+        else
+        {
+            returnMapHandle.AddToEnd(val);
+            reductionMapHandle.AddToEnd(returnMapHandle.Size() - 1);
+        }
+        iterator++;
+    }
+    returnMapHandle.Canonicalize();
+    reductionMapHandle.Canonicalize();
 
-  // Perform reduction on n, with respect to the common elements that returnMapHandle maps together
-     ReductionMapHandle inducedReductionMapHandle;
-     ReturnMapHandle<int> inducedReturnMap;
-     returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
-     //     NWAOBDDNodeHandle::InitReduceCache();
-     NWAOBDDNodeHandle reduced_n = n.Reduce(inducedReductionMapHandle, inducedReturnMap.Size());
-     //     NWAOBDDNodeHandle::DisposeOfReduceCache();
-
-  // Create and return NWAOBDDTopNode
-   return(new NWAOBDDTopNode(reduced_n, inducedReturnMap));
+    NWAOBDDNodeHandle reduced_n = n.Reduce(reductionMapHandle, returnMapHandle.Size());
+    return(new NWAOBDDTopNode<int>(reduced_n, returnMapHandle));
 }
 
 
@@ -1806,32 +1819,45 @@ ApplyAndReduce(typename NWAOBDDTopNode<T>::NWAOBDDTopNodeTRefPtr n1,
   // Create returnMapHandle from MapHandle: Fold the pairs in MapHandle by applying
   // [n1->rootConnection.returnMapHandle, n2->rootConnection.returnMapHandle]
   // (component-wise) to each pair.
-     ReturnMapHandle<T> returnMapHandle;
-     PairProductMapBodyIterator MapIterator(*MapHandle.mapContents);
-     MapIterator.Reset();
-     while (!MapIterator.AtEnd()) {
-       T c1, c2;
-       int first, second;
-       first = MapIterator.Current().First();
-       second = MapIterator.Current().Second();
-       c1 = n1->rootConnection.returnMapHandle.Lookup(first);
-       c2 = n2->rootConnection.returnMapHandle.Lookup(second);
-	     T r = func(c1, c2);
-       returnMapHandle.AddToEnd(r);
-       MapIterator.Next();
-     }
-     returnMapHandle.Canonicalize();
+    ReturnMapHandle<T> returnMapHandle;
+    boost::unordered_map<T, unsigned int> reductionMap;
+    ReductionMapHandle reductionMapHandle;
+    unsigned int iterator = 0;
+    //while (!MapIterator.AtEnd()) {
+    while (iterator < MapHandle.Size()){
+        T c1, c2;
+        int first, second;
+        //first = MapIterator.Current().First();
+        //second = MapIterator.Current().Second();
+        first = MapHandle[iterator].First();
+        second = MapHandle[iterator].Second();
+        c1 = n1->rootConnection.returnMapHandle.Lookup(first);
+        c2 = n2->rootConnection.returnMapHandle.Lookup(second);
+        T val = (*func)(c1, c2);
+        unsigned int k = returnMapHandle.Size();
+        for ( k = 0; k < returnMapHandle.Size(); k++)
+        {
+            if (returnMapHandle[k] == val)
+            {
+                break;
+            }
+        }
+        if (k < returnMapHandle.Size())
+        {
+            reductionMapHandle.AddToEnd(k);
+        }
+        else
+        {
+            returnMapHandle.AddToEnd(val);
+            reductionMapHandle.AddToEnd(returnMapHandle.Size() - 1);
+        }
+        iterator++;
+    }
+    returnMapHandle.Canonicalize();
+    reductionMapHandle.Canonicalize();
 
-  // Perform reduction on n, with respect to the common elements that returnMapHandle maps together
-     ReductionMapHandle inducedReductionMapHandle;
-     ReturnMapHandle<T> inducedReturnMap;
-     returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
-     //     NWAOBDDNodeHandle::InitReduceCache();
-     NWAOBDDNodeHandle reduced_n = n.Reduce(inducedReductionMapHandle, inducedReturnMap.Size());
-     //     NWAOBDDNodeHandle::DisposeOfReduceCache();
-
-  // Create and return NWAOBDDTopNode
-   return(new NWAOBDDTopNode(reduced_n, inducedReturnMap));
+    NWAOBDDNodeHandle reduced_n = n.Reduce(reductionMapHandle, returnMapHandle.Size());
+    return(new NWAOBDDTopNode<T>(reduced_n, returnMapHandle));
 }
 
 

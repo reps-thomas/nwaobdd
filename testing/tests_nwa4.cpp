@@ -26,20 +26,4 @@ static void test_cnot() {
     DumpMatrix(g);
 }
 
-void NWATests::RunAllTests() {
 
-    std::cout << "Starting to Run All Tests:\n";
-
-    NWAOBDDNodeHandle::InitNoDistinctionTable();
-    NWAOBDDNodeHandle::InitReduceCache();
-    VectorComplex::VectorInitializer();
-    InitPairProductCache();
-	InitPathSummaryCache();
-	InitPairProductMapCaches();
-
-    srand(time(0));
-    
-    
-
-    test_cnot();
-}

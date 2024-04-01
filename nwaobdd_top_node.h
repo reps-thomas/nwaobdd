@@ -2,6 +2,7 @@
 
 #include "nwaobdd_node.h"
 #include "cstdarg"
+#include <boost/unordered_map.hpp>
 
 //********************************************************************
 // NWAOBDDBaseNode

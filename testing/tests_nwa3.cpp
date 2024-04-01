@@ -102,3 +102,21 @@ static void test_multiply() {
     printf("-------result-------\n");
     r.dump(); DumpMatrix(h);
 }
+
+
+void NWATests::RunAllTests() {
+
+    std::cout << "Starting to Run All Tests:\n";
+
+    NWAOBDDNodeHandle::InitNoDistinctionTable();
+    NWAOBDDNodeHandle::InitReduceCache();
+    VectorComplex::VectorInitializer();
+    InitPairProductCache();
+	InitPathSummaryCache();
+
+    // srand(time(0));
+    while(1) {
+        getchar();
+        test_multiply();
+    }
+}

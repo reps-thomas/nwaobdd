@@ -33,6 +33,7 @@
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/special_functions/cos_pi.hpp>
 #include <boost/math/special_functions/sin_pi.hpp>
+#include <boost/unordered_map.hpp>
 
 #include "../nwaobdd_node.h"
 #include "../nwaobdd_top_node.h"

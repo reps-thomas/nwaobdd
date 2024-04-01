@@ -535,43 +535,43 @@ void NWATests::testAnd(){
 }
 
 void NWATests::ApplyAndReduceUnitTests(){
-  std::cout << "----------------------------------------------------------------" << std::endl;
-  std::cout << "-- Testing Pair Product --" << std::endl;
+  // std::cout << "----------------------------------------------------------------" << std::endl;
+  // std::cout << "-- Testing Pair Product --" << std::endl;
 
-  NWAOBDD<int> F,G;
-  F = MkParity();
-  G = MkIdRelationNested();
+  // NWAOBDD<int> F,G;
+  // F = MkParity();
+  // G = MkIdRelationNested();
 
-  PairProductMapHandle testMap;
-  NWAOBDDNodeHandle n = PairProduct(*(F.root->rootConnection.entryPointHandle),
-                                       *(G.root->rootConnection.entryPointHandle),
-                                       testMap);
+  // PairProductMapHandle testMap;
+  // NWAOBDDNodeHandle n = PairProduct(*(F.root->rootConnection.entryPointHandle),
+  //                                      *(G.root->rootConnection.entryPointHandle),
+  //                                      testMap);
 
-  std::cout << "--------- Resulting NWAOBDD ------" << std::endl;
-  n.print();
+  // std::cout << "--------- Resulting NWAOBDD ------" << std::endl;
+  // n.print();
 
-  std::cout << "---- Resulting PairProduct Map ---" << std::endl;
-  std::cout << *testMap.mapContents << std::endl;
+  // std::cout << "---- Resulting PairProduct Map ---" << std::endl;
+  // std::cout << *testMap.mapContents << std::endl;
 
-  std::cout << "--- Testing InducedReductionAndReturnMap ----" << std::endl;
+  // std::cout << "--- Testing InducedReductionAndReturnMap ----" << std::endl;
 
-  ReductionMapHandle inducedReductionMapHandle;
-  ReturnMapHandle<intpair> inducedReturnMap;
+  // ReductionMapHandle inducedReductionMapHandle;
+  // ReturnMapHandle<intpair> inducedReturnMap;
 
-  ReturnMapHandle<intpair> returnMapHandle;
+  // ReturnMapHandle<intpair> returnMapHandle;
 
-  returnMapHandle.AddToEnd(intpair(0,0));
-  returnMapHandle.AddToEnd(intpair(0,0));
-  returnMapHandle.AddToEnd(intpair(1,1));
-  returnMapHandle.AddToEnd(intpair(0,0));
-  returnMapHandle.AddToEnd(intpair(1,1));
+  // returnMapHandle.AddToEnd(intpair(0,0));
+  // returnMapHandle.AddToEnd(intpair(0,0));
+  // returnMapHandle.AddToEnd(intpair(1,1));
+  // returnMapHandle.AddToEnd(intpair(0,0));
+  // returnMapHandle.AddToEnd(intpair(1,1));
   
-  returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
+  // returnMapHandle.InducedReductionAndReturnMap(inducedReductionMapHandle, inducedReturnMap);
 
-  std::cout << "--- Resulting ReductionMap ---" << std::endl;
-  std::cout << *inducedReductionMapHandle.mapContents << std::endl;
-  std::cout << "--- Resulting ReturnMap ---" << std::endl;
-  std::cout << *inducedReturnMap.mapContents << std::endl;
+  // std::cout << "--- Resulting ReductionMap ---" << std::endl;
+  // std::cout << *inducedReductionMapHandle.mapContents << std::endl;
+  // std::cout << "--- Resulting ReturnMap ---" << std::endl;
+  // std::cout << *inducedReturnMap.mapContents << std::endl;
 }
 
 void NWATests::test1(){
@@ -1015,7 +1015,7 @@ bool NWATests::runTests(const char * argv, int start, int size){
      NWAOBDDNodeHandle::InitReduceCache();
      InitPairProductCache();
 	 InitPathSummaryCache();
-	 InitPairProductMapCaches();
+	//  InitPairProductMapCaches();
 
 //	freopen( "nwaobddErr.txt", "w", stderr );
 //	freopen( "nwaobddOut.txt", "w", stdout );
@@ -1084,7 +1084,7 @@ bool NWATests::runTests(const char * argv, int start, int size){
 		}
 		(*start)++;
 	}*/
-	  DisposeOfPairProductMapCaches();
+	  // DisposeOfPairProductMapCaches();
 	  DisposeOfPairProductCache();
 	  DisposeOfPathSummaryCache();
   NWAOBDDNodeHandle::DisposeOfReduceCache();

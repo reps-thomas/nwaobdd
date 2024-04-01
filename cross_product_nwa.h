@@ -59,9 +59,10 @@ class PairProductMapHandle {
   bool operator== (const PairProductMapHandle &r);      // Overloaded ==
   unsigned int Hash(unsigned int modsize);
   unsigned int Size();
-  void AddToEnd(intpair p);
-  bool Member(intpair p);
-  int Lookup(intpair p);
+  intpair& operator[](unsigned int i);                       // Overloaded []
+  void AddToEnd(const intpair& p);
+  bool Member(intpair& p);
+  int Lookup(intpair& p);
   void Canonicalize();
   PairProductMapHandle Flip();                          // Create map with reversed entries
   PairProductMapBody *mapContents;
@@ -71,7 +72,7 @@ class PairProductMapHandle {
 // PairProductMapBody
 //***************************************************************
 
-class PairProductMapBody : public List<intpair> {
+class PairProductMapBody {//: public List<intpair> {
 
   friend void PairProductMapHandle::Canonicalize();
 
@@ -81,8 +82,14 @@ class PairProductMapBody : public List<intpair> {
   void DecrRef();
   unsigned int Hash(unsigned int modsize);
   unsigned int refCount;         // reference-count value
- 
- protected:
+  void setHashCheck();
+  void AddToEnd(const intpair& y);          // Override AddToEnd
+  std::vector<intpair> mapArray;
+  bool operator==(const PairProductMapBody &p) const;
+  intpair& operator[](unsigned int i);                       // Overloaded []
+  unsigned int Size();
+  unsigned int hashCheck;
+ public:
   bool isCanonical;              // Is this PairProductMapBody in *canonicalPairProductMapBodySet?
   static Hashset<PairProductMapBody> *canonicalPairProductMapBodySet;
 
@@ -174,8 +181,6 @@ NWAOBDDNodeHandle PairProduct(NWAOBDDInternalNode *n1,
 
 void InitPairProductCache();
 void DisposeOfPairProductCache();
-void InitPairProductMapCaches();
-void DisposeOfPairProductMapCaches();
 }
 
 #endif
