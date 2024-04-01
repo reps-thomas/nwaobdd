@@ -45,7 +45,6 @@ namespace NWA_OBDD {
 
 	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT> NWAOBDDTopNodeComplexFloatBoost;
 	typedef NWAOBDDTopNode<BIG_COMPLEX_FLOAT>::NWAOBDDTopNodeTRefPtr NWAOBDDTopNodeComplexFloatBoostRefPtr;
-	typedef NWAOBDDTopNode<fourierSemiring>::NWAOBDDTopNodeTRefPtr NWAOBDDTopNodeFourierRefPtr;
 
 	namespace MatrixComplex {
 

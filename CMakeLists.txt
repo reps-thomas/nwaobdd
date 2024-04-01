@@ -18,7 +18,6 @@ target_link_libraries(nwaobdd.out PRIVATE infra lib_nwaobdd)
 add_library(lib_nwaobdd STATIC
     assignment.cpp
     bool_op.cpp
-    fourier_semiring.cpp
     connectionT_impl.cpp
     reduction_map.cpp
     return_map_impl.cpp

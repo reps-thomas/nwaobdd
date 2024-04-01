@@ -32,7 +32,6 @@
 #include <complex>
 #include <boost/multiprecision/cpp_complex.hpp>
 #include "../nwaobdd.h"
-#include "../fourier_semiring.h"
 
 namespace mp = boost::multiprecision;
 
@@ -41,7 +40,6 @@ namespace NWA_OBDD {
 	typedef mp::cpp_complex_100 BIG_COMPLEX_FLOAT;
 	//typedef mp::number<mp::cpp_dec_float<200> > BIG_FLOAT;
 	typedef NWAOBDD<BIG_COMPLEX_FLOAT> NWAOBDD_COMPLEX_BIG;
-	typedef NWAOBDD<fourierSemiring> NWAOBDD_FOURIER;
 
 	namespace MatrixComplex {
 		// Initialization routine
@@ -61,7 +59,7 @@ namespace NWA_OBDD {
 		NWAOBDD_COMPLEX_BIG MkSwap(unsigned level, long int c1, long int c2);
 		NWAOBDD_COMPLEX_BIG MkiSwap(unsigned level, long int c1, long int c2);
 		NWAOBDD_COMPLEX_BIG MkCSwap(unsigned level, long int c1, long int x1, long int x2);
-		NWAOBDD_COMPLEX_BIG MkCP(unsigned int level, long int c1, long int c2);
+		NWAOBDD_COMPLEX_BIG MkCP(unsigned int level, long int c1, long int c2, double theta);
 
 		NWAOBDD_COMPLEX_BIG MkRestrict(unsigned int level, std::string s); 
 

@@ -186,7 +186,6 @@ static Hashtable<NWAReduceKey, NWAOBDDNodeHandle> *reduceCache = NULL;
 NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce)
 {
   if (replacementNumExits == 1 && !forceReduce) {
-    if(handleContents -> Level() == 3) abort();
     return NWAOBDDNodeHandle::NoDistinctionNode[handleContents->Level()];
   }
 

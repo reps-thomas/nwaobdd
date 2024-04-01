@@ -227,7 +227,7 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   friend void NWAOBDDNodeHandle::InitNoDistinctionTable();
   friend NWAOBDDNodeHandle Restrict(NWAOBDDInternalNode *g, unsigned int i, bool val, ReturnMapHandle<int> &MapHandle);
   friend NWAOBDDNodeHandle PairProduct(NWAOBDDInternalNode *n1, NWAOBDDInternalNode *n2, PairProductMapHandle &pairProductMap);
-  friend NWAOBDDNodeHandle TripleProduct(NWAOBDDInternalNode *n1, NWAOBDDInternalNode *n2, NWAOBDDInternalNode *n3, TripleProductMapHandle &tripleProductMap);
+  // friend NWAOBDDNodeHandle TripleProduct(NWAOBDDInternalNode *n1, NWAOBDDInternalNode *n2, NWAOBDDInternalNode *n3, TripleProductMapHandle &tripleProductMap);
   // friend bool NWAOBDDTopNode::EvaluateIteratively(SH_OBDD::Assignment &assignment);
   // friend void NWAOBDDTopNode::PrintYieldAux(std::ostream * out, List<ConsCell<TraverseState> *> &T, ConsCell<TraverseState> *S);
   friend NWAOBDDNodeHandle *InitNoDistinctionTable();
