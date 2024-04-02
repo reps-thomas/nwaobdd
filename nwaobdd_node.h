@@ -199,7 +199,7 @@ class NWAOBDDNode {
 #endif
   virtual void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index) = 0;
   virtual int Traverse(SH_OBDD::AssignmentIterator &ai) = 0;
-  virtual NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits) = 0;
+  virtual NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce) = 0;
   virtual unsigned int Hash(unsigned int modsize) = 0;
   virtual void DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out = std::cout) = 0;
   virtual void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount) = 0;
@@ -251,7 +251,7 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   long double *numPathsToMiddle;
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
-  NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits);
+  NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);
   static NWAOBDDTopNodeRefPtr SchemaAdjust(NWAOBDDInternalNode * n, int exit, int s[4], int offset);
   static NWAOBDDTopNodeRefPtr PathSummary(NWAOBDDInternalNode * n, int exit, int offset);
   unsigned int Hash(unsigned int modsize);
@@ -293,7 +293,7 @@ class NWAOBDDEpsilonNode : public NWAOBDDNode {
   NWAOBDD_NODEKIND NodeKind() const { return NWAOBDD_EPSILON; }
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
-  NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits);
+  NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);
   unsigned int Hash(unsigned int modsize);
   bool operator!= (const NWAOBDDNode & n);        // Overloaded !=
   bool operator== (const NWAOBDDNode & n);        // Overloaded ==
