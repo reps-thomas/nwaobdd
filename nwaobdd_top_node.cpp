@@ -558,15 +558,15 @@ void NWAOBDDTopNode<T>::DumpValueTuple() {
 template<typename T> // XZ: this was commented out for compilation
 bool NWAOBDDTopNode<T>::FindOneSatisfyingAssignment(SH_OBDD::Assignment * &assignment)
 {
-  // for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
-  //   T k = rootConnection.returnMapHandle.Lookup(i);
-  //   if (k) {  // A satisfying assignment must exist
-  //     unsigned int size = ((unsigned int)((((unsigned int)1) << (level + 2)) - (unsigned int)4));
-  //     assignment = new SH_OBDD::Assignment(size);
-  //     rootConnection.entryPointHandle->handleContents->FillSatisfyingAssignment(i, *assignment, size);
-  //     return true;
-  //   }
-  // }
+  for (unsigned int i = 0; i < rootConnection.entryPointHandle->handleContents->numExits; i++) {
+    T k = rootConnection.returnMapHandle.Lookup(i);
+    if (k) {  // A satisfying assignment must exist
+      unsigned int size = ((unsigned int)((((unsigned int)1) << (level + 2)) - (unsigned int)4));
+      assignment = new SH_OBDD::Assignment(size);
+      rootConnection.entryPointHandle->handleContents->FillSatisfyingAssignment(i, *assignment, size);
+      return true;
+    }
+  }
   return false;
 }
 

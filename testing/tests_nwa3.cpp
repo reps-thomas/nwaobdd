@@ -94,13 +94,13 @@ static void test_multiply() {
     Matrix<4>m1, m2, r;
     m1.gen(), m2.gen();
     r = mult(m1, m2);
-    printf("----multiplicants----\n");
-    m1.dump(), m2.dump();
+    // printf("----multiplicants----\n");
+    // m1.dump(), m2.dump();
     auto f1 = mk44matrix(m1);
     auto f2 = mk44matrix(m2);
     auto h = MatrixMultiply(f1, f2);
-    printf("-------result-------\n");
-    r.dump(); DumpMatrix(h);
+    // printf("-------result-------\n");
+    // r.dump(); DumpMatrix(h);
 }
 
 
@@ -114,9 +114,7 @@ void NWATests::RunAllTests() {
     InitPairProductCache();
 	InitPathSummaryCache();
 
-    // srand(time(0));
-    while(1) {
-        getchar();
+    srand(time(0));
+    for(unsigned i = 0; i < 30000; ++i)
         test_multiply();
-    }
 }

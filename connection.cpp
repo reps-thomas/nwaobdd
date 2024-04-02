@@ -89,4 +89,5 @@ std::ostream& operator<< (std::ostream & out, const ConnectionT<Handle> &c)
 	c.print(out);
 	return(out);
 }
+
 } // namespace NWA_OBDD

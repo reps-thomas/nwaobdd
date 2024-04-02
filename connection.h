@@ -59,6 +59,7 @@ namespace NWA_OBDD {
 
 		NWAOBDDNodeHandle* entryPointHandle = NULL;
 		Handle returnMapHandle;
+		
 
 	public:
 		std::ostream& print(std::ostream & out = std::cout) const;
@@ -69,6 +70,8 @@ namespace NWA_OBDD {
 	std::ostream& operator<< (std::ostream & out, const ConnectionT<Handle> &c);
 
 }
+
+
 
 #endif
 

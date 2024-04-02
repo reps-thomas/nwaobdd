@@ -57,6 +57,10 @@ void MatMultMapBody::DecrRef()
 	}
 }
 
+// XZ: this is to make compiler shut up for FindOneSatisfyingAssignment
+MatMultMapHandle::operator bool() const {
+	return true;
+}
 unsigned int MatMultMapBody::Hash(unsigned int modsize)
 {
 	/*if (modsize == HASHSETBASE)

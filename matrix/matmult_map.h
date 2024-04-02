@@ -58,6 +58,7 @@ public:
 	bool operator!= (const MatMultMapHandle &r) const;      // Overloaded !=
 	bool operator== (const MatMultMapHandle &r) const;      // Overloaded ==
 	VAL_TYPE& operator[](INT_PAIR& p);                        // Overloaded []
+	operator bool() const;
 	unsigned int Hash(unsigned int modsize);
 	void Add(const INT_PAIR& p, VAL_TYPE& v);
 	void ForceAdd(const INT_PAIR& p, VAL_TYPE& v);
