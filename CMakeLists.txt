@@ -7,10 +7,12 @@ set(path_to_boost "/home/xusheng_zhi/Desktop/boost")
 
 add_executable(nwaobdd.out 
     main.cpp
-    testing/tests_nwa1.cpp
-    testing/tests_nwa2.cpp
-    testing/tests_nwa3.cpp
-    testing/tests_nwa4.cpp
+    # testing/tests_nwa1.cpp
+    # testing/tests_nwa2.cpp
+    # testing/tests_nwa3.cpp
+    # testing/tests_nwa4.cpp
+    testing/quantum_algos.cpp
+    testing/quantum_circuit.cpp
 )
 target_compile_options(nwaobdd.out PRIVATE -g -w -lm -std=c++2a -O3 -I${path_to_boost})
 target_link_libraries(nwaobdd.out PRIVATE infra lib_nwaobdd)
@@ -40,6 +42,8 @@ add_library(lib_nwaobdd STATIC
     matrix/matmult_map.cpp 
     matrix/nwaobdd_top_node_matmult_map.cpp
     matrix/zero_indices_map.cpp
+
+    counter.cpp
 )
 target_compile_options(lib_nwaobdd PRIVATE -g -w -lm -std=c++2a -O3 -I${path_to_boost} -fPIC)
 target_link_libraries(lib_nwaobdd PRIVATE infra)
