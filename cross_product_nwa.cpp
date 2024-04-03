@@ -792,9 +792,9 @@ namespace NWA_OBDD {
 				}
 				
 				n->numExits = cur_index_b;
-#ifdef PATH_COUNTING_ENABLED
-				n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+// 				n->InstallPathCounts();
+// #endif
 				pairProductMapHandle.Canonicalize();
 				return NWAOBDDNodeHandle(n);
 			}

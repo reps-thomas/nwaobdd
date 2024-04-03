@@ -153,9 +153,9 @@ namespace NWA_OBDD {
 			g = c.toNWA();
 		}
 
-	#ifdef PATH_COUNTING_ENABLED
-			g->InstallPathCounts();
-	#endif
+	// #ifdef PATH_COUNTING_ENABLED
+	// 		g->InstallPathCounts();
+	// #endif
 		NWAOBDDNodeHandle gHandle = NWAOBDDNodeHandle(g);
 		cnot_hashMap.insert(std::make_pair(p, gHandle));
 		return gHandle;
@@ -479,9 +479,9 @@ namespace NWA_OBDD {
 			g = c.toNWA();
 		}
 
-#ifdef PATH_COUNTING_ENABLED
-		g->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+// 		g->InstallPathCounts();
+// #endif
 		NWAOBDDNodeHandle gHandle = NWAOBDDNodeHandle(g);
 		ccnot_hashMap.insert(std::make_pair(p, gHandle));
 		return gHandle;
@@ -827,7 +827,7 @@ namespace NWA_OBDD {
 			}
 			g = c.toNWA();
 		}
-		g->InstallPathCounts();
+		// g->InstallPathCounts();
 		NWAOBDDNodeHandle gHandle = NWAOBDDNodeHandle(g);
 		swap_hashMap.insert(std::make_pair(p, gHandle));
 		return gHandle;
@@ -1184,7 +1184,7 @@ namespace NWA_OBDD {
 
 			g = c.toNWA();
 		}
-		g->InstallPathCounts();
+		// g->InstallPathCounts();
 		NWAOBDDNodeHandle gHandle = NWAOBDDNodeHandle(g);
 		iswap_hashMap.insert(std::make_pair(p, gHandle));
 		return gHandle;
@@ -1488,7 +1488,7 @@ namespace NWA_OBDD {
 			g = c.toNWA();
 			
 		}
-		g->InstallPathCounts();
+		// g->InstallPathCounts();
 		NWAOBDDNodeHandle gHandle = NWAOBDDNodeHandle(g);
 		swap_hashMap.insert(std::make_pair(p, gHandle));
 		return gHandle;
@@ -1667,7 +1667,7 @@ namespace NWA_OBDD {
 			
 			g = c.toNWA();
 		}
-		g->InstallPathCounts();
+		// g->InstallPathCounts();
 		NWAOBDDNodeHandle gHandle = NWAOBDDNodeHandle(g);
 		cp_hashMap.insert(std::make_pair(p, gHandle));
 		return gHandle;

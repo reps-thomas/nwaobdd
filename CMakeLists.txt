@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 cmake_policy(SET CMP0048 NEW)
 project(NWAOBDD VERSION 1.0)
 
+# SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+
+
 set(path_to_boost "/home/xusheng_zhi/Desktop/boost")
 
 add_executable(nwaobdd.out 
@@ -43,7 +47,6 @@ add_library(lib_nwaobdd STATIC
     matrix/nwaobdd_top_node_matmult_map.cpp
     matrix/zero_indices_map.cpp
 
-    counter.cpp
 )
 target_compile_options(lib_nwaobdd PRIVATE -g -w -lm -std=c++2a -O3 -I${path_to_boost} -fPIC)
 target_link_libraries(lib_nwaobdd PRIVATE infra)

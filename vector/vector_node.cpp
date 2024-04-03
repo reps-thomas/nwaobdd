@@ -98,9 +98,9 @@ namespace NWA_OBDD {
 			}
             n = c.toNWA();
         }
-#ifdef PATH_COUNTING_ENABLED
-		n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+// 		n->InstallPathCounts();
+// #endif
         NWAOBDDNodeHandle handle(n);
         return handle;
     }

@@ -271,10 +271,9 @@ void qft(int numQubits, int seed) {
     clock_t end = clock();
 
     // Calculate elapsed time
-    double elapsedTime = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+    double time = static_cast<double>(end - start) / CLOCKS_PER_SEC;
 
-    // Print result
-    std::cout << "Correct, time: " << elapsedTime << ", iter_count: " << 0 << std::endl;
+    printf("%lf, %d iters\n", time, 0);
 }
 
 void simons(int numQubits, int seed) {
@@ -326,8 +325,8 @@ void simons(int numQubits, int seed) {
     clock_t end = clock();
 
     // Calculate elapsed time
-    double elapsedTime = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+    double time = static_cast<double>(end - start) / CLOCKS_PER_SEC;
 
     // Print result
-    std::cout << "Correct, time: " << elapsedTime << ", iter_count: " << 0 << std::endl;
+    printf("%lf, %d iters\n", time, 0);
 }

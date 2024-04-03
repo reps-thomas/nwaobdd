@@ -2,16 +2,8 @@
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "counter.h"
 
-int call_cnt;
-double total_time;
-
-
-void func() {
-    Counter a;
-    
-}
+extern void print_summary();
 int main(int argc, char *argv[]) {
     if(argc < 3 || argc > 4) {
         printf("Usage: nwaobdd.out <Quantum-Algo> <Num-Qubits> [Random-Seed]\n");
@@ -26,12 +18,14 @@ int main(int argc, char *argv[]) {
     else if(strcasecmp(argv[1], "bv") == 0) bv(numQubits, seed);
     else if(strcasecmp(argv[1], "dj") == 0) dj(numQubits, seed);
     else if(strcasecmp(argv[1], "qft") == 0) qft(numQubits, seed);
-    else if(strcasecmp(argv[1], "bv") == 0) simons(numQubits, seed);
+    else if(strcasecmp(argv[1], "simons") == 0) simons(numQubits, seed);
     else {
         printf("Unknown Quantum-Algo: %s\n", argv[1]);
         return 0;
     }
-    for(int i = 1; i <= 1000; ++i) 
-        func();
-    printf("Called %d times, taking %.6lf time\n", call_cnt, total_time);
+
+    print_summary();
+    // for(int i = 1; i <= 1000; ++i) 
+    //     func();
+    // printf("Called %d times, taking %.6lf time\n", call_cnt, total_time);
 }

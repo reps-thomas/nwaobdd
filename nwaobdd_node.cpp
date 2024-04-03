@@ -95,9 +95,9 @@ void NWAOBDDNodeHandle::InitNoDistinctionTable()
       n->BConnection[0][0].returnMapHandle = m1;
       n->BConnection[1][0].returnMapHandle = m1;
       n->numExits = 1;
-#ifdef PATH_COUNTING_ENABLED
-      n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//       n->InstallPathCounts();
+// #endif
       NoDistinctionNode[i] = NWAOBDDNodeHandle(n);
     }
   }
@@ -215,6 +215,7 @@ void NWAOBDDNodeHandle::InitReduceCache()
 
 void NWAOBDDNodeHandle::DisposeOfReduceCache()
 {
+  delete reduceCache;
   reduceCache = NULL;
 }
 
@@ -229,6 +230,8 @@ void NWAOBDDNodeHandle::Canonicalize()
     if (answerContents == NULL) {
       canonicalNodeTable->Insert(handleContents);
       handleContents->isCanonical = true;
+      if(handleContents->NodeKind() == NWAOBDD_INTERNAL)
+        ((NWAOBDDInternalNode*)handleContents) -> InstallPathCounts();
     }
     else {
       answerContents->IncrRef();
@@ -280,9 +283,9 @@ NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i)
 			n->BConnection[0][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m11);
 			n->BConnection[1][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m11);
 			n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-            n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//             n->InstallPathCounts();
+// #endif
 		} else if (i == ((size/2) - 1)){
 			m00.AddToEnd(intpair(0,0));
 			m00.Canonicalize();
@@ -304,9 +307,9 @@ NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i)
 			n->BConnection[0][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m11);
 			n->BConnection[1][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m11);
 			n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-            n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//             n->InstallPathCounts();
+// #endif
 		} else if (i == (size/2)) {
 			m00.AddToEnd(intpair(0,0));
 			m00.Canonicalize();
@@ -323,9 +326,9 @@ NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i)
 			n->BConnection[0][0] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m00);
 			n->BConnection[1][0] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m11);
 			n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-            n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//             n->InstallPathCounts();
+// #endif
 		} else if (i == (size - 1)) {
 			m00.AddToEnd(intpair(0,0));
 			m00.Canonicalize();
@@ -342,9 +345,9 @@ NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i)
 			n->BConnection[0][0] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m01);
 			n->BConnection[1][0] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m01);
 			n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-            n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//             n->InstallPathCounts();
+// #endif
 		} else if (i > (size/2)){
 			m00.AddToEnd(intpair(0,0));
 			m00.Canonicalize();
@@ -364,9 +367,9 @@ NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i)
 			n->BConnection[0][0] = Connection(temp, m00_11);
 			n->BConnection[1][0] = Connection(temp, m00_11);
 			n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-            n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//             n->InstallPathCounts();
+// #endif
 		} else {
 			m00.AddToEnd(intpair(0,0));
 			m00.Canonicalize();
@@ -392,9 +395,9 @@ NWAOBDDNodeHandle MkDistinction(unsigned int level, unsigned int i)
 			n->BConnection[0][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1],m11);
 			n->BConnection[1][1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1],m11);
 			n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-      n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//       n->InstallPathCounts();
+// #endif
 		}
 		return NWAOBDDNodeHandle(n);
 	}
@@ -465,9 +468,9 @@ NWAOBDDNodeHandle MkIdRelationNested(unsigned int level)
         n->numExits = 2;
     }
 
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 }
 
@@ -874,9 +877,9 @@ NWAOBDDNodeHandle MkDetensorConstraintInterleaved(unsigned int level)
     n1->BConnection = new Connection[n1->numBConnections];
     n1->BConnection[0] = Connection(NWAOBDDNodeHandle::NWAOBDDForkNodeHandle, m1);
     n1->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-    n1->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//     n1->InstallPathCounts();
+// #endif
     NWAOBDDNodeHandle nh1(n1);
     
     NWAOBDDInternalNode *n2 = new NWAOBDDInternalNode(1);
@@ -886,9 +889,9 @@ NWAOBDDNodeHandle MkDetensorConstraintInterleaved(unsigned int level)
     n2->BConnection[0] = Connection(NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle, m2);
     n2->BConnection[1] = Connection(NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle, m3);
     n2->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-    n2->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//     n2->InstallPathCounts();
+// #endif
     NWAOBDDNodeHandle nh2(n2);
     
     n = new NWAOBDDInternalNode(2);
@@ -915,9 +918,9 @@ NWAOBDDNodeHandle MkDetensorConstraintInterleaved(unsigned int level)
     n->BConnection[1] = Connection(temp, m1);
   }
   n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 } // MkDetensorConstraintInterleaved*/
 
@@ -949,9 +952,9 @@ NWAOBDDNodeHandle MkParity(unsigned int level)
 	  n->BConnection[1][1] = Connection(temp,m01);
 
 	  n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-    n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//     n->InstallPathCounts();
+// #endif
     return NWAOBDDNodeHandle(n);
   }
   else {  // Create an appropriate NWAOBDDInternalNode
@@ -977,9 +980,9 @@ NWAOBDDNodeHandle MkParity(unsigned int level)
 	n->BConnection[1][1] = Connection(temp, m01_10);
 
     n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-    n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//     n->InstallPathCounts();
+// #endif
     return NWAOBDDNodeHandle(n);
   }
 } // MkParity
@@ -1021,9 +1024,9 @@ NWAOBDDNodeHandle MkWalshInterleavedNode(unsigned int i)
     n->BConnection[1] = Connection(temp, m2);
   }
   n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 } // MkWalshInterleavedNode
 
@@ -1073,9 +1076,9 @@ NWAOBDDNodeHandle MkInverseReedMullerInterleavedNode(unsigned int i)
     n->BConnection[2] = Connection(temp, m3);
   }
   n->numExits = 3;
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 } // MkInverseReedMullerInterleavedNode
 
@@ -1117,9 +1120,9 @@ NWAOBDDNodeHandle MkStepOneFourth(unsigned int level)
     n->BConnection[1] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m3);
   }
   n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 } // MkStepOneFourth
 */
@@ -1199,9 +1202,9 @@ NWAOBDDNodeHandle MkStepNode(unsigned int level, unsigned int left, unsigned int
          n->BConnection[curConnection++] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m4);
        }
        n->numExits = numberOfExits;
-#ifdef PATH_COUNTING_ENABLED
-       n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//        n->InstallPathCounts();
+// #endif
     return NWAOBDDNodeHandle(n);
   }
 } // MkStepNode
@@ -1312,12 +1315,10 @@ NWAOBDDInternalNode::~NWAOBDDInternalNode()
 {
   delete [] BConnection[0];
   delete [] BConnection[1];
-  #ifdef PATH_COUNTING_ENABLED
   if(numPathsToExit)
     delete [] numPathsToExit;
   if(numPathsToMiddle)
     delete [] numPathsToMiddle;
-  #endif
 }
 
 // print
@@ -1733,7 +1734,7 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 	n->BConnection[1] = new Connection[numBConnections];
 
   n->numBConnections = 0;
-  std::unordered_map<ConnectionPair, unsigned, ConnectionPair::ConnectionPairHash>bconn_table(numBConnections);
+  // std::unordered_map<ConnectionPair, unsigned, ConnectionPair::ConnectionPairHash>bconn_table(numBConnections);
 
   for(unsigned i = 0; i < numBConnections; ++i) {
     ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
@@ -1749,16 +1750,16 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 
     Connection c0(temp0, inducedReturnMap0);
     Connection c1(temp1, inducedReturnMap1);
-    // unsigned int position = n->InsertBConnection(n->numBConnections, c0, c1);
-    unsigned position;
-    ConnectionPair cp(c0, c1);
-    if(bconn_table.find(cp) == bconn_table.end()) {
-      bconn_table[cp] = n->numBConnections;
-      position = (n->numBConnections)++;
-      n->BConnection[0][position] = c0;
-      n->BConnection[1][position] = c1;
-    }
-    else position = bconn_table[cp];
+    unsigned int position = n->InsertBConnection(n->numBConnections, c0, c1);
+    // unsigned position;
+    // ConnectionPair cp(c0, c1);
+    // if(bconn_table.find(cp) == bconn_table.end()) {
+    //   bconn_table[cp] = n->numBConnections;
+    //   position = (n->numBConnections)++;
+    //   n->BConnection[0][position] = c0;
+    //   n->BConnection[1][position] = c1;
+    // }
+    // else position = bconn_table[cp];
     
     AReductionMapHandle.AddToEnd(position);
   }
@@ -1789,9 +1790,9 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
   n -> AConnection[1] = Connection(tempHandle1, inducedA1ReturnMap);
 
   n->numExits = replacementNumExits;
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif 
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif 
   return NWAOBDDNodeHandle(n);
     /*
      for (unsigned int i = 0; i < numBConnections; i++) {
@@ -1844,9 +1845,9 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 
   // Other material that has to be filled in
      n->numExits = replacementNumExits;
-#ifdef PATH_COUNTING_ENABLED
-     n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//      n->InstallPathCounts();
+// #endif
      
   return NWAOBDDNodeHandle(n);
   */
@@ -1984,7 +1985,7 @@ unsigned int NWAOBDDInternalNode::InsertBConnection(unsigned int &j, Connection 
 #ifdef PATH_COUNTING_ENABLED
 // InstallPathCounts
 
-long double addNumPathsToExit(const std::vector<long double>& logOfPaths){
+static long double addNumPathsToExit(const std::vector<long double>& logOfPaths){
   // assert(logOfPaths.size() > 0);
 	if (logOfPaths.size() == 1)
 		return logOfPaths.back();
@@ -1997,96 +1998,115 @@ long double addNumPathsToExit(const std::vector<long double>& logOfPaths){
 	return logOfSum;
 }
 
+static long double addPaths(long double a, long double b) {
+    if(a < b){
+      if(a == std::numeric_limits<long double>::lowest())
+        return b;
+      return b + log2(1 + pow(2, a - b));
+    }
+    else {
+      if(b == std::numeric_limits<long double>::lowest())
+        return a;
+      return a + log2(1 + pow(2, b - a));
+    }
+}
+
 void NWAOBDDInternalNode::InstallPathCounts()
 {
   numPathsToMiddle = new long double[numBConnections];
   numPathsToExit = new long double[numExits];
   isNumPathsMemAllocated = true;
-  for(int i = 0; i < numBConnections; ++i) numPathsToMiddle[i] = 0;
-  for(int i = 0; i < numExits; ++i) numPathsToExit[i] = 0;
 
-  std::map<unsigned int, std::vector<long double>> storingNumPathsToMiddle;
-  for(unsigned b = 0; b <= 1; ++b)
-  {
+  long double neg_inf = std::numeric_limits<long double>::lowest();
+  for(int i = 0; i < numBConnections; ++i) numPathsToMiddle[i] = neg_inf;
+  for(int i = 0; i < numExits; ++i) numPathsToExit[i] = neg_inf;
+
+  for(unsigned b = 0; b <= 1; ++b) {
     for(unsigned j = 0; j < AConnection[b].entryPointHandle->handleContents->numExits; ++j) {
       unsigned k0 = AConnection[b].returnMapHandle.Lookup(j).First();
       unsigned k1 = AConnection[b].returnMapHandle.Lookup(j).Second();
       long double numPathsValue = AConnection[b].entryPointHandle->handleContents->numPathsToExit[j];
-      if (storingNumPathsToMiddle.find(k0) == storingNumPathsToMiddle.end()) {
-        std::vector<long double> logOfPaths;
-        logOfPaths.push_back(numPathsValue);
-        storingNumPathsToMiddle[k0] = logOfPaths;
-      }
-      else {
-        storingNumPathsToMiddle[k0].push_back(numPathsValue);
-      }
-
-      if (storingNumPathsToMiddle.find(k1) == storingNumPathsToMiddle.end()) {
-        std::vector<long double> logOfPaths;
-        logOfPaths.push_back(numPathsValue);
-        storingNumPathsToMiddle[k1] = logOfPaths;
-      }
-      else {
-        storingNumPathsToMiddle[k1].push_back(numPathsValue);
-      }
-
+      numPathsToMiddle[k0] = addPaths(numPathsToMiddle[k0], numPathsValue);
+      numPathsToMiddle[k1] = addPaths(numPathsToMiddle[k1], numPathsValue);
     }
   }
-	for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToMiddle.begin(); it != storingNumPathsToMiddle.end(); it++){
-		std::sort(it->second.begin(), it->second.end());
-		numPathsToMiddle[it->first] = addNumPathsToExit(it->second);
-	}
+  // std::map<unsigned int, std::vector<long double>> storingNumPathsToMiddle;
+  // for(unsigned b = 0; b <= 1; ++b)
+  // {
+  //   for(unsigned j = 0; j < AConnection[b].entryPointHandle->handleContents->numExits; ++j) {
+  //     unsigned k0 = AConnection[b].returnMapHandle.Lookup(j).First();
+  //     unsigned k1 = AConnection[b].returnMapHandle.Lookup(j).Second();
+  //     long double numPathsValue = AConnection[b].entryPointHandle->handleContents->numPathsToExit[j];
+  //     if (storingNumPathsToMiddle.find(k0) == storingNumPathsToMiddle.end()) {
+  //       std::vector<long double> logOfPaths;
+  //       logOfPaths.push_back(numPathsValue);
+  //       storingNumPathsToMiddle[k0] = logOfPaths;
+  //     }
+  //     else {
+  //       storingNumPathsToMiddle[k0].push_back(numPathsValue);
+  //     }
 
+  //     if (storingNumPathsToMiddle.find(k1) == storingNumPathsToMiddle.end()) {
+  //       std::vector<long double> logOfPaths;
+  //       logOfPaths.push_back(numPathsValue);
+  //       storingNumPathsToMiddle[k1] = logOfPaths;
+  //     }
+  //     else {
+  //       storingNumPathsToMiddle[k1].push_back(numPathsValue);
+  //     }
 
-  std::map<unsigned int, std::vector<long double>> storingNumPathsToExit;
-  for(unsigned i = 0; i < numBConnections; ++i) {
-    for(unsigned b = 0; b <= 1; ++b)
-    {
+  //   }
+  // }
+	// for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToMiddle.begin(); it != storingNumPathsToMiddle.end(); it++){
+	// 	std::sort(it->second.begin(), it->second.end());
+	// 	numPathsToMiddle[it->first] = addNumPathsToExit(it->second);
+	// }
+
+   for(unsigned i = 0; i < numBConnections; ++i) {
+    for(unsigned b = 0; b <= 1; ++b) {
       for(unsigned j = 0; j < BConnection[b][i].entryPointHandle->handleContents->numExits; ++j) {
         unsigned k0 = BConnection[b][i].returnMapHandle.Lookup(j).First();
         unsigned k1 = BConnection[b][i].returnMapHandle.Lookup(j).Second();
         long double numPathsValue = numPathsToMiddle[i] + BConnection[b][i].entryPointHandle->handleContents->numPathsToExit[j];
-
-        if (storingNumPathsToExit.find(k0) == storingNumPathsToExit.end()) {
-          std::vector<long double> logOfPaths;
-          logOfPaths.push_back(numPathsValue);
-          storingNumPathsToExit[k0] = logOfPaths;
-        }
-        else {
-          storingNumPathsToExit[k0].push_back(numPathsValue);
-        }
-
-        if (storingNumPathsToExit.find(k1) == storingNumPathsToExit.end()) {
-          std::vector<long double> logOfPaths;
-          logOfPaths.push_back(numPathsValue);
-          storingNumPathsToExit[k1] = logOfPaths;
-        }
-        else {
-          storingNumPathsToExit[k1].push_back(numPathsValue);
-        }
-
+        numPathsToExit[k0] = addPaths(numPathsToExit[k0], numPathsValue);
+        numPathsToExit[k1] = addPaths(numPathsToExit[k1], numPathsValue);
       }
     }
   }
-	for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToExit.begin(); it != storingNumPathsToExit.end(); it++){
-		std::sort(it->second.begin(), it->second.end());
-		numPathsToExit[it->first] = addNumPathsToExit(it->second);
-	}
+  // std::map<unsigned int, std::vector<long double>> storingNumPathsToExit;
+  // for(unsigned i = 0; i < numBConnections; ++i) {
+  //   for(unsigned b = 0; b <= 1; ++b)
+  //   {
+  //     for(unsigned j = 0; j < BConnection[b][i].entryPointHandle->handleContents->numExits; ++j) {
+  //       unsigned k0 = BConnection[b][i].returnMapHandle.Lookup(j).First();
+  //       unsigned k1 = BConnection[b][i].returnMapHandle.Lookup(j).Second();
+  //       long double numPathsValue = numPathsToMiddle[i] + BConnection[b][i].entryPointHandle->handleContents->numPathsToExit[j];
 
-  /* ETTODO
-  numPathsToExit = new unsigned int[numExits];
-  for (unsigned int i = 0; i < numExits; i++) {
-    numPathsToExit[i] = 0;
-  }
-  //Create a 2D array with numpaths to exit from a midpoint to a specific exit
-    //Calculate num paths to exit for the midpoints
-		//Calculate num paths from A to a midpoints
-  for (unsigned int i = 0; i < AConnection.entryPointHandle->handleContents->numExits; i++) {
-    for (unsigned int j = 0; j < BConnection[i].entryPointHandle->handleContents->numExits; j++) {
-      unsigned int k = BConnection[i].returnMapHandle.Lookup(j);
-      numPathsToExit[k] += AConnection.entryPointHandle->handleContents->numPathsToExit[i] * BConnection[i].entryPointHandle->handleContents->numPathsToExit[j];
-    }
-  }*/
+  //       if (storingNumPathsToExit.find(k0) == storingNumPathsToExit.end()) {
+  //         std::vector<long double> logOfPaths;
+  //         logOfPaths.push_back(numPathsValue);
+  //         storingNumPathsToExit[k0] = logOfPaths;
+  //       }
+  //       else {
+  //         storingNumPathsToExit[k0].push_back(numPathsValue);
+  //       }
+
+  //       if (storingNumPathsToExit.find(k1) == storingNumPathsToExit.end()) {
+  //         std::vector<long double> logOfPaths;
+  //         logOfPaths.push_back(numPathsValue);
+  //         storingNumPathsToExit[k1] = logOfPaths;
+  //       }
+  //       else {
+  //         storingNumPathsToExit[k1].push_back(numPathsValue);
+  //       }
+
+  //     }
+  //   }
+  // }
+	// for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToExit.begin(); it != storingNumPathsToExit.end(); it++){
+	// 	std::sort(it->second.begin(), it->second.end());
+	// 	numPathsToExit[it->first] = addNumPathsToExit(it->second);
+	// }
 }
 #endif
 

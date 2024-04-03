@@ -173,9 +173,9 @@ NWAOBDDNodeHandle MkIdRelationInterleaved(unsigned int level, IDTYPE idtype)
       }
   }
   // n->numExits = 2;
-#ifdef PATH_COUNTING_ENABLED
-  n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//   n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 } // MkIdRelationInterleaved
 
@@ -345,9 +345,9 @@ NWAOBDDNodeHandle MkAdditionNested(unsigned int level, bool carry)
         }
     }
     n->numExits = 3;
-#ifdef PATH_COUNTING_ENABLED
-    n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+//     n->InstallPathCounts();
+// #endif
   return NWAOBDDNodeHandle(n);
 }
 

@@ -47,7 +47,7 @@ namespace NWA_OBDD {
             n->BConnection[1][i] = Connection(NWAOBDDNodeHandle::NoDistinctionNode[c.handleContents -> level], mi);
         }
         n -> numExits = num_mid;
-        n->InstallPathCounts();
+        // n->InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
 	NWAOBDDNodeHandle MatrixShiftToBConnectionNode(NWAOBDDNodeHandle c) {
@@ -66,7 +66,7 @@ namespace NWA_OBDD {
         n -> BConnection[1][0] = n -> BConnection[0][0];
 
         n -> numExits = c.handleContents->numExits;
-        n->InstallPathCounts();
+        // n->InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MatrixShiftLevel0Node(NWAOBDDNodeHandle c) {
@@ -84,7 +84,7 @@ namespace NWA_OBDD {
         n -> BConnection[0][0] = nc -> AConnection[0];
         n -> BConnection[1][0] = nc -> AConnection[1];
 
-        n -> InstallPathCounts();
+        // n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
 }
@@ -118,9 +118,9 @@ namespace NWA_OBDD {
             n = c.toNWA();
         }
 
-#ifdef PATH_COUNTING_ENABLED
-		n->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+// 		n->InstallPathCounts();
+// #endif
         NWAOBDDNodeHandle handle(n);
         return handle;
     }
@@ -152,7 +152,7 @@ namespace NWA_OBDD {
             n = c.toNWA();
         }
         
-        n -> InstallPathCounts();
+        // n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkWalshNode(unsigned int level) {
@@ -166,7 +166,7 @@ namespace NWA_OBDD {
         c.bconn[1] = intpair(0, 1);
 
         n = c.toNWA();
-        n -> InstallPathCounts();
+        // n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkPauliYNode(unsigned int level) {
@@ -180,7 +180,7 @@ namespace NWA_OBDD {
         c.bconn[1] = intpair(2, 0);
 
         n = c.toNWA();
-        n -> InstallPathCounts();
+        // n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkPauliZNode(unsigned int level) {
@@ -194,7 +194,7 @@ namespace NWA_OBDD {
         c.bconn[1] = intpair(1, 2);
         
         n = c.toNWA();
-        n -> InstallPathCounts();
+        // n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
     NWAOBDDNodeHandle MkSNode(unsigned int level) {
@@ -208,7 +208,7 @@ namespace NWA_OBDD {
         c.bconn[1] = intpair(1, 2);
 
         n = c.toNWA();
-        n -> InstallPathCounts();
+        // n -> InstallPathCounts();
         return NWAOBDDNodeHandle(n);
     }
 
@@ -563,9 +563,9 @@ namespace NWA_OBDD {
 		g_return_map.Canonicalize();
 		g->numExits = g_return_map.Size();
 		// reductionMapHandle.Canonicalize();
-#ifdef PATH_COUNTING_ENABLED
-		g->InstallPathCounts();
-#endif
+// #ifdef PATH_COUNTING_ENABLED
+// 		g->InstallPathCounts();
+// #endif
 
 		NWAOBDDNodeHandle gHandle(g);
 		//gHandle = gHandle.Reduce(reductionMapHandle, g_return_map.Size(), true);

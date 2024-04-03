@@ -194,7 +194,7 @@ class NWAOBDDNode {
   unsigned int numExits;
   static unsigned int const maxLevel;
 #ifdef PATH_COUNTING_ENABLED
-  long double *numPathsToExit;       // unsigned int numPathsToExit[numExits]
+  long double *numPathsToExit = nullptr;       // unsigned int numPathsToExit[numExits]
   bool isNumPathsMemAllocated;
 #endif
   virtual void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index) = 0;
@@ -248,7 +248,7 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   NWAOBDDInternalNode(const unsigned int l);   // Constructor
   ~NWAOBDDInternalNode();                      // Destructor
   NWAOBDD_NODEKIND NodeKind() const { return NWAOBDD_INTERNAL; }
-  long double *numPathsToMiddle;
+  long double *numPathsToMiddle = nullptr;
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
   NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);
