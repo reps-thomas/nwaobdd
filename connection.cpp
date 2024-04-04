@@ -9,6 +9,7 @@ namespace NWA_OBDD {
 template <typename Handle>
 ConnectionT<Handle>::ConnectionT()
 {
+	entryPointHandle = nullptr;
 }
 
 template <typename Handle>
@@ -54,6 +55,7 @@ ConnectionT<Handle>& ConnectionT<Handle>::operator= (const ConnectionT<Handle>& 
 {
 	if (this != &C)      // don't assign to self!
 	{
+		if(entryPointHandle) delete entryPointHandle;
 		entryPointHandle = new NWAOBDDNodeHandle(*(C.entryPointHandle));
 		returnMapHandle = C.returnMapHandle;
 	}

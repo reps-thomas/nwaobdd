@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    print_summary();
+    // print_summary();
     // for(int i = 1; i <= 1000; ++i) 
     //     func();
     // printf("Called %d times, taking %.6lf time\n", call_cnt, total_time);

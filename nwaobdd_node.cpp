@@ -1717,7 +1717,7 @@ struct ConnectionPair {
       size_t a2 = reinterpret_cast<size_t>(cp.c1.returnMapHandle.mapContents) >> 3;
       size_t a3 = reinterpret_cast<size_t>(cp.c2.entryPointHandle->handleContents) >> 3;
       size_t a4 = reinterpret_cast<size_t>(cp.c2.returnMapHandle.mapContents) >> 3;
-      return (a1 + a2 * 997 + a3 * 997 * 997 + a4 * 997 * 997 * 997) % 998244353;
+      return (a1 + a2 * 823ll + a3 * 100003ll + a4 * 1145141ll) % 1000000007;
     }
     
   };
@@ -1734,34 +1734,55 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 	n->BConnection[1] = new Connection[numBConnections];
 
   n->numBConnections = 0;
-  // std::unordered_map<ConnectionPair, unsigned, ConnectionPair::ConnectionPairHash>bconn_table(numBConnections);
 
-  for(unsigned i = 0; i < numBConnections; ++i) {
-    ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
-    ReductionMapHandle inducedReductionMapHandle1(redMapHandle.Size());
+  if(numBConnections <= 7) {
+    for(unsigned i = 0; i < numBConnections; ++i) {
+      ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
+      ReductionMapHandle inducedReductionMapHandle1(redMapHandle.Size());
 
-    ReturnMapHandle<intpair> inducedReturnMap0;
-    ReturnMapHandle<intpair> inducedReturnMap1;
+      ReturnMapHandle<intpair> inducedReturnMap0;
+      ReturnMapHandle<intpair> inducedReturnMap1;
 
-    inducedReturnMap0 = ComposeAndReduce(BConnection[0][i].returnMapHandle, redMapHandle, inducedReductionMapHandle0);
-    NWAOBDDNodeHandle temp0 = BConnection[0][i].entryPointHandle->Reduce(inducedReductionMapHandle0, inducedReturnMap0.Size(), forceReduce);
-    inducedReturnMap1 = ComposeAndReduce(BConnection[1][i].returnMapHandle, redMapHandle, inducedReductionMapHandle1);
-    NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle->Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size(), forceReduce);
+      inducedReturnMap0 = ComposeAndReduce(BConnection[0][i].returnMapHandle, redMapHandle, inducedReductionMapHandle0);
+      NWAOBDDNodeHandle temp0 = BConnection[0][i].entryPointHandle->Reduce(inducedReductionMapHandle0, inducedReturnMap0.Size(), forceReduce);
+      inducedReturnMap1 = ComposeAndReduce(BConnection[1][i].returnMapHandle, redMapHandle, inducedReductionMapHandle1);
+      NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle->Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size(), forceReduce);
 
-    Connection c0(temp0, inducedReturnMap0);
-    Connection c1(temp1, inducedReturnMap1);
-    unsigned int position = n->InsertBConnection(n->numBConnections, c0, c1);
-    // unsigned position;
-    // ConnectionPair cp(c0, c1);
-    // if(bconn_table.find(cp) == bconn_table.end()) {
-    //   bconn_table[cp] = n->numBConnections;
-    //   position = (n->numBConnections)++;
-    //   n->BConnection[0][position] = c0;
-    //   n->BConnection[1][position] = c1;
-    // }
-    // else position = bconn_table[cp];
-    
-    AReductionMapHandle.AddToEnd(position);
+      Connection c0(temp0, inducedReturnMap0);
+      Connection c1(temp1, inducedReturnMap1);
+      unsigned int position = n->InsertBConnection(n->numBConnections, c0, c1);
+      AReductionMapHandle.AddToEnd(position);
+    }
+  }
+  else {
+    std::unordered_map<ConnectionPair, unsigned, ConnectionPair::ConnectionPairHash>bconn_table(numBConnections);
+    for(unsigned i = 0; i < numBConnections; ++i) {
+      ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
+      ReductionMapHandle inducedReductionMapHandle1(redMapHandle.Size());
+
+      ReturnMapHandle<intpair> inducedReturnMap0;
+      ReturnMapHandle<intpair> inducedReturnMap1;
+
+      inducedReturnMap0 = ComposeAndReduce(BConnection[0][i].returnMapHandle, redMapHandle, inducedReductionMapHandle0);
+      NWAOBDDNodeHandle temp0 = BConnection[0][i].entryPointHandle->Reduce(inducedReductionMapHandle0, inducedReturnMap0.Size(), forceReduce);
+      inducedReturnMap1 = ComposeAndReduce(BConnection[1][i].returnMapHandle, redMapHandle, inducedReductionMapHandle1);
+      NWAOBDDNodeHandle temp1 = BConnection[1][i].entryPointHandle->Reduce(inducedReductionMapHandle1, inducedReturnMap1.Size(), forceReduce);
+
+      Connection c0(temp0, inducedReturnMap0);
+      Connection c1(temp1, inducedReturnMap1);
+      
+      unsigned position;
+      ConnectionPair cp(c0, c1);
+      if(bconn_table.find(cp) == bconn_table.end()) {
+        bconn_table[cp] = n->numBConnections;
+        position = (n->numBConnections)++;
+        n->BConnection[0][position] = c0;
+        n->BConnection[1][position] = c1;
+      }
+      else position = bconn_table[cp];
+      
+      AReductionMapHandle.AddToEnd(position);
+    }
   }
   AReductionMapHandle.Canonicalize();
   if (n->numBConnections < numBConnections) {  // Shorten
