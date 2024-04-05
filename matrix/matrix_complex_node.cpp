@@ -476,7 +476,7 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> mI;
 				for (unsigned int i = 0; i < aa->rootConnection.returnMapHandle.Size(); i++)
 					mI.AddToEnd(i);
-				mI.Canonicalize();
+				// mI.Canonicalize();
 
 				c.AConnection = CFLConnection(*(aa->rootConnection.entryPointHandle), mI);
 				c.numBConnections = mI.Size();
@@ -554,7 +554,7 @@ namespace NWA_OBDD {
 							ans_return_map.AddToEnd(index);
 						}
 					}
-					ans_return_map.Canonicalize();
+					// ans_return_map.Canonicalize();
 					c.BConnection[i] = CFLConnection(*(ans->rootConnection.entryPointHandle), ans_return_map);
 				}
 				g = c.toNWA();

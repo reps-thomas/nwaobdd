@@ -398,13 +398,3 @@ typedef mp::cpp_complex_100 BIG_COMPLEX_FLOAT;
 	template class NWAOBDD<BIG_COMPLEX_FLOAT>;
 	template std::ostream& operator<< (std::ostream & out, const NWAOBDD<BIG_COMPLEX_FLOAT> &d);
 };
-
-void print_summary() {
-  // printf("Hashset<Node>: %d\n", NWAOBDDNodeHandle::canonicalNodeTable->Size());
-  // printf("Hashset<ReturnMap>: %d\n", ReturnMapHandle<intpair>::canonicalReturnMapBodySet->Size());
-  // printf("Hashset<ReductionMap>: %d\n", ReductionMapHandle::canonicalReductionMapBodySet->Size());
-
-  
-  // printf("Reduce Cache: %d\n", NWAOBDDNodeHandle::canonicalNodeTable->Size());
-  
-}

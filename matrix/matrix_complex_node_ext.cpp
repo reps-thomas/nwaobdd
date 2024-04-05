@@ -33,7 +33,7 @@ namespace NWA_OBDD {
 			{
 				// Case 1: Both in A CFLConnection
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto aa = MkCNot2Node(level-1, n/2, controller, controlled);
 				c.AConnection = CFLConnection(aa, m01);
 				c.numBConnections = 2;
@@ -41,7 +41,7 @@ namespace NWA_OBDD {
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
 			}
@@ -49,7 +49,7 @@ namespace NWA_OBDD {
 			{
 				// Case 2: Both in B CFLConnection
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
@@ -57,7 +57,7 @@ namespace NWA_OBDD {
 				auto bb = MkCNot2Node(level-1, n/2, controller - n/2, controlled - n/2);
 				c.BConnection[0] = CFLConnection(bb, m01);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
 			}
@@ -65,15 +65,15 @@ namespace NWA_OBDD {
 			{
 				// Case 3: controller in A and controlled in B
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCNot2Node(level-1, n/2, controller, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m10;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				auto bb = MkCNot2Node(level-1, n/2, -1, controlled - n/2);
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
@@ -85,15 +85,15 @@ namespace NWA_OBDD {
 			{
 				// Case 4: controller in A and controlled == -1
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCNot2Node(level-1, n/2, controller, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[c.numBConnections];
 				ReturnMapHandle<int> m01, m1, m21;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -104,15 +104,15 @@ namespace NWA_OBDD {
 			{
 				// Case 5: controller in B and controlled == -1
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				auto bb = MkCNot2Node(level-1, n/2, controller - n/2, -1);
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(bb, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 3;
@@ -121,14 +121,14 @@ namespace NWA_OBDD {
 			{
 				// Case 6: controller == -1 and controlled in A
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto aa = MkCNot2Node(level-1, n/2, -1, controlled);
 				c.AConnection = CFLConnection(aa, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m0, m10;
-				m0.AddToEnd(0); m0.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				c.BConnection[0] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[1] = CFLConnection(Id, m10);
@@ -138,14 +138,14 @@ namespace NWA_OBDD {
 			{
 				// Case 7: controller == -1 and controlled in B
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				auto bb = MkCNot2Node(level-1, n/2, -1, controlled - n/2);
 				ReturnMapHandle<int> m0;
-				m0.AddToEnd(0); m0.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				c.BConnection[0] = CFLConnection(bb, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 				c.numExits = 2;
@@ -196,7 +196,7 @@ namespace NWA_OBDD {
 			{
 				// Case 1: CR1, CR2 and CD in A CFLConnection
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, controller1, controller2, controlled);
 				c.AConnection = CFLConnection(aa, m01);
 				c.numBConnections = 2;
@@ -204,7 +204,7 @@ namespace NWA_OBDD {
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
 			}
@@ -212,7 +212,7 @@ namespace NWA_OBDD {
 			{
 				// Case 2: CR1, CR2 and CD in B CFLConnection
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
@@ -220,7 +220,7 @@ namespace NWA_OBDD {
 				auto bb = MkCCNotNode(level-1, n/2, controller1 - n/2, controller2 - n/2, controlled - n/2);
 				c.BConnection[0] = CFLConnection(bb, m01);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
 			}
@@ -228,15 +228,15 @@ namespace NWA_OBDD {
 			{
 				// Case 3: CR1 in A, CR2 and CD in B
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, controller1, -1, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m10;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, -1, controller2 - n/2, controlled - n/2);
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
@@ -248,15 +248,15 @@ namespace NWA_OBDD {
 			{
 				// Case 4: CR1 in A and CR2 == -1 and CD == -1
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, controller1, -1, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[c.numBConnections];
 				ReturnMapHandle<int> m01, m1, m21;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -267,15 +267,15 @@ namespace NWA_OBDD {
 			{
 				// Case 5: CR1 in B and CR2 == -1 and CD == -1
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				auto bb = MkCCNotNode(level-1, n/2, controller1 - n/2, -1, -1);
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(bb, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 3;
@@ -284,14 +284,14 @@ namespace NWA_OBDD {
 			{
 				// Case 6: controller == -1 and controlled in A
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, -1, -1, controlled);
 				c.AConnection = CFLConnection(aa, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m0, m10;
-				m0.AddToEnd(0); m0.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				c.BConnection[0] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[1] = CFLConnection(Id, m10);
@@ -301,14 +301,14 @@ namespace NWA_OBDD {
 			{
 				// Case 7: controller == -1 and controlled in B
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				auto bb = MkCCNotNode(level-1, n/2, -1, -1, controlled - n/2);
 				ReturnMapHandle<int> m0;
-				m0.AddToEnd(0); m0.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				c.BConnection[0] = CFLConnection(bb, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 				c.numExits = 2;
@@ -317,15 +317,15 @@ namespace NWA_OBDD {
 			{
 				// Case 8: CR1 and CR2 in A, CD in B
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, controller1, controller2, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m10;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, -1, -1, controlled - n/2);
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
@@ -337,15 +337,15 @@ namespace NWA_OBDD {
 			{
 				// Case 9: CR1 and CR2 in A, CD == -1
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, controller1, controller2, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m21;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -357,13 +357,13 @@ namespace NWA_OBDD {
 				// Case 10: CR1 and CR2 in B, CD == -1
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, controller1 - n/2, controller2 - n/2, -1);
 				c.BConnection[0] = CFLConnection(bb, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -375,13 +375,13 @@ namespace NWA_OBDD {
 				auto Id = MkIdNode(level - 1);
 				auto aa = MkCCNotNode(level-1, n/2, controller1, -1, -1);
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, -1, controller2 - n/2, -1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -394,14 +394,14 @@ namespace NWA_OBDD {
 				auto Id = MkIdNode(level - 1);
 				auto aa = MkCCNotNode(level-1, n/2, -1, controller2, -1);
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m21;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.BConnection[2] = CFLConnection(Id, m21);
@@ -412,13 +412,13 @@ namespace NWA_OBDD {
 				// Case 12: CR1 == -1, CR2 in B, CD == -1
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, -1, controller2 - n/2, -1);
 				c.BConnection[0] = CFLConnection(bb, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -429,13 +429,13 @@ namespace NWA_OBDD {
 				// Case 13: CR1 == -1, CR2 and CD in A
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, -1, controller2, controlled);
 				c.AConnection = CFLConnection(aa, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
@@ -445,12 +445,12 @@ namespace NWA_OBDD {
 				// Case 14: CR1 == -1, CR2 and CD in B
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, -1, controller2 - n/2, controlled - n/2);
 				c.BConnection[0] = CFLConnection(bb, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -461,15 +461,15 @@ namespace NWA_OBDD {
 				// Case 15: CR1 == -1, CR2 in A and CD in B
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCCNotNode(level-1, n/2, -1, controller2, -1);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m10;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				auto bb = MkCCNotNode(level-1, n/2, -1, -1, controlled - n/2);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -550,15 +550,15 @@ namespace NWA_OBDD {
 
 			NWAOBDDNodeHandle atmp = MkSwapNode(level - 1, controller, -1, case_num);
 			ReturnMapHandle<int> m0123;
-			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
+			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
 			c.AConnection = CFLConnection(atmp, m0123);
 			NWAOBDDNodeHandle b0 = MkSwapNode(level-1, -1, controlled, 0);
 			NWAOBDDNodeHandle b1 = MkSwapNode(level-1, -1, controlled, 1);
 			NWAOBDDNodeHandle b2 = MkSwapNode(level-1, -1, controlled, 2);
 			NWAOBDDNodeHandle b3 = MkSwapNode(level-1, -1, controlled, 3);
 			ReturnMapHandle<int> m01, m10;
-			m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-			m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+			m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+			m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 			c.numBConnections = 4;
 			c.BConnection = new CFLConnection[4];
 			c.BConnection[0] = CFLConnection(b0, m01);
@@ -575,13 +575,13 @@ namespace NWA_OBDD {
 
 			NWAOBDDNodeHandle atmp = MkSwapNode(level - 1, controller, -1, case_num);
 			ReturnMapHandle<int> m0123;
-			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
+			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
 			c.AConnection = CFLConnection(atmp, m0123);
 			ReturnMapHandle<int> m01, m21, m31, m41;
-			m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-			m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-			m31.AddToEnd(3); m31.AddToEnd(1); m31.Canonicalize();
-			m41.AddToEnd(4); m41.AddToEnd(1); m41.Canonicalize();
+			m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+			m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+			m31.AddToEnd(3); m31.AddToEnd(1); //  m31.Canonicalize();
+			m41.AddToEnd(4); m41.AddToEnd(1); //  m41.Canonicalize();
 			c.numBConnections = 4;
 			c.BConnection = new CFLConnection[4];
 			NWAOBDDNodeHandle Id = MkIdNode(level-1);
@@ -598,14 +598,14 @@ namespace NWA_OBDD {
 			pseudoCFLOBDDInternal c(level);
 
 			ReturnMapHandle<int> m01;
-			m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+			m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 			NWAOBDDNodeHandle Id = MkIdNode(level-1);
 			c.AConnection = CFLConnection(Id, m01);
 			c.numBConnections = 2;
 			NWAOBDDNodeHandle btmp = MkSwapNode(level-1, 0, -1, case_num);
 			ReturnMapHandle<int> m0123, m4;
-			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
-			m4.AddToEnd(4); m4.Canonicalize();
+			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
+			m4.AddToEnd(4); //  m4.Canonicalize();
 			c.BConnection = new CFLConnection[2];
 			c.BConnection[0] = CFLConnection(btmp, m0123);
 			c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m4);
@@ -625,12 +625,12 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> m01;
 				m01.AddToEnd(0);
 				m01.AddToEnd(1);
-				m01.Canonicalize();
+				//  m01.Canonicalize();
 				c.AConnection = CFLConnection(aTmp, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -643,7 +643,7 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> m01;
 				m01.AddToEnd(0);
 				m01.AddToEnd(1);
-				m01.Canonicalize();
+				//  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
@@ -651,7 +651,7 @@ namespace NWA_OBDD {
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, controller - n/2, controlled - n/2, case_num);
 				c.BConnection[0] = CFLConnection(btmp, m01);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
 			}
@@ -665,21 +665,21 @@ namespace NWA_OBDD {
 				m01234.AddToEnd(2);
 				m01234.AddToEnd(3);
 				m01234.AddToEnd(4);
-				m01234.Canonicalize();
+				//  m01234.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, controller, -1, case_num);
 				c.AConnection = CFLConnection(atmp, m01234);
 				c.numBConnections = 5;
 				c.BConnection = new CFLConnection[5];
 				NWAOBDDNodeHandle b0 = MkSwapNode(level-1, -1, controlled - n/2, 0);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.BConnection[0] = CFLConnection(b0, m01);
 				NWAOBDDNodeHandle b1 = MkSwapNode(level-1, -1, controlled - n/2, 2);
 				NWAOBDDNodeHandle b2 = MkSwapNode(level-1, -1, controlled - n/2, 1);
 				NWAOBDDNodeHandle b3 = MkSwapNode(level-1, -1, controlled - n/2, 3);
 				ReturnMapHandle<int> m10, m1;
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				if (controller == n/2 - 1)
 				{
 					// std::cout << b1 << std::endl;
@@ -709,18 +709,18 @@ namespace NWA_OBDD {
 				m01234.AddToEnd(2);
 				m01234.AddToEnd(3);
 				m01234.AddToEnd(4);
-				m01234.Canonicalize();
+				//  m01234.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, controller, -1, case_num);
 				c.AConnection = CFLConnection(atmp, m01234);
 				c.numBConnections = 5;
 				c.BConnection = new CFLConnection[5];
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				ReturnMapHandle<int> m01, m21, m31, m41, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-				m31.AddToEnd(3); m31.AddToEnd(1); m31.Canonicalize();
-				m41.AddToEnd(4); m41.AddToEnd(1); m41.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+				m31.AddToEnd(3); m31.AddToEnd(1); //  m31.Canonicalize();
+				m41.AddToEnd(4); m41.AddToEnd(1); //  m41.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				if (controller == n/2 - 1)
 				{
 					c.BConnection[0] = CFLConnection(Id, m01);
@@ -744,17 +744,17 @@ namespace NWA_OBDD {
 				// Case 5: controller in B and controlled == -1
 				// std::cout << "Case5" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, controller - n/2, -1, case_num);
 				ReturnMapHandle<int> m0123, m1, m2, m4, m01234;
-				m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
-				m01234.AddToEnd(0); m01234.AddToEnd(1); m01234.AddToEnd(2); m01234.AddToEnd(3); m01234.AddToEnd(4); m01234.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m2.AddToEnd(2); m2.Canonicalize();
-				m4.AddToEnd(4); m4.Canonicalize();
+				m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
+				m01234.AddToEnd(0); m01234.AddToEnd(1); m01234.AddToEnd(2); m01234.AddToEnd(3); m01234.AddToEnd(4); //  m01234.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m2.AddToEnd(2); //  m2.Canonicalize();
+				m4.AddToEnd(4); //  m4.Canonicalize();
 				c.BConnection = new CFLConnection[2];
 				// if (controller == n - 1)
 				// {
@@ -778,14 +778,14 @@ namespace NWA_OBDD {
 				// std::cout << "Case6" << std::endl;
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, -1, controlled, case_num);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.AConnection = CFLConnection(atmp, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m1, m0;
-				m1.AddToEnd(1); m1.Canonicalize();
-				m0.AddToEnd(0); m0.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				if (case_num == 0)
 				{
 					c.BConnection[0] = CFLConnection(Id, m01);
@@ -793,7 +793,7 @@ namespace NWA_OBDD {
 				}
 				else{
 					ReturnMapHandle<int> m10;
-					m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+					m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 					c.BConnection[0] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 					c.BConnection[1] = CFLConnection(Id, m10);
 				}
@@ -804,14 +804,14 @@ namespace NWA_OBDD {
 				// Case 7: controller == -1 && controlled in B
 				// std::cout << "Case7" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1, m0;
-				m1.AddToEnd(1); m1.Canonicalize();
-				m0.AddToEnd(0); m0.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, -1, controlled - n/2, case_num);
 				if (case_num == 0)
 				{
@@ -896,16 +896,16 @@ namespace NWA_OBDD {
 
 			NWAOBDDNodeHandle atmp = MkSwapNode(level - 1, controller, -1, case_num);
 			ReturnMapHandle<int> m0123;
-			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
+			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
 			c.AConnection = CFLConnection(atmp, m0123);
 			NWAOBDDNodeHandle b0 = MkSwapNode(level-1, -1, controlled, 0);
 			NWAOBDDNodeHandle b1 = MkSwapNode(level-1, -1, controlled, 1);
 			NWAOBDDNodeHandle b2 = MkSwapNode(level-1, -1, controlled, 2);
 			NWAOBDDNodeHandle b3 = MkSwapNode(level-1, -1, controlled, 3);
 			ReturnMapHandle<int> m01, m10, m12;
-			m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-			m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
-			m12.AddToEnd(1); m12.AddToEnd(2); m12.Canonicalize();
+			m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+			m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
+			m12.AddToEnd(1); m12.AddToEnd(2); //  m12.Canonicalize();
 			c.numBConnections = 4;
 			c.BConnection = new CFLConnection[4];
 			c.BConnection[0] = CFLConnection(b0, m01);
@@ -922,13 +922,13 @@ namespace NWA_OBDD {
 
 			NWAOBDDNodeHandle atmp = MkSwapNode(level - 1, controller, -1, case_num);
 			ReturnMapHandle<int> m0123;
-			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
+			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
 			c.AConnection = CFLConnection(atmp, m0123);
 			ReturnMapHandle<int> m01, m21, m31, m41;
-			m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-			m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-			m31.AddToEnd(3); m31.AddToEnd(1); m31.Canonicalize();
-			m41.AddToEnd(4); m41.AddToEnd(1); m41.Canonicalize();
+			m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+			m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+			m31.AddToEnd(3); m31.AddToEnd(1); //  m31.Canonicalize();
+			m41.AddToEnd(4); m41.AddToEnd(1); //  m41.Canonicalize();
 			c.numBConnections = 4;
 			c.BConnection = new CFLConnection[4];
 			NWAOBDDNodeHandle Id = MkIdNode(level-1);
@@ -945,14 +945,14 @@ namespace NWA_OBDD {
 			pseudoCFLOBDDInternal c(level);
 
 			ReturnMapHandle<int> m01;
-			m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+			m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 			NWAOBDDNodeHandle Id = MkIdNode(level-1);
 			c.AConnection = CFLConnection(Id, m01);
 			c.numBConnections = 2;
 			NWAOBDDNodeHandle btmp = MkSwapNode(level-1, 0, -1, case_num);
 			ReturnMapHandle<int> m0123, m4;
-			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
-			m4.AddToEnd(4); m4.Canonicalize();
+			m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
+			m4.AddToEnd(4); //  m4.Canonicalize();
 			c.BConnection = new CFLConnection[2];
 			c.BConnection[0] = CFLConnection(btmp, m0123);
 			c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m4);
@@ -974,16 +974,16 @@ namespace NWA_OBDD {
 				m012.AddToEnd(0);
 				m012.AddToEnd(1);
 				m012.AddToEnd(2);
-				m012.Canonicalize();
+				//  m012.Canonicalize();
 				c.AConnection = CFLConnection(aTmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01, m21;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.BConnection[2] = CFLConnection(Id, m21);
@@ -996,17 +996,17 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> m01;
 				m01.AddToEnd(0);
 				m01.AddToEnd(1);
-				m01.Canonicalize();
+				//  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, controller - n/2, controlled - n/2, case_num);
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				c.BConnection[0] = CFLConnection(btmp, m012);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 3;
 			}
@@ -1020,22 +1020,22 @@ namespace NWA_OBDD {
 				m01234.AddToEnd(2);
 				m01234.AddToEnd(3);
 				m01234.AddToEnd(4);
-				m01234.Canonicalize();
+				//  m01234.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, controller, -1, case_num);
 				c.AConnection = CFLConnection(atmp, m01234);
 				c.numBConnections = 5;
 				c.BConnection = new CFLConnection[5];
 				NWAOBDDNodeHandle b0 = MkSwapNode(level-1, -1, controlled - n/2, 0);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.BConnection[0] = CFLConnection(b0, m01);
 				NWAOBDDNodeHandle b1 = MkSwapNode(level-1, -1, controlled - n/2, 2);
 				NWAOBDDNodeHandle b2 = MkSwapNode(level-1, -1, controlled - n/2, 1);
 				NWAOBDDNodeHandle b3 = MkSwapNode(level-1, -1, controlled - n/2, 3);
 				ReturnMapHandle<int> m10, m1, m12;
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m12.AddToEnd(1); m12.AddToEnd(2); m12.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m12.AddToEnd(1); m12.AddToEnd(2); //  m12.Canonicalize();
 				if (controller == n/2 - 1)
 				{
 					// std::cout << b1 << std::endl;
@@ -1065,18 +1065,18 @@ namespace NWA_OBDD {
 				m01234.AddToEnd(2);
 				m01234.AddToEnd(3);
 				m01234.AddToEnd(4);
-				m01234.Canonicalize();
+				//  m01234.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, controller, -1, case_num);
 				c.AConnection = CFLConnection(atmp, m01234);
 				c.numBConnections = 5;
 				c.BConnection = new CFLConnection[5];
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				ReturnMapHandle<int> m01, m21, m31, m41, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-				m31.AddToEnd(3); m31.AddToEnd(1); m31.Canonicalize();
-				m41.AddToEnd(4); m41.AddToEnd(1); m41.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+				m31.AddToEnd(3); m31.AddToEnd(1); //  m31.Canonicalize();
+				m41.AddToEnd(4); m41.AddToEnd(1); //  m41.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				if (controller == n/2 - 1)
 				{
 					c.BConnection[0] = CFLConnection(Id, m01);
@@ -1100,17 +1100,17 @@ namespace NWA_OBDD {
 				// Case 5: controller in B and controlled == -1
 				// std::cout << "Case5" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, controller - n/2, -1, case_num);
 				ReturnMapHandle<int> m0123, m1, m2, m4, m01234;
-				m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); m0123.Canonicalize();
-				m01234.AddToEnd(0); m01234.AddToEnd(1); m01234.AddToEnd(2); m01234.AddToEnd(3); m01234.AddToEnd(4); m01234.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m2.AddToEnd(2); m2.Canonicalize();
-				m4.AddToEnd(4); m4.Canonicalize();
+				m0123.AddToEnd(0); m0123.AddToEnd(1); m0123.AddToEnd(2); m0123.AddToEnd(3); //  m0123.Canonicalize();
+				m01234.AddToEnd(0); m01234.AddToEnd(1); m01234.AddToEnd(2); m01234.AddToEnd(3); m01234.AddToEnd(4); //  m01234.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m2.AddToEnd(2); //  m2.Canonicalize();
+				m4.AddToEnd(4); //  m4.Canonicalize();
 				c.BConnection = new CFLConnection[2];
 				// if (controller == n - 1)
 				// {
@@ -1134,14 +1134,14 @@ namespace NWA_OBDD {
 				// std::cout << "Case6" << std::endl;
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, -1, controlled, case_num);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.AConnection = CFLConnection(atmp, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m1, m0;
-				m1.AddToEnd(1); m1.Canonicalize();
-				m0.AddToEnd(0); m0.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				if (case_num == 0)
 				{
 					c.BConnection[0] = CFLConnection(Id, m01);
@@ -1149,7 +1149,7 @@ namespace NWA_OBDD {
 				}
 				else{
 					ReturnMapHandle<int> m10;
-					m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+					m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 					c.BConnection[0] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 					c.BConnection[1] = CFLConnection(Id, m10);
 				}
@@ -1160,14 +1160,14 @@ namespace NWA_OBDD {
 				// Case 7: controller == -1 && controlled in B
 				// std::cout << "Case7" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1, m0;
-				m1.AddToEnd(1); m1.Canonicalize();
-				m0.AddToEnd(0); m0.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, -1, controlled - n/2, case_num);
 				if (case_num == 0)
 				{
@@ -1223,12 +1223,12 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> m01;
 				m01.AddToEnd(0);
 				m01.AddToEnd(1);
-				m01.Canonicalize();
+				//  m01.Canonicalize();
 				c.AConnection = CFLConnection(aTmp, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -1241,7 +1241,7 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> m01;
 				m01.AddToEnd(0);
 				m01.AddToEnd(1);
-				m01.Canonicalize();
+				//  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
@@ -1249,7 +1249,7 @@ namespace NWA_OBDD {
 				NWAOBDDNodeHandle btmp = MkCSwap2Node(level-1, controller - n/2, index1 - n/2, index2 - n/2, case_num);
 				c.BConnection[0] = CFLConnection(btmp, m01);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 2;
 			}
@@ -1258,15 +1258,15 @@ namespace NWA_OBDD {
 				// Case 3: controller in A and index1 and index2 in B
 				// std::cout << "Case3" << std::endl;
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkCSwap2Node(level-1, controller, -1, -1, case_num);
 				c.AConnection = CFLConnection(atmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				NWAOBDDNodeHandle bb = MkSwapNode(level-1, index1 - n/2, index2 - n/2, -1);
 				ReturnMapHandle<int> m01, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				auto Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -1281,16 +1281,16 @@ namespace NWA_OBDD {
 				m012.AddToEnd(0);
 				m012.AddToEnd(1);
 				m012.AddToEnd(2);
-				m012.Canonicalize();
+				//  m012.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkCSwap2Node(level-1, controller, -1, -1, case_num);
 				c.AConnection = CFLConnection(atmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				ReturnMapHandle<int> m01, m21, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.BConnection[2] = CFLConnection(Id, m21);
@@ -1301,14 +1301,14 @@ namespace NWA_OBDD {
 				// Case 5: controller in B and index1 == index2 == -1
 				// std::cout << "Case5" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				NWAOBDDNodeHandle btmp = MkCSwap2Node(level-1, controller - n/2, -1, -1, case_num);
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection = new CFLConnection[2];
 				c.BConnection[0] = CFLConnection(btmp, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level - 1], m1);
@@ -1320,14 +1320,14 @@ namespace NWA_OBDD {
 				// std::cout << "Case6" << std::endl;
 				NWAOBDDNodeHandle atmp = MkSwapNode(level-1, -1, index2, case_num);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				c.AConnection = CFLConnection(atmp, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m1, m0;
-				m1.AddToEnd(1); m1.Canonicalize();
-				m0.AddToEnd(0); m0.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				if (case_num == 0)
 				{
 					c.BConnection[0] = CFLConnection(Id, m01);
@@ -1335,7 +1335,7 @@ namespace NWA_OBDD {
 				}
 				else{
 					ReturnMapHandle<int> m10;
-					m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+					m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 					c.BConnection[0] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m0);
 					c.BConnection[1] = CFLConnection(Id, m10);
 				}
@@ -1346,14 +1346,14 @@ namespace NWA_OBDD {
 				// Case 7: controller == -1 && index2 in B && index1 == -1
 				// std::cout << "Case7" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m1, m0;
-				m1.AddToEnd(1); m1.Canonicalize();
-				m0.AddToEnd(0); m0.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m0.AddToEnd(0); //  m0.Canonicalize();
 				NWAOBDDNodeHandle btmp = MkSwapNode(level-1, -1, index2 - n/2, case_num);
 				if (case_num == 0)
 				{
@@ -1377,7 +1377,7 @@ namespace NWA_OBDD {
 				m012345.AddToEnd(3);
 				m012345.AddToEnd(4);
 				m012345.AddToEnd(5);
-				m012345.Canonicalize();
+				//  m012345.Canonicalize();
 
 				auto aa = MkCSwap2Node(level - 1, controller, index1, -1, case_num);
 				c.AConnection = CFLConnection(aa, m012345);
@@ -1385,9 +1385,9 @@ namespace NWA_OBDD {
 				c.BConnection = new CFLConnection[6];
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01, m1, m10;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m10.AddToEnd(1); m10.AddToEnd(0); m10.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m10.AddToEnd(1); m10.AddToEnd(0); //  m10.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				auto b0 = MkSwapNode(level-1, -1, index2 - n/2, 0);
@@ -1410,7 +1410,7 @@ namespace NWA_OBDD {
 				m012345.AddToEnd(3);
 				m012345.AddToEnd(4);
 				m012345.AddToEnd(5);
-				m012345.Canonicalize();
+				//  m012345.Canonicalize();
 
 				auto aa = MkCSwap2Node(level - 1, controller, index1, -1, case_num);
 				c.AConnection = CFLConnection(aa, m012345);
@@ -1418,12 +1418,12 @@ namespace NWA_OBDD {
 				c.BConnection = new CFLConnection[6];
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01, m1, m21, m31, m41, m51;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-				m31.AddToEnd(2); m31.AddToEnd(1); m31.Canonicalize();
-				m41.AddToEnd(2); m41.AddToEnd(1); m41.Canonicalize();
-				m51.AddToEnd(2); m51.AddToEnd(1); m51.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+				m31.AddToEnd(2); m31.AddToEnd(1); //  m31.Canonicalize();
+				m41.AddToEnd(2); m41.AddToEnd(1); //  m41.Canonicalize();
+				m51.AddToEnd(2); m51.AddToEnd(1); //  m51.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.BConnection[2] = CFLConnection(Id, m21);
@@ -1437,7 +1437,7 @@ namespace NWA_OBDD {
 				// Case 9: CR and index1 in B, index2 == -1
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				ReturnMapHandle<int> m012345;
 				m012345.AddToEnd(0);
 				m012345.AddToEnd(1);
@@ -1445,10 +1445,10 @@ namespace NWA_OBDD {
 				m012345.AddToEnd(3);
 				m012345.AddToEnd(4);
 				m012345.AddToEnd(5);
-				m012345.Canonicalize();
+				//  m012345.Canonicalize();
 
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
@@ -1462,15 +1462,15 @@ namespace NWA_OBDD {
 			{
 				// Case 10: CR in A, index1 in B and index2 == -1
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				auto aa = MkCSwap2Node(level - 1, controller, -1, -1, case_num);
 				c.AConnection = CFLConnection(aa, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				auto Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				auto bb = MkSwapNode(level-1, index1 - n/2, -1, case_num);
@@ -1480,7 +1480,7 @@ namespace NWA_OBDD {
 				m21345.AddToEnd(3);
 				m21345.AddToEnd(4);
 				m21345.AddToEnd(5);
-				m21345.Canonicalize();
+				//  m21345.Canonicalize();
 				c.BConnection[2] = CFLConnection(bb, m21345);
 				c.numExits = 6;
 			}
@@ -1527,14 +1527,14 @@ namespace NWA_OBDD {
 				m012.AddToEnd(0);
 				m012.AddToEnd(1);
 				m012.AddToEnd(2);
-				m012.Canonicalize();
+				//  m012.Canonicalize();
 				c.AConnection = CFLConnection(aTmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1, m21;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -1548,17 +1548,17 @@ namespace NWA_OBDD {
 				ReturnMapHandle<int> m01;
 				m01.AddToEnd(0);
 				m01.AddToEnd(1);
-				m01.Canonicalize();
+				//  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				NWAOBDDNodeHandle btmp = MkCPNode(level-1, controller - n/2, controlled - n/2);
 				c.BConnection[0] = CFLConnection(btmp, m012);
 				ReturnMapHandle<int> m1;
-				m1.AddToEnd(1); m1.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.numExits = 3;
 			}
@@ -1570,14 +1570,14 @@ namespace NWA_OBDD {
 				m012.AddToEnd(0);
 				m012.AddToEnd(1);
 				m012.AddToEnd(2);
-				m012.Canonicalize();
+				//  m012.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkCPNode(level-1, controller, -1);
 				c.AConnection = CFLConnection(atmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				ReturnMapHandle<int> m01, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -1593,16 +1593,16 @@ namespace NWA_OBDD {
 				m012.AddToEnd(0);
 				m012.AddToEnd(1);
 				m012.AddToEnd(2);
-				m012.Canonicalize();
+				//  m012.Canonicalize();
 				NWAOBDDNodeHandle atmp = MkCPNode(level-1, controller, -1);
 				c.AConnection = CFLConnection(atmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				ReturnMapHandle<int> m01, m21, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.BConnection[2] = CFLConnection(Id, m21);
@@ -1613,14 +1613,14 @@ namespace NWA_OBDD {
 				// Case 5: controller in B and controlled == -1
 				// std::cout << "Case5" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level-1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				NWAOBDDNodeHandle btmp = MkCPNode(level-1, controller - n/2, -1);
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection = new CFLConnection[2];
 				c.BConnection[0] = CFLConnection(btmp, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
@@ -1632,15 +1632,15 @@ namespace NWA_OBDD {
 				// std::cout << "Case6" << std::endl;
 				NWAOBDDNodeHandle atmp = MkCPNode(level-1, -1, controlled);
 				ReturnMapHandle<int> m012;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
 				c.AConnection = CFLConnection(atmp, m012);
 				c.numBConnections = 3;
 				c.BConnection = new CFLConnection[3];
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				ReturnMapHandle<int> m01, m21, m1;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
-				m21.AddToEnd(2); m21.AddToEnd(1); m21.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
+				m21.AddToEnd(2); m21.AddToEnd(1); //  m21.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				c.BConnection[0] = CFLConnection(Id, m01);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);
 				c.BConnection[2] = CFLConnection(Id, m21);
@@ -1651,14 +1651,14 @@ namespace NWA_OBDD {
 				// Case 7: controller == -1 && controlled in B
 				// std::cout << "Case7" << std::endl;
 				ReturnMapHandle<int> m01;
-				m01.AddToEnd(0); m01.AddToEnd(1); m01.Canonicalize();
+				m01.AddToEnd(0); m01.AddToEnd(1); //  m01.Canonicalize();
 				NWAOBDDNodeHandle Id = MkIdNode(level - 1);
 				c.AConnection = CFLConnection(Id, m01);
 				c.numBConnections = 2;
 				c.BConnection = new CFLConnection[2];
 				ReturnMapHandle<int> m012, m1;
-				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); m012.Canonicalize();
-				m1.AddToEnd(1); m1.Canonicalize();
+				m012.AddToEnd(0); m012.AddToEnd(1); m012.AddToEnd(2); //  m012.Canonicalize();
+				m1.AddToEnd(1); //  m1.Canonicalize();
 				NWAOBDDNodeHandle btmp = MkCPNode(level-1, -1, controlled - n/2);
 				c.BConnection[0] = CFLConnection(btmp, m012);
 				c.BConnection[1] = CFLConnection(NWAOBDDNodeHandle::NoDistinctionNode[level-1], m1);

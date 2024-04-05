@@ -103,7 +103,8 @@ namespace NWA_OBDD {
             assert(ip.First() == ip.Second());
             r1.AddToEnd(ip.First());
         }
-        r1.Canonicalize(); return r1;
+        // r1.Canonicalize(); 
+        return r1;
     }
 
     pseudoCFLOBDDInternal::pseudoCFLOBDDInternal(const NWAOBDDInternalNode* n) {
@@ -153,14 +154,14 @@ namespace NWA_OBDD {
     ReturnMapHandle<int> cfl_return_map(unsigned a0) {
         ReturnMapHandle<int> r;
         r.AddToEnd(a0);
-        r.Canonicalize();
+        // r.Canonicalize();
         return r;
     }
     ReturnMapHandle<int> cfl_return_map(unsigned a0, unsigned a1) {
         ReturnMapHandle<int> r;
         r.AddToEnd(a0);
         r.AddToEnd(a1);
-        r.Canonicalize();
+        // r.Canonicalize();
         return r;
     }
     ReturnMapHandle<int> cfl_return_map(unsigned a0, unsigned a1, unsigned a2) {
@@ -168,7 +169,7 @@ namespace NWA_OBDD {
         r.AddToEnd(a0);
         r.AddToEnd(a1);
         r.AddToEnd(a2);
-        r.Canonicalize();
+        // r.Canonicalize();
         return r;
     }
 };
