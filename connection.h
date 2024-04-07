@@ -54,8 +54,8 @@ namespace NWA_OBDD {
 
 		unsigned int Hash(unsigned int modsize);
 		ConnectionT& operator= (const ConnectionT &C);   // Overloaded =
-		bool operator!= (const ConnectionT & C);        // Overloaded !=
-		bool operator== (const ConnectionT & C);        // Overloaded ==
+		bool operator!= (const ConnectionT & C) const;        // Overloaded !=
+		bool operator== (const ConnectionT & C) const;        // Overloaded ==
 
 		NWAOBDDNodeHandle* entryPointHandle = NULL;
 		Handle returnMapHandle;

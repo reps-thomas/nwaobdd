@@ -55,6 +55,8 @@ class NWAOBDDNodeHandle;
 #include "infra/hashset.h"
 #include "infra/ref_ptr.h"
 #include "connection.h"
+#include "unordered_map"
+#include <unordered_set>
 
 
 
@@ -66,6 +68,14 @@ typedef ref_ptr<NWAOBDDTopNode<int>> NWAOBDDTopNodeRefPtr;
 // NWAOBDDNodeHandle
 //********************************************************************
 
+struct NWAOBDDNodeStarHash {
+  size_t operator() (const NWAOBDDNode* n) const;
+};
+
+struct NWAOBDDNodeStarEq {
+  bool operator() (const NWAOBDDNode* n1, const NWAOBDDNode* n2) const;
+};
+
 class NWAOBDDNodeHandle {
 #define NWAOBDD_NODE_HANDLE_GUARD
  public:
@@ -74,8 +84,8 @@ class NWAOBDDNodeHandle {
   NWAOBDDNodeHandle(const NWAOBDDNodeHandle &nh);              // Copy constructor
   ~NWAOBDDNodeHandle();                                       // Destructor
   unsigned int Hash(unsigned int modsize);
-  bool operator!= (const NWAOBDDNodeHandle &nh);              // Overloaded !=
-  bool operator== (const NWAOBDDNodeHandle &nh);              // Overloaded ==
+  bool operator!= (const NWAOBDDNodeHandle &nh) const;              // Overloaded !=
+  bool operator== (const NWAOBDDNodeHandle &nh) const;              // Overloaded ==
   NWAOBDDNodeHandle & operator= (const NWAOBDDNodeHandle &nh); // assignment
 
   // Distinguished NWAOBDDNodeHandles -----------------------
@@ -88,7 +98,8 @@ class NWAOBDDNodeHandle {
 
  // Table of canonical nodes -------------------------
     public:
-     static Hashset<NWAOBDDNode> *canonicalNodeTable;
+    //  static Hashset<NWAOBDDNode> *canonicalNodeTable;
+     static std::unordered_set<NWAOBDDNode*, NWAOBDDNodeStarHash, NWAOBDDNodeStarEq> canonicalNodeTableLeveled[26];
      void Canonicalize();
 
  // Reduce and its associated cache ---------------
@@ -192,6 +203,7 @@ class NWAOBDDNode {
   virtual ~NWAOBDDNode();              // Destructor
   virtual NWAOBDD_NODEKIND NodeKind() const = 0;
   unsigned int numExits;
+  long long id;
   static unsigned int const maxLevel;
 #ifdef PATH_COUNTING_ENABLED
   long double *numPathsToExit = nullptr;       // unsigned int numPathsToExit[numExits]
@@ -200,11 +212,11 @@ class NWAOBDDNode {
   virtual void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index) = 0;
   virtual int Traverse(SH_OBDD::AssignmentIterator &ai) = 0;
   virtual NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce) = 0;
-  virtual unsigned int Hash(unsigned int modsize) = 0;
+  virtual unsigned int Hash(unsigned int modsize) const = 0;
   virtual void DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out = std::cout) = 0;
   virtual void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount) = 0;
-  virtual bool operator!= (const NWAOBDDNode & n) = 0;  // Overloaded !=
-  virtual bool operator== (const NWAOBDDNode & n) = 0;  // Overloaded ==
+  virtual bool operator!= (const NWAOBDDNode & n) const = 0;  // Overloaded !=
+  virtual bool operator== (const NWAOBDDNode & n) const = 0;  // Overloaded ==
   virtual void IncrRef() = 0;
   virtual void DecrRef() = 0;
   const unsigned int Level() const { return level; }
@@ -216,6 +228,7 @@ class NWAOBDDNode {
   unsigned int refCount;
   bool isCanonical;              // Is this NWAOBDDNode in canonicalNodeTable?
 };
+
 
 std::ostream& operator<< (std::ostream & out, const NWAOBDDNode &n);
 
@@ -249,16 +262,17 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   ~NWAOBDDInternalNode();                      // Destructor
   NWAOBDD_NODEKIND NodeKind() const { return NWAOBDD_INTERNAL; }
   long double *numPathsToMiddle = nullptr;
+  std::unordered_map<ReductionMapHandle, NWAOBDDNodeHandle, RedMapHash> * reduceCache = nullptr;
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
   NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);
   static NWAOBDDTopNodeRefPtr SchemaAdjust(NWAOBDDInternalNode * n, int exit, int s[4], int offset);
   static NWAOBDDTopNodeRefPtr PathSummary(NWAOBDDInternalNode * n, int exit, int offset);
-  unsigned int Hash(unsigned int modsize);
+  unsigned int Hash(unsigned int modsize) const;
   void DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out = std::cout);
   void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount);
-  bool operator!= (const NWAOBDDNode & n);        // Overloaded !=
-  bool operator== (const NWAOBDDNode & n);        // Overloaded ==
+  bool operator!= (const NWAOBDDNode & n) const;        // Overloaded !=
+  bool operator== (const NWAOBDDNode & n) const;        // Overloaded ==
   void IncrRef();
   void DecrRef();
 
@@ -294,9 +308,9 @@ class NWAOBDDEpsilonNode : public NWAOBDDNode {
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
   NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);
-  unsigned int Hash(unsigned int modsize);
-  bool operator!= (const NWAOBDDNode & n);        // Overloaded !=
-  bool operator== (const NWAOBDDNode & n);        // Overloaded ==
+  unsigned int Hash(unsigned int modsize) const;
+  bool operator!= (const NWAOBDDNode & n) const;        // Overloaded !=
+  bool operator== (const NWAOBDDNode & n) const;        // Overloaded ==
   void DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out = std::cout);
   void CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes, Hashset<ReturnMapBody<intpair>> *visitedEdges, unsigned int &nodeCount, unsigned int &edgeCount);
   void IncrRef();
@@ -311,6 +325,10 @@ class NWAOBDDEpsilonNode : public NWAOBDDNode {
 };
 
 
+
+struct NWAOBDDNodeHandleHash {
+  size_t operator ()(const NWAOBDDNodeHandle &nh) const;
+};
 
 
  } // namespace NWA_OBDD

@@ -64,14 +64,14 @@ ConnectionT<Handle>& ConnectionT<Handle>::operator= (const ConnectionT<Handle>& 
 
 // Overloaded !=
 template <typename Handle>
-bool ConnectionT<Handle>::operator!= (const ConnectionT<Handle> & C)
+bool ConnectionT<Handle>::operator!= (const ConnectionT<Handle> & C) const
 {
 	return (returnMapHandle != C.returnMapHandle) || ((*entryPointHandle) != (*C.entryPointHandle));
 }
 
 // Overloaded ==
 template <typename Handle>
-bool ConnectionT<Handle>::operator== (const ConnectionT<Handle> & C)
+bool ConnectionT<Handle>::operator== (const ConnectionT<Handle> & C) const
 {
 	return (returnMapHandle == C.returnMapHandle) && ((*entryPointHandle) == (*C.entryPointHandle));
 }

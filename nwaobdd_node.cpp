@@ -24,6 +24,7 @@
 //    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+
 #include <cassert>
 #include <cstdio>
 #include <iostream>
@@ -48,6 +49,12 @@
 #include <algorithm>
 #include <unordered_map>
 
+extern int reduce_times[];
+extern int reduce_hit[];
+
+extern int node_times[];
+extern int node_hit[];
+
 using namespace NWA_OBDD;
 
 //********************************************************************
@@ -58,7 +65,9 @@ using namespace NWA_OBDD;
 
 // Initializations of static members ---------------------------------
 
-Hashset<NWAOBDDNode> *NWAOBDDNodeHandle::canonicalNodeTable = new Hashset<NWAOBDDNode>(HASHSET_NUM_BUCKETS);
+// Hashset<NWAOBDDNode> *NWAOBDDNodeHandle::canonicalNodeTable = new Hashset<NWAOBDDNode>(HASHSET_NUM_BUCKETS);
+std::unordered_set<NWAOBDDNode*, NWAOBDDNodeStarHash, NWAOBDDNodeStarEq> NWAOBDDNodeHandle::canonicalNodeTableLeveled[26];
+
 NWAOBDDNodeHandle *NWAOBDDNodeHandle::NoDistinctionNode = NULL;
 NWAOBDDNodeHandle NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
 
@@ -151,13 +160,13 @@ unsigned int NWAOBDDNodeHandle::Hash(unsigned int modsize)
 }
 
 // Overloaded !=
-bool NWAOBDDNodeHandle::operator!= (const NWAOBDDNodeHandle & C)
+bool NWAOBDDNodeHandle::operator!= (const NWAOBDDNodeHandle & C) const
 {
   return handleContents != C.handleContents;
 }
 
 // Overloaded ==
-bool NWAOBDDNodeHandle::operator== (const NWAOBDDNodeHandle & C)
+bool NWAOBDDNodeHandle::operator== (const NWAOBDDNodeHandle & C) const
 {
   return handleContents == C.handleContents;
 }
@@ -181,63 +190,88 @@ NWAOBDDNodeHandle & NWAOBDDNodeHandle::operator= (const NWAOBDDNodeHandle &c)
 
 // Reduce and its associated cache ----------------------------------
 
-static Hashtable<NWAReduceKey, NWAOBDDNodeHandle> *reduceCache = NULL;
+// static Hashtable<NWAReduceKey, NWAOBDDNodeHandle> *reduceCache = NULL;
+
+
 
 
 NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce)
 {
-  if (replacementNumExits == 1 && !forceReduce) {
+  if (!forceReduce && replacementNumExits == 1) {
     return NWAOBDDNodeHandle::NoDistinctionNode[handleContents->Level()];
   }
 
-  if (redMapHandle.mapContents->isIdentityMap && !forceReduce) {
+  if (!forceReduce && redMapHandle.mapContents->isIdentityMap) {
     return *this;
   }
 
-  NWAOBDDNodeHandle cachedNodeHandle;
-  bool isCached = reduceCache->Fetch(NWAReduceKey(*this, redMapHandle), cachedNodeHandle);
-  if (isCached) {
-    // std::cout << "Hit : " << handleContents->Level() << std::endl;
-    return cachedNodeHandle;
-  }
-  else {
+
+  // reduce_times[handleContents->level]++;
+  // NWAOBDDNodeHandle cachedNodeHandle;
+  // bool isCached = reduceCache->Fetch(NWAReduceKey(*this, redMapHandle), cachedNodeHandle);
+  // if (isCached) {
+  //   reduce_hit[handleContents->level]++;
+  //   return cachedNodeHandle;
+  // }
+  // else {
     // std::cout << "Miss: " << handleContents->Level() << std::endl;
     NWAOBDDNodeHandle temp = handleContents->Reduce(redMapHandle, replacementNumExits, forceReduce);
-    reduceCache->Insert(NWAReduceKey(*this, redMapHandle), temp);
+    // reduceCache->Insert(NWAReduceKey(*this, redMapHandle), temp);
     return temp;
-  }
+  // }
 }
 
 void NWAOBDDNodeHandle::InitReduceCache()
 {
-  reduceCache = new Hashtable<NWAReduceKey, NWAOBDDNodeHandle>(HASHSET_NUM_BUCKETS);
+  // reduceCache = new Hashtable<NWAReduceKey, NWAOBDDNodeHandle>(HASHSET_NUM_BUCKETS);
 }
 
 void NWAOBDDNodeHandle::DisposeOfReduceCache()
 {
-  delete reduceCache;
-  reduceCache = NULL;
+  // delete reduceCache;
+  // reduceCache = NULL;
 }
 
-
 // Canonicalization --------------------------------------------
+
+
+
 void NWAOBDDNodeHandle::Canonicalize()
 {
-  NWAOBDDNode *answerContents;
+  static long long nodeGlobalCnt = 0;
 
+  node_times[handleContents->level]++;
+  unsigned level = handleContents->level;
+  
   if (!handleContents->isCanonical) {
-    answerContents = canonicalNodeTable->Lookup(handleContents);
-    if (answerContents == NULL) {
-      canonicalNodeTable->Insert(handleContents);
+    auto it = canonicalNodeTableLeveled[level].find(handleContents);
+    if(it == canonicalNodeTableLeveled[level].end()) {
+      canonicalNodeTableLeveled[level].insert(handleContents);
       handleContents->isCanonical = true;
+      handleContents->id = ++nodeGlobalCnt;
       if(handleContents->NodeKind() == NWAOBDD_INTERNAL)
         ((NWAOBDDInternalNode*)handleContents) -> InstallPathCounts();
     }
     else {
-      answerContents->IncrRef();
+      node_hit[handleContents->level]++;
+      (*it)->IncrRef();
       handleContents->DecrRef();
-      handleContents = answerContents;
+      handleContents = *it;
     }
+    // answerContents = canonicalNodeTable->Lookup(handleContents);
+    // if (answerContents == NULL) {
+      // canonicalNodeTable->Insert(handleContents);
+      // handleContents->isCanonical = true;
+      // handleContents->id = ++nodeGlobalCnt;
+      // if(handleContents->NodeKind() == NWAOBDD_INTERNAL)
+      //   ((NWAOBDDInternalNode*)handleContents) -> InstallPathCounts();
+    // }
+    // else {
+    //   node_hit[handleContents->level]++;
+    //   answerContents->IncrRef();
+    //   handleContents->DecrRef();
+    //   handleContents = answerContents;
+    // }
   }
 }
 
@@ -561,6 +595,9 @@ static Hashtable<PathSummaryKey, NWAOBDDTopNodeRefPtr> *pathSummaryCache = NULL;
 /*
  * A method which does the memoization step of adjusting the schema of the nwaobdd
  */
+
+extern int pairprod_times[];
+extern int pairprod_hit[];
 NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::SchemaAdjust(NWAOBDDNodeHandle n, int exit, int s[4], int offset)
 {
 	NWAOBDDTopNodeRefPtr topNodeMemo;
@@ -1315,6 +1352,8 @@ NWAOBDDInternalNode::~NWAOBDDInternalNode()
 {
   delete [] BConnection[0];
   delete [] BConnection[1];
+  if(reduceCache) 
+    delete reduceCache;
   if(numPathsToExit)
     delete [] numPathsToExit;
   if(numPathsToMiddle)
@@ -1670,10 +1709,14 @@ int NWAOBDDInternalNode::Traverse(SH_OBDD::AssignmentIterator &ai)
   return ans;
 }
 
+
 ReturnMapHandle<intpair> ComposeAndReduce(ReturnMapHandle<intpair>& mapHandle, ReductionMapHandle& redMapHandle, ReductionMapHandle& inducedRedMapHandle) 
 {
   if(redMapHandle.mapContents->isIdentityMap) {
-    inducedRedMapHandle = redMapHandle;
+    // inducedRedMapHandle = redMapHandle;
+    for(unsigned i = 0; i < mapHandle.Size(); ++i)
+      inducedRedMapHandle.AddToEnd(i);
+    inducedRedMapHandle.Canonicalize();
     return mapHandle;
   }
   ReturnMapHandle<intpair> answer;
@@ -1725,6 +1768,13 @@ struct ConnectionPair {
 
 NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce)
 {
+
+  assert(numExits == redMapHandle.Size());
+  reduce_times[level]++;
+  if(reduceCache && reduceCache->find(redMapHandle) != reduceCache->end()) {
+    reduce_hit[level]++;
+    return (*reduceCache)[redMapHandle];
+  }
   NWAOBDDInternalNode *n = new NWAOBDDInternalNode(level);
   ReductionMapHandle AReductionMapHandle;        // To record duplicate BConnections
 
@@ -1737,8 +1787,8 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 
   if(numBConnections <= 7) {
     for(unsigned i = 0; i < numBConnections; ++i) {
-      ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
-      ReductionMapHandle inducedReductionMapHandle1(redMapHandle.Size());
+      ReductionMapHandle inducedReductionMapHandle0(BConnection[0][i].returnMapHandle.Size());
+      ReductionMapHandle inducedReductionMapHandle1(BConnection[1][i].returnMapHandle.Size());
 
       ReturnMapHandle<intpair> inducedReturnMap0;
       ReturnMapHandle<intpair> inducedReturnMap1;
@@ -1757,8 +1807,8 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
   else {
     std::unordered_map<ConnectionPair, unsigned, ConnectionPair::ConnectionPairHash>bconn_table(numBConnections);
     for(unsigned i = 0; i < numBConnections; ++i) {
-      ReductionMapHandle inducedReductionMapHandle0(redMapHandle.Size());
-      ReductionMapHandle inducedReductionMapHandle1(redMapHandle.Size());
+      ReductionMapHandle inducedReductionMapHandle0(BConnection[0][i].returnMapHandle.Size());
+      ReductionMapHandle inducedReductionMapHandle1(BConnection[1][i].returnMapHandle.Size());
 
       ReturnMapHandle<intpair> inducedReturnMap0;
       ReturnMapHandle<intpair> inducedReturnMap1;
@@ -1797,8 +1847,8 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
     delete [] ntemp0;
     delete [] ntemp1;
   }
-  ReductionMapHandle inducedA0ReductionMapHandle;
-  ReductionMapHandle inducedA1ReductionMapHandle;
+  ReductionMapHandle inducedA0ReductionMapHandle(AConnection[0].returnMapHandle.Size());
+  ReductionMapHandle inducedA1ReductionMapHandle(AConnection[1].returnMapHandle.Size());
   ReturnMapHandle<intpair> inducedA0ReturnMap;
   ReturnMapHandle<intpair> inducedA1ReturnMap;
 
@@ -1814,7 +1864,10 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 // #ifdef PATH_COUNTING_ENABLED
 //   n->InstallPathCounts();
 // #endif 
-  return NWAOBDDNodeHandle(n);
+  NWAOBDDNodeHandle ret(n);
+  if(!reduceCache) reduceCache = new std::unordered_map<ReductionMapHandle, NWAOBDDNodeHandle, RedMapHash>;
+  reduceCache -> insert({redMapHandle, ret});
+  return ret;
     /*
      for (unsigned int i = 0; i < numBConnections; i++) {
         
@@ -1874,14 +1927,35 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
   */
 } // NWAOBDDInternalNode::Reduce
 
-//ETTODO better hash functions
-unsigned int NWAOBDDInternalNode::Hash(unsigned int modsize)
-{
-    unsigned int hvalue = AConnection[0].Hash(modsize) + AConnection[1].Hash(modsize);
-  for (unsigned int j = 0; j < numBConnections; j++) {
-      hvalue = ((hvalue + BConnection[1][j].Hash(modsize) + BConnection[0][j].Hash(modsize))) % modsize;
+
+static size_t ConnectionHash(const Connection &c) {
+  return (7757ll * c.entryPointHandle->handleContents->id + c.returnMapHandle.mapContents->id) % 167772161;
+}
+
+size_t NWAOBDDNodeStarHash::operator() (const NWAOBDDNode* n) const {
+  if(n->NodeKind() == NWAOBDD_EPSILON) return 0x12345678;
+  NWAOBDDInternalNode *n0 = (NWAOBDDInternalNode*)n;
+  size_t hvalue = (ConnectionHash(n0->AConnection[0]) * 100003ll + ConnectionHash(n0->AConnection[1])) % 1000000007;
+  for (unsigned int j = 0; j < n0->numBConnections; j++) {
+      hvalue = (hvalue * 100003ll + ConnectionHash(n0->BConnection[0][j])) % 1000000007;
+      hvalue = (hvalue * 100003ll + ConnectionHash(n0->BConnection[1][j])) % 1000000007;
   }
   return hvalue;
+}
+
+bool NWAOBDDNodeStarEq::operator() (const NWAOBDDNode* n1, const NWAOBDDNode* n2) const {
+  return (*n1)==(*n2);
+}
+
+
+unsigned int NWAOBDDInternalNode::Hash(unsigned int modsize) const
+{
+  size_t hvalue = (ConnectionHash(AConnection[0]) * 100003ll + ConnectionHash(AConnection[1])) % 1000000007;
+  for (unsigned int j = 0; j < numBConnections; j++) {
+      hvalue = (hvalue * 100003ll + ConnectionHash(BConnection[0][j])) % 1000000007;
+      hvalue = (hvalue * 100003ll + ConnectionHash(BConnection[1][j])) % 1000000007;
+  }
+  return hvalue % modsize;
 }
 
 void NWAOBDDInternalNode::DumpConnections(Hashset<NWAOBDDNode> *visited, std::ostream & out /* = std::cout */)
@@ -1938,13 +2012,13 @@ void NWAOBDDInternalNode::CountNodesAndEdges(Hashset<NWAOBDDNode> *visitedNodes,
 
 
 // Overloaded !=
-bool NWAOBDDInternalNode::operator!= (const NWAOBDDNode & n)
+bool NWAOBDDInternalNode::operator!= (const NWAOBDDNode & n) const
 {
   return !(*this == n);
 }
 
 // Overloaded ==
-bool NWAOBDDInternalNode::operator== (const NWAOBDDNode & n)
+bool NWAOBDDInternalNode::operator== (const NWAOBDDNode & n) const
 {
   if (n.NodeKind() != NWAOBDD_INTERNAL)
     return false;
@@ -1978,7 +2052,7 @@ void NWAOBDDInternalNode::DecrRef()
 {
   if (--refCount == 0) {    // Warning: Saturation not checked
     if (isCanonical) {
-      NWAOBDDNodeHandle::canonicalNodeTable->DeleteEq(this);
+      NWAOBDDNodeHandle::canonicalNodeTableLeveled[level].erase(this);
     }
     delete this;
   }
@@ -2148,6 +2222,11 @@ NWAOBDDEpsilonNode::NWAOBDDEpsilonNode()
 #endif
 }
 
+size_t NWAOBDDNodeHandleHash::operator ()(const NWAOBDDNodeHandle &nh) const {
+    return nh.handleContents->id;
+}
+
+
 NWAOBDDEpsilonNode::~NWAOBDDEpsilonNode()
 {
 }
@@ -2176,20 +2255,19 @@ NWAOBDDNodeHandle NWAOBDDEpsilonNode::Reduce(ReductionMapHandle, unsigned int, b
   return NWAOBDDNodeHandle::NWAOBDDEpsilonNodeHandle;
 }
 
-//ETTODO Better Hash Functions
-unsigned int NWAOBDDEpsilonNode::Hash(unsigned int modsize)
+unsigned int NWAOBDDEpsilonNode::Hash(unsigned int modsize) const
 {
   return ((unsigned int) reinterpret_cast<uintptr_t>(this) >> 2) % modsize;
 }
 
 // Overloaded !=
-bool NWAOBDDEpsilonNode::operator!= (const NWAOBDDNode & n)
+bool NWAOBDDEpsilonNode::operator!= (const NWAOBDDNode & n) const
 {
   return n.NodeKind() != NWAOBDD_EPSILON;
 }
 
 // Overloaded ==
-bool NWAOBDDEpsilonNode::operator== (const NWAOBDDNode & n)
+bool NWAOBDDEpsilonNode::operator== (const NWAOBDDNode & n) const
 {
   return n.NodeKind() == NWAOBDD_EPSILON;
 }

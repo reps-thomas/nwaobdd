@@ -136,8 +136,8 @@ class PairProductMapKey {
 		PairProductKey(NWAOBDDNodeHandle nodeHandle1, NWAOBDDNodeHandle nodeHandle2); // Constructor
 		unsigned int Hash(unsigned int modsize);
 		PairProductKey& operator= (const PairProductKey& p);  // Overloaded assignment
-		bool operator!= (const PairProductKey& p);        // Overloaded !=
-		bool operator== (const PairProductKey& p);        // Overloaded ==
+		bool operator!= (const PairProductKey& p) const;        // Overloaded !=
+		bool operator== (const PairProductKey& p) const;        // Overloaded ==
 		NWAOBDDNodeHandle NodeHandle1() const { return nodeHandle1; }      // Access function
 		NWAOBDDNodeHandle NodeHandle2() const { return nodeHandle2; }      // Access function
 		std::ostream& print(std::ostream & out) const;

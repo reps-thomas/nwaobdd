@@ -8,6 +8,7 @@ project(NWAOBDD VERSION 1.0)
 
 
 set(path_to_boost "/home/xusheng_zhi/Desktop/boost")
+# set(path_to_boost "/mnt/e/Languages/boost")
 
 add_executable(nwaobdd.out 
     main.cpp

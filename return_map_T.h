@@ -56,8 +56,8 @@ class ReturnMapHandle {
   ~ReturnMapHandle();                              // Destructor
   ReturnMapHandle(const ReturnMapHandle<T> &r);    // Copy constructor
   ReturnMapHandle<T>& operator= (const ReturnMapHandle<T> &r); // Overloaded assignment
-  bool operator!= (const ReturnMapHandle<T> &r);      // Overloaded !=
-  bool operator== (const ReturnMapHandle<T> &r);      // Overloaded ==
+  bool operator!= (const ReturnMapHandle<T> &r) const;      // Overloaded !=
+  bool operator== (const ReturnMapHandle<T> &r) const;      // Overloaded ==
   T& operator[](unsigned int i);                       // Overloaded []
   unsigned int Hash(unsigned int modsize);
   unsigned int Size();
@@ -90,6 +90,7 @@ class ReturnMapBody {
   friend unsigned int ReturnMapHandle<T>::Hash(unsigned int modsize);
 
  public:
+	long long id = 0;
   ReturnMapBody();    // Constructor
   ReturnMapBody(unsigned int capacity);    // Constructor
   //~ReturnMapBody();
@@ -250,14 +251,14 @@ intpair ReturnMapHandle<T>::convertValue(int y)
 
 // Overloaded !=
 template <typename T>
-bool ReturnMapHandle<T>::operator!=(const ReturnMapHandle<T> &r)
+bool ReturnMapHandle<T>::operator!=(const ReturnMapHandle<T> &r) const
 {
   return (mapContents != r.mapContents);
 }
 
 // Overloaded ==
 template <typename T>
-bool ReturnMapHandle<T>::operator==(const ReturnMapHandle<T> &r)
+bool ReturnMapHandle<T>::operator==(const ReturnMapHandle<T> &r) const
 {
 
   return (mapContents == r.mapContents);
@@ -358,9 +359,11 @@ int ReturnMapHandle<T>::LookupInv(T y)
 	return -1;
 }
 
+
 template <typename T>
 void ReturnMapHandle<T>::Canonicalize()
 { 
+	static long long returnMapGlobalCnt = 0;
 	try{
 		ReturnMapBody<T> *answerContents;
 		mapContents->setHashCheck();
@@ -371,6 +374,7 @@ void ReturnMapHandle<T>::Canonicalize()
 			if (answerContents == NULL) {
 				canonicalReturnMapBodySet->Insert(mapContents, hash);
 				mapContents->isCanonical = true;
+				mapContents->id = ++returnMapGlobalCnt;
 			}
 			else {
 				answerContents->IncrRef();
@@ -475,5 +479,12 @@ ReturnMapHandle<T> operator*(ReturnMapHandle<T> rmh, int c)
 	answer.Canonicalize();
 	return answer;
 }
+
+
+struct ReturnMapHandleHash {
+	size_t operator() (const ReturnMapHandle<intpair> &rmh) const {
+		return rmh.mapContents->id;
+	}
+};
 
 #endif

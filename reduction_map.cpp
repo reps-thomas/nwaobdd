@@ -116,7 +116,7 @@ bool ReductionMapBody::operator==(const ReductionMapBody &o) const
 	if (mapArray.size() != o.mapArray.size())
 		return false;
 
-	for (unsigned int i = 0; i < mapArray.size(); i++){
+	for (int i = mapArray.size() - 1; i >= 0; --i) {
 		if (mapArray[i] != o.mapArray[i])
 			return false;
 	}
@@ -187,13 +187,13 @@ ReductionMapHandle& ReductionMapHandle::operator= (const ReductionMapHandle &r)
 }
 
 // Overloaded !=
-bool ReductionMapHandle::operator!=(const ReductionMapHandle &r)
+bool ReductionMapHandle::operator!=(const ReductionMapHandle &r) const
 {
   return (mapContents != r.mapContents);
 }
 
 // Overloaded ==
-bool ReductionMapHandle::operator==(const ReductionMapHandle &r)
+bool ReductionMapHandle::operator==(const ReductionMapHandle &r) const
 {
   return (mapContents == r.mapContents);
 }
@@ -213,7 +213,7 @@ std::ostream& operator<< (std::ostream & out, const ReductionMapHandle &r)
 
 unsigned int ReductionMapHandle::Hash(unsigned int modsize)
 {
-	return ((unsigned int) reinterpret_cast<uintptr_t>(mapContents) >> 2) % modsize;
+	return (mapContents->id) % modsize;
 }
 
 unsigned int ReductionMapHandle::Size()
@@ -326,8 +326,10 @@ int ReductionMapHandle::LookupInv(int y)
 }
 
 
+
 void ReductionMapHandle::Canonicalize()
 {
+	static long long redMapGlobalCnt = 0;
   ReductionMapBody *answerContents;
   mapContents->setHashCheck();
 
@@ -337,6 +339,7 @@ void ReductionMapHandle::Canonicalize()
     if (answerContents == NULL) {
       canonicalReductionMapBodySet->Insert(mapContents, hash);
       mapContents->isCanonical = true;
+	  mapContents->id = ++redMapGlobalCnt;
     }
     else {
       answerContents->IncrRef();
@@ -366,3 +369,6 @@ std::size_t hash_value(const ReductionMapHandle& val)
 
 
 
+size_t RedMapHash::operator()(const ReductionMapHandle &r) const {
+	return r.mapContents->id;
+}

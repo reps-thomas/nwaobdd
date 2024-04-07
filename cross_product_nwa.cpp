@@ -38,6 +38,9 @@
 #include "cross_product_nwa.h"
 //#include "hash_functions.h"
 
+extern int pairprod_times[];
+extern int pairprod_hit[];
+
 using namespace NWA_OBDD;
 // ********************************************************************
 // 2-Way Cross Product
@@ -341,16 +344,22 @@ PairProductKey& PairProductKey::operator= (const PairProductKey& i)
 }
 
 // Overloaded !=
-bool PairProductKey::operator!=(const PairProductKey& p)
+bool PairProductKey::operator!=(const PairProductKey& p) const
 {
 	return (nodeHandle1 != p.nodeHandle1) || (nodeHandle2 != p.nodeHandle2);
 }
 
 // Overloaded ==
-bool PairProductKey::operator==(const PairProductKey& p)
+bool PairProductKey::operator==(const PairProductKey& p) const 
 {
 	return (nodeHandle1 == p.nodeHandle1) && (nodeHandle2 == p.nodeHandle2);
 }
+
+struct PairProductKeyHash {
+	size_t operator() (const PairProductKey &ppk) const {
+		return (ppk.NodeHandle1().handleContents->id * 100003ll + ppk.NodeHandle2().handleContents->id) % 1000000009;
+	}
+};
 
 
 //***************************************************************
@@ -465,7 +474,8 @@ bool PairProductMemo::operator==(const PairProductMemo& p)
 // node's exits
 // --------------------------------------------------------------------
 
-static Hashtable<PairProductKey, PairProductMemo> *pairProductCache = NULL;
+// static Hashtable<PairProductKey, PairProductMemo> *pairProductCache = NULL;
+static std::unordered_map<PairProductKey, PairProductMemo, PairProductKeyHash> pairProductCache[26];
 
 namespace NWA_OBDD {
 	/*
@@ -801,21 +811,41 @@ namespace NWA_OBDD {
 		}
 	}
 
+
 	NWAOBDDNodeHandle PairProduct(NWAOBDDNodeHandle n1,
 		NWAOBDDNodeHandle n2,
 		PairProductMapHandle &pairProductMapHandle
 		)
 	{
+		unsigned level = n1.handleContents->level;
 		PairProductMemo cachedPairProductMemo;
-		bool isCached = pairProductCache->Fetch(PairProductKey(n1,n2), cachedPairProductMemo);
-		if (isCached) {
-		pairProductMapHandle = cachedPairProductMemo.pairProductMapHandle;
-		return cachedPairProductMemo.nodeHandle;
+		pairprod_times[level]++;
+
+		PairProductKey ppk(n1, n2);
+		PairProductKey ppk_rev(n2, n1);
+		if(pairProductCache[level].find(ppk) != pairProductCache[level].end()) {
+			pairprod_hit[level]++;
+			auto r = pairProductCache[level][ppk];
+			pairProductMapHandle = r.pairProductMapHandle;
+			return r.nodeHandle;
 		}
-		else if (pairProductCache->Fetch(PairProductKey(n2,n1), cachedPairProductMemo)) {
-		pairProductMapHandle = cachedPairProductMemo.pairProductMapHandle.Flip();
-		return cachedPairProductMemo.nodeHandle;
+		else if(pairProductCache[level].find(ppk_rev) != pairProductCache[level].end()) {
+			pairprod_hit[level]++;
+			auto r = pairProductCache[level][ppk_rev];
+			pairProductMapHandle = r.pairProductMapHandle.Flip();
+			return r.nodeHandle;
 		}
+		// bool isCached = pairProductCache->Fetch(PairProductKey(n1,n2), cachedPairProductMemo);
+		// if (isCached) {
+		// 	pairprod_hit[level]++;
+		// pairProductMapHandle = cachedPairProductMemo.pairProductMapHandle;
+		// return cachedPairProductMemo.nodeHandle;
+		// }
+		// else if (pairProductCache->Fetch(PairProductKey(n2,n1), cachedPairProductMemo)) {
+		// 	pairprod_hit[level]++;
+		// pairProductMapHandle = cachedPairProductMemo.pairProductMapHandle.Flip();
+		// return cachedPairProductMemo.nodeHandle;
+		// }
 		else {
 			NWAOBDDNodeHandle answer;
 			if (n1.handleContents->NodeKind() == NWAOBDD_INTERNAL) {
@@ -831,7 +861,8 @@ namespace NWA_OBDD {
 				pairProductMapHandle.Canonicalize();
 				answer = n1;
 			}
-			pairProductCache->Insert(PairProductKey(n1,n2), PairProductMemo(answer,pairProductMapHandle));
+
+			pairProductCache[level][PairProductKey(n1,n2)] = PairProductMemo(answer,pairProductMapHandle);
 			// answer.Canonicalize();
 			return answer;
 		}
@@ -840,12 +871,12 @@ namespace NWA_OBDD {
 	void InitPairProductCache()
 	{
 		// std::cout << "Initializing Cache\n";
-		pairProductCache = new Hashtable<PairProductKey, PairProductMemo>(HASHSET_NUM_BUCKETS);
+		// pairProductCache = new Hashtable<PairProductKey, PairProductMemo>(HASHSET_NUM_BUCKETS);
 	}
 
 	void DisposeOfPairProductCache()
 	{
-		delete pairProductCache;
-		pairProductCache = NULL;
+		// delete pairProductCache;
+		// pairProductCache = NULL;
 	}
 }

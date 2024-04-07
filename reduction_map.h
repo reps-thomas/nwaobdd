@@ -50,8 +50,8 @@ class ReductionMapHandle {
   ReductionMapHandle(const ReductionMapHandle &r);             // Copy constructor
   ReductionMapHandle(unsigned int capacity);
   ReductionMapHandle& operator= (const ReductionMapHandle &r); // Overloaded assignment
-  bool operator!= (const ReductionMapHandle &r);      // Overloaded !=
-  bool operator== (const ReductionMapHandle &r);      // Overloaded ==
+  bool operator!= (const ReductionMapHandle &r) const;      // Overloaded !=
+  bool operator== (const ReductionMapHandle &r) const;      // Overloaded ==
   unsigned int Hash(unsigned int modsize);
   unsigned int Size();
   void AddToEnd(int y);
@@ -93,6 +93,7 @@ class ReductionMapBody {//: public List<int> {
 
  //protected:
   unsigned int hashCheck;
+  long long id = 0;
   bool isCanonical;              // Is this ReductionMapBody in *canonicalReductionMapBodySet?
 
   struct PointerHash {
@@ -109,6 +110,10 @@ class ReductionMapBody {//: public List<int> {
 	  };
   };
 
+};
+
+struct RedMapHash {
+    size_t operator()(const ReductionMapHandle &r) const;
 };
 
 std::ostream& operator<< (std::ostream & out, const ReductionMapBody &r);
