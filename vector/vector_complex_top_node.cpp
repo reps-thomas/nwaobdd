@@ -183,6 +183,9 @@ namespace NWA_OBDD {
 			}
 			std::cout << ")\n";
 		}
+		void forcePathCountTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n) {
+			forcePathCountNode(*(n->rootConnection.entryPointHandle));
+		}
     }
 
 }

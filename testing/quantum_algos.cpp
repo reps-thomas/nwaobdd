@@ -317,9 +317,9 @@ void simons(int numQubits, int seed) {
         qc.ApplyHadamardGate(i);
     }
 
-    for (int i = 0; i < 2 * numQubits; ++i) {
+    // for (int i = 0; i < 2 * numQubits; ++i) {
         std::string sampledString = qc.Measure();
-    }
+    // }
 
     // End time measurement
     clock_t end = clock();

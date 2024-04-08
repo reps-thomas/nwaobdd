@@ -49,6 +49,8 @@ namespace NWA_OBDD {
 		// extern void VectorPrintColumnMajorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
 		// extern void VectorPrintColumnMajorInterleavedTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n, std::ostream & out);
 		void DumpVectorTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
+
+		void forcePathCountTop(NWAOBDDTopNodeComplexFloatBoostRefPtr n);
 	}
 }
 

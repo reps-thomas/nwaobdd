@@ -157,6 +157,22 @@ namespace NWA_OBDD {
 	}
 
 
+    void forcePathCountNode(NWAOBDDNodeHandle n) {
+        NWAOBDDNode* n1 = n.handleContents;
+        if(n1 -> NodeKind() == NWAOBDD_INTERNAL) {
+            NWAOBDDInternalNode* n2 = (NWAOBDDInternalNode*)n1;
+            if(!(n2 -> numPathsToExit) ) {
+                forcePathCountNode(*(n2->AConnection[0].entryPointHandle));
+                forcePathCountNode(*(n2->AConnection[1].entryPointHandle));
+                for(unsigned i = 0; i < n2 -> numBConnections; ++i) {
+                    forcePathCountNode(*(n2->BConnection[0][i].entryPointHandle));
+                    forcePathCountNode(*(n2->BConnection[1][i].entryPointHandle));
+                }
+                n2 -> InstallPathCounts();
+            }
+        }
+    }
+
     std::string SamplingNode(NWAOBDDNodeHandle nh, unsigned int index, bool remove_column_index) {
         NWAOBDDNode *n = nh.handleContents;
         if(n->level == 1) {

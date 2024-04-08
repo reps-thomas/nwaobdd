@@ -65,6 +65,7 @@ namespace NWA_OBDD {
 
 		std::string Sampling(NWAOBDD_COMPLEX_BIG c, bool isTwoVoc)
 		{
+			forcePathCount(c);
 			return SamplingTop(c.root, isTwoVoc);
 		}
 
@@ -101,6 +102,9 @@ namespace NWA_OBDD {
 		}
 		void DumpVector(NWAOBDD<BIG_COMPLEX_FLOAT> n) {
 			DumpVectorTop(n.root);
+		}
+		void forcePathCount(NWAOBDD<BIG_COMPLEX_FLOAT> n) {
+			forcePathCountTop(n.root);
 		}
 	}
 }

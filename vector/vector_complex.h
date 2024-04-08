@@ -40,6 +40,7 @@ namespace NWA_OBDD {
 		extern long double getNonZeroProbability(NWAOBDD_COMPLEX_BIG n);
 		extern unsigned long long int GetPathCount(NWAOBDD_COMPLEX_BIG n, long double p);
 		void DumpVector(NWAOBDD<BIG_COMPLEX_FLOAT> n);
+		void forcePathCount(NWAOBDD<BIG_COMPLEX_FLOAT> n);
 	}
 }
 

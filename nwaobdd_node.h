@@ -29,7 +29,6 @@
 
 
 // Configuration flags --------------------------------------------
-#define PATH_COUNTING_ENABLED 1
 
 namespace NWA_OBDD {
 // Node classes declared in this file --------------------------------
@@ -205,10 +204,7 @@ class NWAOBDDNode {
   unsigned int numExits;
   long long id;
   static unsigned int const maxLevel;
-#ifdef PATH_COUNTING_ENABLED
   long double *numPathsToExit = nullptr;       // unsigned int numPathsToExit[numExits]
-  bool isNumPathsMemAllocated;
-#endif
   virtual void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index) = 0;
   virtual int Traverse(SH_OBDD::AssignmentIterator &ai) = 0;
   virtual NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce) = 0;
@@ -282,9 +278,7 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   unsigned int numBConnections;
   Connection *BConnection[2];             // Connection BConnection[numBConnections];
   unsigned int InsertBConnection(unsigned int &j, Connection &c0, Connection &c1);
-#ifdef PATH_COUNTING_ENABLED
   void InstallPathCounts();
-#endif
 
  private:
   NWAOBDDInternalNode();                                         // Default constructor (hidden)

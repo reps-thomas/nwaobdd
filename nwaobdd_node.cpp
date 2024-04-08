@@ -57,6 +57,9 @@ extern int node_hit[];
 
 using namespace NWA_OBDD;
 
+
+// #define PATH_COUNTING_ENABLED 1
+
 //********************************************************************
 // NWAOBDDNodeHandle
 //
@@ -249,8 +252,10 @@ void NWAOBDDNodeHandle::Canonicalize()
       canonicalNodeTableLeveled[level].insert(handleContents);
       handleContents->isCanonical = true;
       handleContents->id = ++nodeGlobalCnt;
+#ifdef PATH_COUNTING_ENABLED
       if(handleContents->NodeKind() == NWAOBDD_INTERNAL)
         ((NWAOBDDInternalNode*)handleContents) -> InstallPathCounts();
+#endif
     }
     else {
       node_hit[handleContents->level]++;
@@ -2077,7 +2082,6 @@ unsigned int NWAOBDDInternalNode::InsertBConnection(unsigned int &j, Connection 
 
 
 
-#ifdef PATH_COUNTING_ENABLED
 // InstallPathCounts
 
 static long double addNumPathsToExit(const std::vector<long double>& logOfPaths){
@@ -2108,9 +2112,9 @@ static long double addPaths(long double a, long double b) {
 
 void NWAOBDDInternalNode::InstallPathCounts()
 {
+  if(numPathsToExit) return;
   numPathsToMiddle = new long double[numBConnections];
   numPathsToExit = new long double[numExits];
-  isNumPathsMemAllocated = true;
 
   long double neg_inf = std::numeric_limits<long double>::lowest();
   for(int i = 0; i < numBConnections; ++i) numPathsToMiddle[i] = neg_inf;
@@ -2125,37 +2129,6 @@ void NWAOBDDInternalNode::InstallPathCounts()
       numPathsToMiddle[k1] = addPaths(numPathsToMiddle[k1], numPathsValue);
     }
   }
-  // std::map<unsigned int, std::vector<long double>> storingNumPathsToMiddle;
-  // for(unsigned b = 0; b <= 1; ++b)
-  // {
-  //   for(unsigned j = 0; j < AConnection[b].entryPointHandle->handleContents->numExits; ++j) {
-  //     unsigned k0 = AConnection[b].returnMapHandle.Lookup(j).First();
-  //     unsigned k1 = AConnection[b].returnMapHandle.Lookup(j).Second();
-  //     long double numPathsValue = AConnection[b].entryPointHandle->handleContents->numPathsToExit[j];
-  //     if (storingNumPathsToMiddle.find(k0) == storingNumPathsToMiddle.end()) {
-  //       std::vector<long double> logOfPaths;
-  //       logOfPaths.push_back(numPathsValue);
-  //       storingNumPathsToMiddle[k0] = logOfPaths;
-  //     }
-  //     else {
-  //       storingNumPathsToMiddle[k0].push_back(numPathsValue);
-  //     }
-
-  //     if (storingNumPathsToMiddle.find(k1) == storingNumPathsToMiddle.end()) {
-  //       std::vector<long double> logOfPaths;
-  //       logOfPaths.push_back(numPathsValue);
-  //       storingNumPathsToMiddle[k1] = logOfPaths;
-  //     }
-  //     else {
-  //       storingNumPathsToMiddle[k1].push_back(numPathsValue);
-  //     }
-
-  //   }
-  // }
-	// for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToMiddle.begin(); it != storingNumPathsToMiddle.end(); it++){
-	// 	std::sort(it->second.begin(), it->second.end());
-	// 	numPathsToMiddle[it->first] = addNumPathsToExit(it->second);
-	// }
 
    for(unsigned i = 0; i < numBConnections; ++i) {
     for(unsigned b = 0; b <= 1; ++b) {
@@ -2168,42 +2141,7 @@ void NWAOBDDInternalNode::InstallPathCounts()
       }
     }
   }
-  // std::map<unsigned int, std::vector<long double>> storingNumPathsToExit;
-  // for(unsigned i = 0; i < numBConnections; ++i) {
-  //   for(unsigned b = 0; b <= 1; ++b)
-  //   {
-  //     for(unsigned j = 0; j < BConnection[b][i].entryPointHandle->handleContents->numExits; ++j) {
-  //       unsigned k0 = BConnection[b][i].returnMapHandle.Lookup(j).First();
-  //       unsigned k1 = BConnection[b][i].returnMapHandle.Lookup(j).Second();
-  //       long double numPathsValue = numPathsToMiddle[i] + BConnection[b][i].entryPointHandle->handleContents->numPathsToExit[j];
-
-  //       if (storingNumPathsToExit.find(k0) == storingNumPathsToExit.end()) {
-  //         std::vector<long double> logOfPaths;
-  //         logOfPaths.push_back(numPathsValue);
-  //         storingNumPathsToExit[k0] = logOfPaths;
-  //       }
-  //       else {
-  //         storingNumPathsToExit[k0].push_back(numPathsValue);
-  //       }
-
-  //       if (storingNumPathsToExit.find(k1) == storingNumPathsToExit.end()) {
-  //         std::vector<long double> logOfPaths;
-  //         logOfPaths.push_back(numPathsValue);
-  //         storingNumPathsToExit[k1] = logOfPaths;
-  //       }
-  //       else {
-  //         storingNumPathsToExit[k1].push_back(numPathsValue);
-  //       }
-
-  //     }
-  //   }
-  // }
-	// for (std::map<unsigned int, std::vector<long double>>::iterator it = storingNumPathsToExit.begin(); it != storingNumPathsToExit.end(); it++){
-	// 	std::sort(it->second.begin(), it->second.end());
-	// 	numPathsToExit[it->first] = addNumPathsToExit(it->second);
-	// }
 }
-#endif
 
 //********************************************************************
 // NWAOBDDEpsilonNode
@@ -2216,10 +2154,8 @@ NWAOBDDEpsilonNode::NWAOBDDEpsilonNode()
   :  NWAOBDDNode(0)
 {
   numExits = 1;
-#ifdef PATH_COUNTING_ENABLED //ETTODO
   numPathsToExit = new long double[1];
   numPathsToExit[0] = 0.0;
-#endif
 }
 
 size_t NWAOBDDNodeHandleHash::operator ()(const NWAOBDDNodeHandle &nh) const {

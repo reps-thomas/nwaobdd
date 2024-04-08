@@ -35,6 +35,8 @@ namespace NWA_OBDD {
 	
     template <typename T>
 	bool sortNumPathPairs(const std::pair<T, unsigned int>& p1, const std::pair<T, unsigned int> &p2);
+
+	void forcePathCountNode(NWAOBDDNodeHandle n);
 }
 
 #endif
