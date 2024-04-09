@@ -215,8 +215,8 @@ namespace NWA_OBDD {
 }  // namespace NWA_OBDD
 
 
-extern int matmult_times[];
-extern int matmult_hit[];
+// extern int matmult_times[];
+// extern int matmult_hit[];
 
 namespace NWA_OBDD {
 
@@ -250,24 +250,17 @@ namespace NWA_OBDD {
     // std::unordered_map<MatMultPair, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPair::MatMultPairHash> matmult_hashMap;
 	
 	std::unordered_map<MatMultPairWithInfo, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPairWithInfo::MatMultPairWithInfoHash> matmult_hashMap_info[26];
-	std::unordered_map<std::string, NWAOBDDNodeHandle> cnot_hashMap;
-	std::unordered_map<std::string, NWAOBDDNodeHandle> cp_hashMap;
-	std::unordered_map<std::string, NWAOBDDNodeHandle> ccp_hashMap;
-	std::unordered_map<std::string, NWAOBDDNodeHandle> cswap_hashMap;
-	std::unordered_map<std::string, NWAOBDDNodeHandle> swap_hashMap;
-	std::unordered_map<std::string, NWAOBDDNodeHandle> iswap_hashMap;
-	std::unordered_map<std::string, NWAOBDDNodeHandle> ccnot_hashMap;
-
+	
     NWAOBDDTopNodeMatMultMapRefPtr MatrixMultiplyNode(
     std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash>& hashMap,
     NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2, int c1_zero_index, int c2_zero_index) {
        		MatMultPairWithInfo mmp(c1, c2, c1_zero_index, c2_zero_index);
 
 		unsigned level = c1.handleContents -> level;
-		matmult_times[level]++;
+		// matmult_times[level]++;
 		auto it0 = matmult_hashMap_info[level].find(mmp);
 		if (it0 != matmult_hashMap_info[level].end()) {
-			matmult_hit[level]++;
+			// matmult_hit[level]++;
 			return it0 -> second;
 		}
 
@@ -588,5 +581,3 @@ namespace NWA_OBDD {
     // matmult_hashMap.clear();
 	}
 } 
-
-#include"matrix_complex_node_ext.cpp"

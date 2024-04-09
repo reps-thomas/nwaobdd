@@ -7,8 +7,8 @@ project(NWAOBDD VERSION 1.0)
 # SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 
 
-set(path_to_boost "/home/xusheng_zhi/Desktop/boost")
-# set(path_to_boost "/mnt/e/Languages/boost")
+# set(path_to_boost "/home/xusheng_zhi/Desktop/boost")
+set(path_to_boost "/mnt/e/Languages/boost")
 
 add_executable(nwaobdd.out 
     main.cpp
@@ -43,7 +43,8 @@ add_library(lib_nwaobdd STATIC
     
     matrix/matrix_complex.cpp
     matrix/matrix_complex_top_node.cpp 
-    matrix/matrix_complex_node.cpp
+    matrix/matrix_complex_node1.cpp
+    matrix/matrix_complex_node2.cpp
     matrix/matmult_map.cpp 
     matrix/nwaobdd_top_node_matmult_map.cpp
     matrix/zero_indices_map.cpp

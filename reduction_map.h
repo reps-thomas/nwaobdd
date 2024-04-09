@@ -36,6 +36,12 @@
 #include "infra/hashset.h"
 #include "infra/intpair.h"
 
+
+// To avoid multiple definitions when linking to Quasimodo
+#define ReductionMapHandle ReductionMapHandle_NWA
+#define ReductionMapBody ReductionMapBody_NWA
+
+
 class ReductionMapHandle;
 class ReductionMapBody;
 

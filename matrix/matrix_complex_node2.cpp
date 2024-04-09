@@ -1,4 +1,15 @@
+#include "matrix_complex_node.h"
+#include "matrix_complex_top_node.h"
+#include "../pseudoCFLOBDD.h"
+
 namespace NWA_OBDD {
+	std::unordered_map<std::string, NWAOBDDNodeHandle> swap_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> iswap_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> cswap_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> cp_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> cnot_hashMap;
+	std::unordered_map<std::string, NWAOBDDNodeHandle> ccnot_hashMap;
+
 	NWAOBDDNodeHandle MkCNot2Node(unsigned int level, unsigned int n, long int controller, long int controlled) {
 		std::string p = std::to_string(level) + ";" + std::to_string(controller) + ";" + std::to_string(controlled);
 		if (cnot_hashMap.find(p) != cnot_hashMap.end()){

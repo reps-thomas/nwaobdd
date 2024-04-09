@@ -49,11 +49,11 @@
 #include <algorithm>
 #include <unordered_map>
 
-extern int reduce_times[];
-extern int reduce_hit[];
+// extern int reduce_times[];
+// extern int reduce_hit[];
 
-extern int node_times[];
-extern int node_hit[];
+// extern int node_times[];
+// extern int node_hit[];
 
 using namespace NWA_OBDD;
 
@@ -216,10 +216,10 @@ NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, uns
     return *this;
   }
 
-  reduce_times[handleContents->level]++;
+  // reduce_times[handleContents->level]++;
   auto it = reduceCache[level].find(NWAReduceKey(*this, redMapHandle));
   if(it != reduceCache[level].end()) {
-    reduce_hit[handleContents->level]++;
+    // reduce_hit[handleContents->level]++;
     return it -> second;
   }
 
@@ -248,7 +248,7 @@ void NWAOBDDNodeHandle::Canonicalize()
 {
   static long long nodeGlobalCnt = 0;
 
-  node_times[handleContents->level]++;
+  // node_times[handleContents->level]++;
   unsigned level = handleContents->level;
   
   if (!handleContents->isCanonical) {
@@ -263,7 +263,7 @@ void NWAOBDDNodeHandle::Canonicalize()
 #endif
     }
     else {
-      node_hit[handleContents->level]++;
+      // node_hit[handleContents->level]++;
       (*it)->IncrRef();
       handleContents->DecrRef();
       handleContents = *it;
@@ -606,8 +606,8 @@ static Hashtable<PathSummaryKey, NWAOBDDTopNodeRefPtr> *pathSummaryCache = NULL;
  * A method which does the memoization step of adjusting the schema of the nwaobdd
  */
 
-extern int pairprod_times[];
-extern int pairprod_hit[];
+// extern int pairprod_times[];
+// extern int pairprod_hit[];
 NWAOBDDTopNodeRefPtr NWAOBDDNodeHandle::SchemaAdjust(NWAOBDDNodeHandle n, int exit, int s[4], int offset)
 {
 	NWAOBDDTopNodeRefPtr topNodeMemo;

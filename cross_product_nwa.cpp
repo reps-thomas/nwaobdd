@@ -38,8 +38,8 @@
 #include "cross_product_nwa.h"
 //#include "hash_functions.h"
 
-extern int pairprod_times[];
-extern int pairprod_hit[];
+// extern int pairprod_times[];
+// extern int pairprod_hit[];
 
 using namespace NWA_OBDD;
 // ********************************************************************
@@ -819,18 +819,18 @@ namespace NWA_OBDD {
 	{
 		unsigned level = n1.handleContents->level;
 		PairProductMemo cachedPairProductMemo;
-		pairprod_times[level]++;
+		// pairprod_times[level]++;
 
 		PairProductKey ppk(n1, n2);
 		PairProductKey ppk_rev(n2, n1);
 		if(pairProductCache[level].find(ppk) != pairProductCache[level].end()) {
-			pairprod_hit[level]++;
+			// pairprod_hit[level]++;
 			auto r = pairProductCache[level][ppk];
 			pairProductMapHandle = r.pairProductMapHandle;
 			return r.nodeHandle;
 		}
 		else if(pairProductCache[level].find(ppk_rev) != pairProductCache[level].end()) {
-			pairprod_hit[level]++;
+			// pairprod_hit[level]++;
 			auto r = pairProductCache[level][ppk_rev];
 			pairProductMapHandle = r.pairProductMapHandle.Flip();
 			return r.nodeHandle;

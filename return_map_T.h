@@ -39,6 +39,11 @@
 //#include <boost/multiprecision/cpp_int.hpp>
 //#include "hash_functions.h"
 
+// To avoid multiple definitions when linking to Quasimodo
+#define ReturnMapHandle ReturnMapHandle_NWA
+#define ReturnMapBody ReturnMapBody_NWA
+
+
 template <typename T> class ReturnMapHandle;
 template <typename T> class ReturnMapBody;
 

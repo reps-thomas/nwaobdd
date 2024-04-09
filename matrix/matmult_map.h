@@ -35,6 +35,10 @@
 
 #include "../infra/hashset.h"
 
+// To avoid multiple definitions when linking to Quasimodo
+#define MatMultMapHandle MatMultMapHandle_NWA
+#define MatMultMapBody MatMultMapBody_NWA
+
 class MatMultMapHandle;
 class MatMultMapBody;
 

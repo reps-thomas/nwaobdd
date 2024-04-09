@@ -421,11 +421,11 @@ ReturnMapHandle<intpair> ReturnMapHandle<intpair>::Complement()
 
 // Instantiation and specialization of class ReturnMapHandle<std::complex<double>> ---------------------
 
-size_t hash_complex_double(std::complex<double> c)
-{
-	std::hash<double> double_hash;
-	return (997 * double_hash(real(c)) + double_hash(imag(c)));
-}
+// size_t hash_complex_double(std::complex<double> c)
+// {
+// 	std::hash<double> double_hash;
+// 	return (997 * double_hash(real(c)) + double_hash(imag(c)));
+// }
 
 /*
 std::size_t hash_value(std::complex<double> c)
@@ -435,29 +435,29 @@ std::size_t hash_value(std::complex<double> c)
 }
 */
 
-template<>
-unsigned int ReturnMapBody<std::complex<double>>::Hash(unsigned int modsize)
-{
-	unsigned int hvalue = 0;
+// template<>
+// unsigned int ReturnMapBody<std::complex<double>>::Hash(unsigned int modsize)
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (997 * hvalue + hash_complex_double(mapArray[i])) % modsize;
-	}
-	return hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (997 * hvalue + hash_complex_double(mapArray[i])) % modsize;
+// 	}
+// 	return hvalue;
+// }
 
-template<>
-void ReturnMapBody<std::complex<double>>::setHashCheck()
-{
-	unsigned int hvalue = 0;
+// template<>
+// void ReturnMapBody<std::complex<double>>::setHashCheck()
+// {
+// 	unsigned int hvalue = 0;
 
-	for (unsigned i = 0; i < mapArray.size(); i++)
-	{
-		hvalue = (117 * (hvalue + 1) + hash_complex_double(mapArray[i]));
-	}
-	hashCheck = hvalue;
-}
+// 	for (unsigned i = 0; i < mapArray.size(); i++)
+// 	{
+// 		hvalue = (117 * (hvalue + 1) + hash_complex_double(mapArray[i]));
+// 	}
+// 	hashCheck = hvalue;
+// }
 
 /*
 template <>
