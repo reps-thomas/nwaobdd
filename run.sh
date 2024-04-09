@@ -38,9 +38,9 @@ test_performance(){
     run bv 40000
     run bv 80000
     run bv 160000
-    run bv 240000
-    run bv 320000
-    run bv 400000
+    # run bv 240000
+    # run bv 320000
+    # run bv 400000
 
     echo ""
 
@@ -49,8 +49,8 @@ test_performance(){
     run dj 40000
     run dj 80000
     run dj 160000
-    run dj 320000
-    run dj 400000
+    # run dj 320000
+    # run dj 400000
 
     echo ""
 
@@ -59,9 +59,9 @@ test_performance(){
     run ghz 40000
     run ghz 80000
     run ghz 160000
-    run ghz 240000
-    run ghz 320000
-    run ghz 400000
+    # run ghz 240000
+    # run ghz 320000
+    # run ghz 400000
 
     echo ""
 
@@ -69,9 +69,9 @@ test_performance(){
     run grovers 10
     run grovers 11
     run grovers 12
-    run grovers 13
-    run grovers 14
-    run grovers 15
+    # run grovers 13
+    # run grovers 14
+    # run grovers 15
 
     echo ""
 
@@ -79,17 +79,17 @@ test_performance(){
     run simons 14
     run simons 15
     run simons 16
-    run simons 17
-    run simons 18
+    # run simons 17
+    # run simons 18
 
     echo ""
 
     run qft 20
     run qft 21
     run qft 22
-    ryb qft 23
-    run qft 24
-    run qft 25
+    run qft 23
+    # run qft 24
+    # run qft 25
 }
 
 

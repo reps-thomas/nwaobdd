@@ -337,8 +337,6 @@ namespace NWA_OBDD {
 	}
 	namespace MatrixComplex {
 		NWAOBDDTopNodeComplexFloatBoostRefPtr MatrixMultiplyTop(NWAOBDDTopNodeComplexFloatBoostRefPtr c1, NWAOBDDTopNodeComplexFloatBoostRefPtr c2) {
-			if (c1->level >= 5)
-				clearMultMap();
 			std::unordered_map<ZeroValNodeInfo, ZeroIndicesMapHandle, ZeroValNodeInfo::ZeroValNodeInfoHash> hashMap;
 			int c1_zero_index = -1, c2_zero_index = -1;
 			c1_zero_index = c1->rootConnection.returnMapHandle.LookupInv(0);

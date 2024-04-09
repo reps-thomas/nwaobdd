@@ -195,33 +195,38 @@ NWAOBDDNodeHandle & NWAOBDDNodeHandle::operator= (const NWAOBDDNodeHandle &c)
 
 // static Hashtable<NWAReduceKey, NWAOBDDNodeHandle> *reduceCache = NULL;
 
+struct NWAReduceKeyHash {
+  size_t operator() (const NWAReduceKey &r) const {
+    RedMapHash redHash;
+    NWAOBDDNodeHandleHash nodeHash;
+    return (redHash(r.RedMapHandle()) * 167772161ll + nodeHash(r.NodeHandle())) % 998244353;
+  }
+};
 
-
+std::unordered_map<NWAReduceKey, NWAOBDDNodeHandle, NWAReduceKeyHash> reduceCache[26];
 
 NWAOBDDNodeHandle NWAOBDDNodeHandle::Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce)
 {
+  unsigned level = handleContents->Level();
   if (!forceReduce && replacementNumExits == 1) {
-    return NWAOBDDNodeHandle::NoDistinctionNode[handleContents->Level()];
+    return NWAOBDDNodeHandle::NoDistinctionNode[level];
   }
 
   if (!forceReduce && redMapHandle.mapContents->isIdentityMap) {
     return *this;
   }
 
+  reduce_times[handleContents->level]++;
+  auto it = reduceCache[level].find(NWAReduceKey(*this, redMapHandle));
+  if(it != reduceCache[level].end()) {
+    reduce_hit[handleContents->level]++;
+    return it -> second;
+  }
 
-  // reduce_times[handleContents->level]++;
-  // NWAOBDDNodeHandle cachedNodeHandle;
-  // bool isCached = reduceCache->Fetch(NWAReduceKey(*this, redMapHandle), cachedNodeHandle);
-  // if (isCached) {
-  //   reduce_hit[handleContents->level]++;
-  //   return cachedNodeHandle;
-  // }
-  // else {
-    // std::cout << "Miss: " << handleContents->Level() << std::endl;
-    NWAOBDDNodeHandle temp = handleContents->Reduce(redMapHandle, replacementNumExits, forceReduce);
-    // reduceCache->Insert(NWAReduceKey(*this, redMapHandle), temp);
-    return temp;
-  // }
+  NWAOBDDNodeHandle temp = handleContents->Reduce(redMapHandle, replacementNumExits, forceReduce);
+  reduceCache[level][NWAReduceKey(*this, redMapHandle)] = temp;
+  return temp;
+  
 }
 
 void NWAOBDDNodeHandle::InitReduceCache()
@@ -1295,16 +1300,18 @@ NWAReduceKey& NWAReduceKey::operator= (const NWAReduceKey& i)
 }
 
 // Overloaded !=
-bool NWAReduceKey::operator!=(const NWAReduceKey& p)
+bool NWAReduceKey::operator!=(const NWAReduceKey& p) const
 {
   return (nodeHandle != p.nodeHandle) || (redMapHandle != p.redMapHandle);
 }
 
 // Overloaded ==
-bool NWAReduceKey::operator==(const NWAReduceKey& p)
+bool NWAReduceKey::operator==(const NWAReduceKey& p) const
 {
   return (nodeHandle == p.nodeHandle) && (redMapHandle == p.redMapHandle);
 }
+
+
 
 
 //********************************************************************
@@ -1357,8 +1364,6 @@ NWAOBDDInternalNode::~NWAOBDDInternalNode()
 {
   delete [] BConnection[0];
   delete [] BConnection[1];
-  if(reduceCache) 
-    delete reduceCache;
   if(numPathsToExit)
     delete [] numPathsToExit;
   if(numPathsToMiddle)
@@ -1775,11 +1780,7 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 {
 
   assert(numExits == redMapHandle.Size());
-  reduce_times[level]++;
-  if(reduceCache && reduceCache->find(redMapHandle) != reduceCache->end()) {
-    reduce_hit[level]++;
-    return (*reduceCache)[redMapHandle];
-  }
+
   NWAOBDDInternalNode *n = new NWAOBDDInternalNode(level);
   ReductionMapHandle AReductionMapHandle;        // To record duplicate BConnections
 
@@ -1870,8 +1871,6 @@ NWAOBDDNodeHandle NWAOBDDInternalNode::Reduce(ReductionMapHandle redMapHandle, u
 //   n->InstallPathCounts();
 // #endif 
   NWAOBDDNodeHandle ret(n);
-  if(!reduceCache) reduceCache = new std::unordered_map<ReductionMapHandle, NWAOBDDNodeHandle, RedMapHash>;
-  reduceCache -> insert({redMapHandle, ret});
   return ret;
     /*
      for (unsigned int i = 0; i < numBConnections; i++) {

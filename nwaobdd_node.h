@@ -147,8 +147,8 @@ class NWAReduceKey {
   NWAReduceKey(NWAOBDDNodeHandle nodeHandle, ReductionMapHandle redMap); // Constructor
   unsigned int Hash(unsigned int modsize);
   NWAReduceKey& operator= (const NWAReduceKey& p);  // Overloaded assignment
-  bool operator!= (const NWAReduceKey& p);        // Overloaded !=
-  bool operator== (const NWAReduceKey& p);        // Overloaded ==
+  bool operator!= (const NWAReduceKey& p) const;        // Overloaded !=
+  bool operator== (const NWAReduceKey& p) const;        // Overloaded ==
   NWAOBDDNodeHandle NodeHandle() const { return nodeHandle; }      // Access function
   ReductionMapHandle RedMapHandle() const { return redMapHandle; } // Access function
   std::ostream& print(std::ostream & out) const;
@@ -258,7 +258,6 @@ class NWAOBDDInternalNode : public NWAOBDDNode {
   ~NWAOBDDInternalNode();                      // Destructor
   NWAOBDD_NODEKIND NodeKind() const { return NWAOBDD_INTERNAL; }
   long double *numPathsToMiddle = nullptr;
-  std::unordered_map<ReductionMapHandle, NWAOBDDNodeHandle, RedMapHash> * reduceCache = nullptr;
   void FillSatisfyingAssignment(unsigned int i, SH_OBDD::Assignment &assignment, unsigned int &index);
   int Traverse(SH_OBDD::AssignmentIterator &ai);
   NWAOBDDNodeHandle Reduce(ReductionMapHandle redMapHandle, unsigned int replacementNumExits, bool forceReduce = false);

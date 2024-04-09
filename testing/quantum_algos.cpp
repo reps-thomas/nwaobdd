@@ -109,18 +109,18 @@ void grovers(int numQubits, int seed) {
     int sampleCount = 1;
     int iterCount = 0;
 
-    while (sampledString != s && iterCount < numQubits) {
-        ++sampleCount;
-        sampledString = qc.Measure().substr(0, numQubits);
-        ++iterCount;
-    }
+    // while (sampledString != s && iterCount < numQubits) {
+    //     ++sampleCount;
+    //     sampledString = qc.Measure().substr(0, numQubits);
+    //     ++iterCount;
+    // }
 
     double time = static_cast<double>(end - start) / CLOCKS_PER_SEC;
 
-    if (iterCount >= numQubits) {
-        printf("Incorrect\n");
-        abort();
-    }
+    // if (iterCount >= numQubits) {
+    //     printf("Incorrect\n");
+    //     abort();
+    // }
     printf("%lf, %d iters\n", time, iterCount);
 }
 

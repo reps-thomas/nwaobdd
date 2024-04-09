@@ -7,11 +7,8 @@
 int reduce_times[26], reduce_hit[26];
 int matmult_times[26], matmult_hit[26];
 int pairprod_times[26], pairprod_hit[26];
+int node_times[26], node_hit[26];
 
-int node_times[26];
-int node_hit[26];
-
-int call_cnt;
 void print_summary() {
     // printf("Reduce Hit Rate:\n");
     // for(unsigned i = 0; i < 25; ++i)
@@ -24,7 +21,6 @@ void print_summary() {
     // printf("PairProd Hit Rate:\n");
     // for(unsigned i = 0; i < 20; ++i)
     //     printf("  Level %d: %d / %d\n", i, pairprod_hit[i], pairprod_times[i]);
-    // printf("%d\n", call_cnt);
 
     // printf("Node Hit Rate:\n");
     // for(unsigned i = 0; i < 20; ++i)
@@ -55,7 +51,4 @@ int main(int argc, char *argv[]) {
     }
 
     print_summary();
-    // for(int i = 1; i <= 1000; ++i) 
-    //     func();
-    // printf("Called %d times, taking %.6lf time\n", call_cnt, total_time);
 }

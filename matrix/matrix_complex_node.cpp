@@ -214,6 +214,10 @@ namespace NWA_OBDD {
 
 }  // namespace NWA_OBDD
 
+
+extern int matmult_times[];
+extern int matmult_hit[];
+
 namespace NWA_OBDD {
 
     template <typename T, typename T1>
@@ -243,8 +247,9 @@ namespace NWA_OBDD {
         }
     }
 
-    std::unordered_map<MatMultPair, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPair::MatMultPairHash> matmult_hashMap;
-	std::unordered_map<MatMultPairWithInfo, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPairWithInfo::MatMultPairWithInfoHash> matmult_hashMap_info;
+    // std::unordered_map<MatMultPair, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPair::MatMultPairHash> matmult_hashMap;
+	
+	std::unordered_map<MatMultPairWithInfo, NWAOBDDTopNodeMatMultMapRefPtr, MatMultPairWithInfo::MatMultPairWithInfoHash> matmult_hashMap_info[26];
 	std::unordered_map<std::string, NWAOBDDNodeHandle> cnot_hashMap;
 	std::unordered_map<std::string, NWAOBDDNodeHandle> cp_hashMap;
 	std::unordered_map<std::string, NWAOBDDNodeHandle> ccp_hashMap;
@@ -258,11 +263,12 @@ namespace NWA_OBDD {
     NWAOBDDNodeHandle c1, NWAOBDDNodeHandle c2, int c1_zero_index, int c2_zero_index) {
        		MatMultPairWithInfo mmp(c1, c2, c1_zero_index, c2_zero_index);
 
-		if (matmult_hashMap_info.find(mmp) != matmult_hashMap_info.end() 
-			&& ((((NWAOBDDInternalNode *)(c1.handleContents))->GetRefCount() >= 2) ||
-			(((NWAOBDDInternalNode *)(c2.handleContents))->GetRefCount() >= 2))
-			){
-			return matmult_hashMap_info[mmp];
+		unsigned level = c1.handleContents -> level;
+		matmult_times[level]++;
+		auto it0 = matmult_hashMap_info[level].find(mmp);
+		if (it0 != matmult_hashMap_info[level].end()) {
+			matmult_hit[level]++;
+			return it0 -> second;
 		}
 
 		NWAOBDDMatMultMapHandle g_return_map;
@@ -543,14 +549,15 @@ namespace NWA_OBDD {
 					for (unsigned int j = 0; j < ans->rootConnection.returnMapHandle.Size(); j++){
 						//std::string map_as_string = ans->rootConnection.returnMapHandle[j].ToString();
 						unsigned int map_hash_check = ans->rootConnection.returnMapHandle[j].mapContents->hashCheck;
-						if (mapFromHandleToIndex.find(map_hash_check) == mapFromHandleToIndex.end()){
+						auto it1 = mapFromHandleToIndex.find(map_hash_check);
+						if (it1 == mapFromHandleToIndex.end()){
 							ans_return_map.AddToEnd(c.numExits++);
 							g_return_map.AddToEnd(ans->rootConnection.returnMapHandle[j]);
 							// reductionMapHandle.AddToEnd(g->numExits - 1);
 							mapFromHandleToIndex[map_hash_check] = c.numExits - 1;
 						}
 						else{
-							unsigned int index = mapFromHandleToIndex[map_hash_check];
+							unsigned int index = it1 -> second;
 							ans_return_map.AddToEnd(index);
 						}
 					}
@@ -571,14 +578,14 @@ namespace NWA_OBDD {
 		//gHandle = gHandle.Reduce(reductionMapHandle, g_return_map.Size(), true);
 		NWAOBDDTopNodeMatMultMapRefPtr return_ans = new NWAOBDDTopNodeMatMultMap(gHandle, g_return_map);
 		//hashMap[mmp] = return_ans;
-		matmult_hashMap_info[mmp] = return_ans;
+		matmult_hashMap_info[level][mmp] = return_ans;
 		return return_ans;
 
     }
 
     void clearMultMap(){
     // std::cout << "mapSize: " << matmult_hashMap.size() << std::endl;
-    matmult_hashMap.clear();
+    // matmult_hashMap.clear();
 	}
 } 
 
